@@ -1,0 +1,33 @@
+.admin-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-layout .sidebar {
+  width: 240px;
+  background: var(--secondary);
+  color: var(--text-light);
+  padding: 20px;
+}
+
+.admin-layout .sidebar a {
+  display: block;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.admin-layout .sidebar a:hover {
+  background: var(--secondary-light);
+}
+
+.admin-layout .main-content {
+  flex: 1;
+  padding: 20px;
+  background: var(--bg-main);
+}

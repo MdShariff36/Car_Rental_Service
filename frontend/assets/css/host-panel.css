@@ -1,0 +1,15 @@
+.host-highlight {
+  background: #e0f2fe;
+  padding: 14px;
+  border-radius: 8px;
+}
+.host-dashboard .card-small {
+  border-left: 4px solid var(--success);
+}
+
+.host-highlight {
+  background: #ecfdf5;
+  color: var(--success);
+  padding: 12px;
+  border-radius: var(--radius-md);
+}
