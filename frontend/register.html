@@ -1,7 +1,90 @@
-<form class="container">
-  <h2>Register</h2>
-  <input type="text" placeholder="Name" />
-  <input type="email" placeholder="Email" />
-  <input type="password" placeholder="Password" />
-  <button class="btn btn-primary">Register</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Register — Auto Prime</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <main class="container" style="padding: 40px 20px; max-width: 720px">
+      <div style="text-align: center; margin-bottom: 12px">
+        <img src="assets/images/logo.png" alt="logo" style="height: 46px" />
+      </div>
+      <form id="register-form" class="card-small" style="padding: 20px">
+        <h2>Create account</h2>
+        <input
+          name="name"
+          placeholder="Full name"
+          required
+          style="
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            margin-top: 8px;
+          "
+        />
+        <input
+          name="phone number"
+          placeholder="phone number"
+          type="phone number"
+          required
+          style="
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            margin-top: 8px;
+          "
+        />
+
+        <input
+          name="License number"
+          placeholder="License number"
+          type="text"
+          required
+          style="
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            margin-top: 8px;
+          "
+        />
+        <br />
+        <input
+          name="email"
+          placeholder="Email"
+          type="email"
+          required
+          style="
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            margin-top: 8px;
+          "
+        />
+        <input
+          name="password"
+          placeholder="Password"
+          type="password"
+          required
+          style="
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            margin-top: 8px;
+          "
+        />
+
+        <div style="margin-top: 12px">
+          <button class="btn" type="submit">Register</button>
+        </div>
+      </form>
+    </main>
+    <script src="assets/js/auth.js"></script>
+  </body>
+</html>

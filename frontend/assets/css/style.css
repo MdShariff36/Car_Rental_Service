@@ -218,6 +218,84 @@ img {
   font-weight: 600;
 }
 
+/* ================= PAGE HERO ================= */
+.page-hero {
+  background: linear-gradient(135deg, var(--secondary), #020617);
+  color: var(--text-light);
+  padding: 70px 20px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-hero h1 {
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+}
+
+.page-hero p {
+  color: #cbd5f5;
+}
+
+/* ================= FILTER BAR ================= */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+/* ================= SERVICE CARD ================= */
+.service-card {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ================= AUTH LAYOUT ================= */
+.auth-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 900px;
+  margin: 60px auto;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.auth-info {
+  background: linear-gradient(135deg, var(--secondary), #020617);
+  color: var(--text-light);
+  padding: 40px;
+}
+
+.auth-info ul {
+  margin-top: 20px;
+}
+
+.auth-info li {
+  margin-bottom: 10px;
+}
+
+.auth-form {
+  padding: 40px;
+}
+
+/* ================= CONTACT CARDS ================= */
+.contact-card {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  font-weight: 600;
+}
+
 /* ================= CAR CARDS ================= */
 .car-card {
   background: var(--white);
