@@ -1,18 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Booking</title>
+    <meta charset="UTF-8" />
+    <title>Booking | Auto Prime</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
+
   <body>
-    <section class="container">
-      <h2>Booking Details</h2>
-      <form>
-        <input type="date" id="start" />
-        <input type="date" id="end" />
-        <button onclick="calculateBill()">Calculate</button>
-        <h3>Total: <span id="total">₹0</span></h3>
-      </form>
+    <div id="header"></div>
+
+    <section class="page-hero">
+      <div class="container">
+        <h1>Booking Details</h1>
+        <p>Confirm your rental</p>
+      </div>
     </section>
+
+    <section class="container">
+      <div class="card" style="max-width: 600px; margin: auto">
+        <h2>Hyundai Creta</h2>
+        <p class="muted">₹3,500 / day</p>
+
+        <label>Pickup Date</label>
+        <input type="date" />
+
+        <label>Drop Date</label>
+        <input type="date" />
+
+        <h3 style="margin-top: 15px">Total: ₹7,000</h3>
+
+        <a
+          href="booking-confirm.html"
+          class="btn"
+          style="width: 100%; margin-top: 15px; text-align: center"
+        >
+          Confirm Booking
+        </a>
+      </div>
+    </section>
+
+    <div id="footer"></div>
+    <script src="assets/js/ui.js"></script>
   </body>
 </html>

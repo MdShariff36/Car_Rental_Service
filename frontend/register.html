@@ -1,90 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>Register — Auto Prime</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>Register | Auto Prime</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
+
   <body>
-    <main class="container" style="padding: 40px 20px; max-width: 720px">
-      <div style="text-align: center; margin-bottom: 12px">
-        <img src="assets/images/logo.png" alt="logo" style="height: 46px" />
-      </div>
-      <form id="register-form" class="card-small" style="padding: 20px">
-        <h2>Create account</h2>
-        <input
-          name="name"
-          placeholder="Full name"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 8px;
-          "
-        />
-        <input
-          name="phone number"
-          placeholder="phone number"
-          type="phone number"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 8px;
-          "
-        />
+    <div id="header"></div>
 
-        <input
-          name="License number"
-          placeholder="License number"
-          type="text"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 8px;
-          "
-        />
-        <br />
-        <input
-          name="email"
-          placeholder="Email"
-          type="email"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 8px;
-          "
-        />
-        <input
-          name="password"
-          placeholder="Password"
-          type="password"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 8px;
-          "
-        />
+    <!-- COLORFUL BACKGROUND -->
+    <section
+      style="
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        padding: 40px;
+      "
+    >
+      <!-- FORM CARD -->
+      <div
+        style="
+          width: 100%;
+          max-width: 720px;
+          background: white;
+          padding: 50px;
+          border-radius: 22px;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+          border-top: 8px solid #ff6b00;
+        "
+      >
+        <h1 style="text-align: center; margin-bottom: 5px">Create Account</h1>
+        <p class="muted" style="text-align: center; margin-bottom: 35px">
+          Start booking premium self-drive cars
+        </p>
 
-        <div style="margin-top: 12px">
-          <button class="btn" type="submit">Register</button>
+        <!-- ORDERED INPUT GRID -->
+        <div class="grid grid-2" style="gap: 20px">
+          <div>
+            <label>Full Name</label>
+            <input placeholder="John Doe" required />
+          </div>
+
+          <div>
+            <label>Phone Number</label>
+            <input placeholder="9876543210" required />
+          </div>
+
+          <div>
+            <label>Driving License No</label>
+            <input placeholder="DL-XXXX-XXXX" required />
+          </div>
+
+          <div>
+            <label>Email Address</label>
+            <input type="email" placeholder="you@example.com" required />
+          </div>
         </div>
-      </form>
-    </main>
-    <script src="assets/js/auth.js"></script>
+
+        <div style="margin-top: 20px">
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="Create a strong password"
+            required
+          />
+        </div>
+
+        <button
+          class="btn"
+          style="width: 100%; margin-top: 30px; padding: 15px; font-size: 16px"
+        >
+          Create Account
+        </button>
+
+        <p class="muted" style="text-align: center; margin-top: 25px">
+          Already have an account?
+          <a href="login.html" style="color: #ff6b00; font-weight: 600">
+            Login here
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <div id="footer"></div>
+    <script src="assets/js/ui.js"></script>
   </body>
 </html>

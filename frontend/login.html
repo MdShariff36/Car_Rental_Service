@@ -1,52 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>Login — Auto Prime</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>Login | Auto Prime</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
+
   <body>
-    <main class="container" style="padding: 40px 20px; max-width: 680px">
-      <div style="text-align: center; margin-bottom: 12px">
-        <img src="assets/images/logo.png" alt="logo" style="height: 46px" />
+    <div id="header"></div>
+
+    <!-- COLORFUL BACKGROUND -->
+    <section
+      style="
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #ff6b00, #ffb347);
+        padding: 40px;
+      "
+    >
+      <!-- FORM CARD -->
+      <div
+        style="
+          width: 100%;
+          max-width: 520px;
+          background: white;
+          padding: 45px;
+          border-radius: 22px;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+          border-top: 8px solid #ff6b00;
+        "
+      >
+        <h1 style="text-align: center; margin-bottom: 5px">Welcome Back</h1>
+        <p class="muted" style="text-align: center; margin-bottom: 35px">
+          Login to your Auto Prime account
+        </p>
+
+        <!-- ORDERED INPUTS -->
+        <div style="margin-bottom: 18px">
+          <label>Email Address</label>
+          <input
+            type="email"
+            placeholder="you@example.com"
+            style="width: 100%"
+            required
+          />
+        </div>
+
+        <div style="margin-bottom: 25px">
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            style="width: 100%"
+            required
+          />
+        </div>
+
+        <button class="btn" style="width: 100%; padding: 14px; font-size: 16px">
+          Login
+        </button>
+
+        <p class="muted" style="text-align: center; margin-top: 25px">
+          Don’t have an account?
+          <a href="register.html" style="color: #ff6b00; font-weight: 600">
+            Create one
+          </a>
+        </p>
       </div>
-      <form id="login-form" class="card-small" style="padding: 20px">
-        <h2>Login</h2>
-        <label class="muted">Email</label
-        ><input
-          name="email"
-          type="email"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 6px;
-          "
-        />
-        <label class="muted" style="margin-top: 8px">Password</label
-        ><input
-          name="password"
-          type="password"
-          required
-          style="
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            margin-top: 6px;
-          "
-        />
-        <div style="margin-top: 12px">
-          <button class="btn" type="submit">Login</button>
-        </div>
-        <div style="margin-top: 10px; font-size: 0.95rem">
-          Don't have an account? <a href="register.html">Register</a>
-        </div>
-      </form>
-    </main>
-    <script src="assets/js/auth.js"></script>
+    </section>
+
+    <div id="footer"></div>
+    <script src="assets/js/ui.js"></script>
   </body>
 </html>

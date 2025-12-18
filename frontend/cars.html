@@ -1,110 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>All Cars — Auto Prime</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>Browse Cars | Auto Prime</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
+
   <body>
-    <header class="site-header">
+    <!-- HEADER -->
+    <div id="header"></div>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
       <div class="container">
-        <div class="logo">
-          <img src="assets/images/logo.png" /><strong>Auto Prime</strong>
-        </div>
-        <nav class="nav">
-          <a href="index.html">Home</a><a href="cars.html">Cars</a
-          ><a href="services.html">Services</a><a href="about.html">About</a
-          ><a href="contact.html">Contact</a>
-        </nav>
+        <h1>Available Cars</h1>
+        <p>Choose the perfect car for your next journey</p>
       </div>
-    </header>
+    </section>
 
-    <main class="container" style="padding: 28px 20px">
-      <h1>Available Cars</h1>
-      <p class="muted">Filter and browse our fleet.</p>
+    <!-- FILTER BAR -->
+    <section class="container">
+      <div class="card grid grid-4">
+        <select>
+          <option>All Types</option>
+          <option>SUV</option>
+          <option>Sedan</option>
+          <option>Hatchback</option>
+        </select>
 
-      <div style="margin-top: 16px" class="grid grid-3">
-        <!-- Repeat these cards as required -->
-        <article
-          class="car-card"
-          data-category="Economy"
-          data-seats="4"
-          data-transmission="Manual"
-          data-fuel="Diesel"
-          data-price="900"
-        >
-          <div class="media-wrap">
-            <img src="assets/images/cars/car2.jpg" alt="Etios" />
-            <div class="overlay"></div>
-          </div>
-          <div style="padding: 12px">
-            <h3>Toyota Etios</h3>
-            <p class="muted">Economy • Manual</p>
-            <div class="card-row">
-              <div class="price">₹900/day</div>
-              <a class="btn btn-sm" href="booking.html?car=Toyota%20Etios"
-                >Book</a
-              >
-            </div>
-          </div>
+        <select>
+          <option>Transmission</option>
+          <option>Manual</option>
+          <option>Automatic</option>
+        </select>
+
+        <select>
+          <option>Price Range</option>
+          <option>₹1000 – ₹3000</option>
+          <option>₹3000 – ₹6000</option>
+        </select>
+
+        <button class="btn btn-sm">Apply</button>
+      </div>
+    </section>
+
+    <!-- CAR LIST -->
+    <section class="container">
+      <div class="grid grid-3">
+        <article class="car-card">
+          <img src="assets/images/cars/car1.jpg" alt="Hyundai Creta" />
+          <h3>Hyundai Creta</h3>
+          <p class="muted">SUV • Automatic • 5 Seats</p>
+          <p class="price">₹3,500 / day</p>
+          <a href="car-details.html" class="btn btn-sm">View Details</a>
         </article>
 
-        <article
-          class="car-card popular"
-          data-category="Compact"
-          data-seats="5"
-          data-transmission="Automatic"
-          data-fuel="Petrol"
-          data-price="1900"
-        >
-          <div class="media-wrap">
-            <img src="assets/images/cars/car4.jpg" alt="Honda City" />
-            <div class="overlay"></div>
-            <span class="car-badge">Popular</span>
-          </div>
-          <div style="padding: 12px">
-            <h3>Honda City</h3>
-            <p class="muted">Compact • Automatic</p>
-            <div class="card-row">
-              <div class="price">₹1,900/day</div>
-              <a class="btn btn-sm" href="booking.html?car=Honda%20City"
-                >Book</a
-              >
-            </div>
-          </div>
+        <article class="car-card">
+          <img src="assets/images/cars/car2.jpg" alt="Maruti Swift" />
+          <h3>Maruti Swift</h3>
+          <p class="muted">Hatchback • Manual • 5 Seats</p>
+          <p class="price">₹1,500 / day</p>
+          <a href="car-details.html" class="btn btn-sm">View Details</a>
         </article>
 
-        <article
-          class="car-card premium"
-          data-category="Luxury"
-          data-seats="5"
-          data-transmission="Automatic"
-          data-fuel="Petrol"
-          data-price="4500"
-        >
-          <div class="media-wrap">
-            <img src="assets/images/cars/car1.jpg" alt="BMW" />
-            <div class="overlay"></div>
-            <span class="car-badge">Premium</span>
-          </div>
-          <div style="padding: 12px">
-            <h3>BMW 5 Series</h3>
-            <p class="muted">Luxury • Automatic</p>
-            <div class="card-row">
-              <div class="price">₹4,500/day</div>
-              <a class="btn btn-sm" href="booking.html?car=BMW%205%20Series"
-                >Book</a
-              >
-            </div>
-          </div>
+        <article class="car-card">
+          <img src="assets/images/cars/car3.jpg" alt="Toyota Innova" />
+          <h3>Toyota Innova</h3>
+          <p class="muted">MPV • Manual • 7 Seats</p>
+          <p class="price">₹4,200 / day</p>
+          <a href="car-details.html" class="btn btn-sm">View Details</a>
         </article>
       </div>
-    </main>
+    </section>
 
-    <footer class="site-footer">
-      <div class="container">© Auto Prime Rental 2025</div>
-    </footer>
-    <script src="assets/js/script.js"></script>
+    <!-- FOOTER -->
+    <div id="footer"></div>
+
+    <script src="assets/js/ui.js"></script>
   </body>
 </html>
