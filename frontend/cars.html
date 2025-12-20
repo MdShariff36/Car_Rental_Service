@@ -1,82 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Browse Cars | Auto Prime</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="assets/css/style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>Browse Cars | Auto Prime</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
 
-  <body>
-    <!-- HEADER -->
-    <div id="header"></div>
+<body>
 
-    <!-- PAGE HERO -->
-    <section class="page-hero">
-      <div class="container">
-        <h1>Available Cars</h1>
-        <p>Choose the perfect car for your next journey</p>
-      </div>
-    </section>
+  <!-- HEADER -->
+  <div id="header"></div>
 
-    <!-- FILTER BAR -->
-    <section class="container">
-      <div class="card grid grid-4">
-        <select>
-          <option>All Types</option>
-          <option>SUV</option>
-          <option>Sedan</option>
-          <option>Hatchback</option>
-        </select>
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Available Cars</h1>
+      <p>Choose the perfect car for your next journey</p>
+    </div>
+  </section>
 
-        <select>
-          <option>Transmission</option>
-          <option>Manual</option>
-          <option>Automatic</option>
-        </select>
+  <!-- FILTER BAR -->
+  <section class="container">
+    <div class="card grid grid-4">
+      <select>
+        <option>All Types</option>
+        <option>SUV</option>
+        <option>Sedan</option>
+        <option>Hatchback</option>
+        <option>Electric</option>
+        <option>Luxury</option>
+      </select>
 
-        <select>
-          <option>Price Range</option>
-          <option>₹1000 – ₹3000</option>
-          <option>₹3000 – ₹6000</option>
-        </select>
+      <select>
+        <option>Transmission</option>
+        <option>Manual</option>
+        <option>Automatic</option>
+      </select>
 
-        <button class="btn btn-sm">Apply</button>
-      </div>
-    </section>
+      <select>
+        <option>Price Range</option>
+        <option>₹1000 – ₹3000</option>
+        <option>₹3000 – ₹6000</option>
+        <option>₹6000+</option>
+      </select>
 
-    <!-- CAR LIST -->
-    <section class="container">
-      <div class="grid grid-3">
-        <article class="car-card">
-          <img src="assets/images/cars/car1.jpg" alt="Hyundai Creta" />
-          <h3>Hyundai Creta</h3>
-          <p class="muted">SUV • Automatic • 5 Seats</p>
-          <p class="price">₹3,500 / day</p>
-          <a href="car-details.html" class="btn btn-sm">View Details</a>
-        </article>
+      <button class="btn btn-sm">Apply</button>
+    </div>
+  </section>
 
-        <article class="car-card">
-          <img src="assets/images/cars/car2.jpg" alt="Maruti Swift" />
-          <h3>Maruti Swift</h3>
-          <p class="muted">Hatchback • Manual • 5 Seats</p>
-          <p class="price">₹1,500 / day</p>
-          <a href="car-details.html" class="btn btn-sm">View Details</a>
-        </article>
+  <!-- CAR LIST -->
+  <section class="container">
+    <div class="grid grid-3">
 
-        <article class="car-card">
-          <img src="assets/images/cars/car3.jpg" alt="Toyota Innova" />
-          <h3>Toyota Innova</h3>
-          <p class="muted">MPV • Manual • 7 Seats</p>
-          <p class="price">₹4,200 / day</p>
-          <a href="car-details.html" class="btn btn-sm">View Details</a>
-        </article>
-      </div>
-    </section>
+      <!-- SUV -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Hyundai Creta/Hyundai Creta.jfif" alt="Hyundai Creta" />
+        <h3>Hyundai Creta</h3>
+        <p class="muted">SUV • Automatic • 5 Seats</p>
+        <p class="price">₹3,500 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
 
-    <!-- FOOTER -->
-    <div id="footer"></div>
+      <!-- Hatchback -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Maruti Swift/Maruti Swift.jfif" alt="Maruti Swift" />
+        <h3>Maruti Swift</h3>
+        <p class="muted">Hatchback • Manual • 5 Seats</p>
+        <p class="price">₹1,500 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
 
-    <script src="assets/js/ui.js"></script>
-  </body>
+      <!-- MPV -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Toyota innova/Toyota innova.jfif" alt="Toyota Innova" />
+        <h3>Toyota Innova</h3>
+        <p class="muted">MPV • Manual • 7 Seats</p>
+        <p class="price">₹4,200 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+      <!-- Sedan -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Honda city/Honda city.jfif" alt="Honda City" />
+        <h3>Honda City</h3>
+        <p class="muted">Sedan • Automatic • 5 Seats</p>
+        <p class="price">₹2,800 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+      <!-- Compact SUV -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Tata nexon/Tata nexon.jfif" alt="Tata Nexon" />
+        <h3>Tata Nexon</h3>
+        <p class="muted">SUV • Manual • 5 Seats</p>
+        <p class="price">₹2,200 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+      <!-- Off-road SUV -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Mahindra Thar/Mahindra Thar.jfif" alt="Mahindra Thar" />
+        <h3>Mahindra Thar</h3>
+        <p class="muted">Off-Road • Manual • 4 Seats</p>
+        <p class="price">₹4,500 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+      <!-- Electric -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Tata Tiago Ev/Tata Tiago EV.jfif" alt="Tata Tiago EV" />
+        <h3>Tata Tiago EV</h3>
+        <p class="muted">Electric • Automatic • 5 Seats</p>
+        <p class="price">₹1,800 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+      <!-- Luxury -->
+      <article class="car-card">
+        <img src="assets/images/car-images/" alt="BMW 3 Series" />
+        <h3>BMW 3 Series</h3>
+        <p class="muted">Luxury Sedan • Automatic • 5 Seats</p>
+        <p class="price">₹8,500 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+      <!-- Luxury SUV -->
+      <article class="car-card">
+        <img src="assets/images/car-images/Audi q7/Audi Q7.jfif" alt="Audi Q7" />
+        <h3>Audi Q7</h3>
+        <p class="muted">Luxury SUV • Automatic • 7 Seats</p>
+        <p class="price">₹9,500 / day</p>
+        <a href="car-details.html" class="btn btn-sm">View Details</a>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+
+  <script src="assets/js/ui.js"></script>
+
+</body>
 </html>

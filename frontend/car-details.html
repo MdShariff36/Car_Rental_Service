@@ -8,8 +8,10 @@
   </head>
 
   <body>
+    <!-- HEADER -->
     <div id="header"></div>
 
+    <!-- HERO -->
     <section class="page-hero">
       <div class="container">
         <h1>Hyundai Creta</h1>
@@ -17,10 +19,41 @@
       </div>
     </section>
 
+    <!-- CONTENT -->
     <section class="container grid grid-2">
-      <!-- IMAGE -->
-      <div class="card">
-        <img src="assets/images/cars/car1.jpg" alt="Hyundai Creta" />
+      <!-- IMAGE & GALLERY -->
+      <div class="card car-gallery">
+        <!-- Main Image -->
+        <img
+          id="mainCarImage"
+          src="assets/images/car-images/creta-1.jpg"
+          alt="Hyundai Creta"
+          class="main-car-image"
+        />
+
+        <!-- Thumbnail Images -->
+        <div class="thumbnail-list">
+          <img
+            src="assets/images/car-images/creta-1.jpg"
+            alt="Creta Front"
+            onclick="changeCarImage(this.src)"
+          />
+          <img
+            src="assets/images/car-images/creta-2.jpg"
+            alt="Creta Side"
+            onclick="changeCarImage(this.src)"
+          />
+          <img
+            src="assets/images/car-images/creta-3.jpg"
+            alt="Creta Interior"
+            onclick="changeCarImage(this.src)"
+          />
+          <img
+            src="assets/images/car-images/creta-4.jpg"
+            alt="Creta Rear"
+            onclick="changeCarImage(this.src)"
+          />
+        </div>
       </div>
 
       <!-- DETAILS -->
@@ -54,7 +87,17 @@
       </div>
     </section>
 
+    <!-- FOOTER -->
     <div id="footer"></div>
+
+    <!-- JS -->
     <script src="assets/js/ui.js"></script>
+
+    <!-- INLINE SCRIPT FOR IMAGE CHANGE -->
+    <script>
+      function changeCarImage(imageSrc) {
+        document.getElementById("mainCarImage").src = imageSrc;
+      }
+    </script>
   </body>
 </html>
