@@ -2,45 +2,86 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Booking | Auto Prime</title>
+    <title>Book Car | Auto Prime</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
 
   <body>
-    <div id="header"></div>
-
-    <section class="page-hero">
+    <!-- HEADER -->
+    <header class="site-header">
       <div class="container">
-        <h1>Booking Details</h1>
-        <p>Confirm your rental</p>
+        <div class="logo">
+          <img src="assets/images/logo/logo.png" />
+          <strong>Auto Prime</strong>
+        </div>
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="cars.html">Cars</a>
+          <a href="booking.html" class="active">Booking</a>
+        </nav>
       </div>
-    </section>
+    </header>
 
+    <!-- HERO -->
     <section class="container">
-      <div class="card" style="max-width: 600px; margin: auto">
-        <h2>Hyundai Creta</h2>
-        <p class="muted">₹3,500 / day</p>
+      <h1 class="section-title">Complete Your Booking</h1>
+      <p class="muted" style="text-align: center">
+        Choose date, time & confirm your ride
+      </p>
+    </section>
 
-        <label>Pickup Date</label>
-        <input type="date" />
+    <!-- BOOKING FORM -->
+    <section class="container">
+      <div class="grid grid-2">
+        <!-- LEFT -->
+        <div class="card">
+          <h3>Booking Details</h3>
 
-        <label>Drop Date</label>
-        <input type="date" />
+          <label>Pickup Location</label>
+          <input type="text" placeholder="City or Area" />
 
-        <h3 style="margin-top: 15px">Total: ₹7,000</h3>
+          <label>Pickup Date</label>
+          <input type="date" />
 
-        <a
-          href="booking-confirm.html"
-          class="btn"
-          style="width: 100%; margin-top: 15px; text-align: center"
-        >
-          Confirm Booking
-        </a>
+          <label>Pickup Time</label>
+          <input type="time" />
+
+          <label>Drop Date</label>
+          <input type="date" />
+
+          <label>Drop Time</label>
+          <input type="time" />
+        </div>
+
+        <!-- RIGHT -->
+        <div class="card">
+          <h3>Price Summary</h3>
+
+          <div class="summary-row">
+            <span>Car Rent</span>
+            <span>₹3,500</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Insurance</span>
+            <span>₹300</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <span>₹3,800</span>
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%">
+            Confirm Booking
+          </button>
+        </div>
       </div>
     </section>
 
-    <div id="footer"></div>
-    <script src="assets/js/ui.js"></script>
+    <footer class="site-footer">
+      <div class="container">© 2025 Auto Prime Rental</div>
+    </footer>
   </body>
 </html>

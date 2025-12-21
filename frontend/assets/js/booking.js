@@ -12,3 +12,13 @@ function calculateBill() {
   const total = days * price;
   document.getElementById("total").innerText = "₹" + total;
 }
+fetch("/api/bookings", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    carId: 5,
+    userId: 2,
+    pickup: "2025-06-12",
+    drop: "2025-06-14",
+  }),
+});

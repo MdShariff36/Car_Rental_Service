@@ -38,28 +38,37 @@
           Login to your Auto Prime account
         </p>
 
-        <!-- ORDERED INPUTS -->
+        <!-- EMAIL -->
         <div style="margin-bottom: 18px">
           <label>Email Address</label>
           <input
             type="email"
+            id="email"
             placeholder="you@example.com"
             style="width: 100%"
             required
           />
         </div>
 
+        <!-- PASSWORD -->
         <div style="margin-bottom: 25px">
           <label>Password</label>
           <input
             type="password"
+            id="password"
             placeholder="••••••••"
             style="width: 100%"
             required
           />
         </div>
 
-        <button class="btn" style="width: 100%; padding: 14px; font-size: 16px">
+        <!-- LOGIN BUTTON -->
+        <button
+          type="button"
+          class="btn"
+          style="width: 100%; padding: 14px; font-size: 16px"
+          onclick="login()"
+        >
           Login
         </button>
 
@@ -73,6 +82,11 @@
     </section>
 
     <div id="footer"></div>
+
+    <!-- UI SCRIPT -->
     <script src="assets/js/ui.js"></script>
+
+    <!-- AUTH SCRIPT (VERY IMPORTANT) -->
+    <script src="assets/js/auth.js"></script>
   </body>
 </html>
