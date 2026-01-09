@@ -1,0 +1,27 @@
+.site-footer {
+  background-color: var(--secondary);
+  color: var(--text-light);
+  padding: 64px 0 32px;
+  margin-top: 80px;
+  font-size: 0.9rem;
+}
+
+.site-footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.site-footer a {
+  color: var(--text-white);
+  opacity: 0.8;
+  margin: 0 12px;
+}
+
+.site-footer a:hover {
+  opacity: 1;
+  color: var(--primary);
+  text-decoration: none;
+}

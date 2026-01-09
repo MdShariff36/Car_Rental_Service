@@ -1,0 +1,11 @@
+.card-small {
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  color: #9a3412;
+}
+
+.card-small:first-child {
+  background: var(--secondary);
+  color: white;
+  border: none;
+}

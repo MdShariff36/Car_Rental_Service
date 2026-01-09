@@ -1,0 +1,5 @@
+.card-small h3 {
+  font-size: 1.25rem;
+  color: var(--secondary);
+  margin-bottom: 8px;
+}

@@ -1,0 +1,18 @@
+.booking-summary .summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.booking-summary .total {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px dashed var(--border);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--secondary);
+  display: flex;
+  justify-content: space-between;
+}

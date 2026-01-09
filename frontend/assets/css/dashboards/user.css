@@ -1,0 +1,9 @@
+.card-small {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-left: 4px solid var(--accent);
+}
+
+.card-small:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}

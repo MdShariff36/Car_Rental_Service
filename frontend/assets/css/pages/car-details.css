@@ -1,0 +1,67 @@
+.page-hero {
+  background: var(--secondary);
+  color: white;
+  padding: 60px 0;
+  margin-bottom: 40px;
+}
+
+.page-hero h1 {
+  color: white;
+  margin: 0;
+}
+.page-hero p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 8px;
+}
+
+/* Image Gallery */
+.main-car-image {
+  width: 100%;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+  transition: opacity 0.3s;
+}
+
+.thumbnail-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.thumbnail-list img {
+  width: 100px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+  border: 2px solid transparent;
+}
+
+.thumbnail-list img:hover {
+  opacity: 1;
+  border-color: var(--primary);
+}
+
+/* Remove default card styling from wrapper if present in HTML */
+.car-gallery {
+  box-shadow: none !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Feature List */
+ul.muted li {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ul.muted li:last-child {
+  border-bottom: none;
+}

@@ -1,0 +1,26 @@
+.filter-panel {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 100px;
+}
+
+.filter-panel h3 {
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.filter-panel label {
+  margin-top: 16px;
+}
+
+/* Override input styling inside filter for consistency */
+.filter-panel select,
+.filter-panel input {
+  margin-bottom: 8px;
+}

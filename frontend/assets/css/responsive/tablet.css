@@ -1,0 +1,22 @@
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 0 30px;
+  }
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sidebar {
+    display: flex;
+    overflow-x: auto;
+    position: static;
+    margin-bottom: 24px;
+    gap: 12px;
+  }
+
+  .sidebar a {
+    white-space: nowrap;
+    margin: 0;
+    flex-shrink: 0;
+  }
+}
