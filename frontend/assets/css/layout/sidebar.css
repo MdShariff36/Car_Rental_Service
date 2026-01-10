@@ -2,27 +2,26 @@
   background: var(--bg-card);
   padding: 24px;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
-  height: fit-content;
   position: sticky;
   top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .sidebar a {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
-  font-weight: 500;
-  margin-bottom: 4px;
-  transition: var(--transition);
 }
 
 .sidebar a:hover,
 .sidebar a.active {
-  background-color: #fff7ed; /* Light orange tint */
+  background-color: var(--primary-light);
   color: var(--primary);
-  transform: translateX(4px);
 }

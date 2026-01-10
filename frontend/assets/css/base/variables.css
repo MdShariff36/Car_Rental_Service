@@ -2,35 +2,35 @@
   /* --- Brand Identity --- */
   --primary: #ff5f1f; /* High-energy Orange */
   --primary-hover: #e04f16;
-  --secondary: #0f172a; /* Deep Navy (Premium Dark) */
-  --secondary-light: #1e293b;
+  --primary-light: #fff0e6; /* Subtle background for active states */
+
+  --secondary: #0f172a; /* Deep Navy */
+  --secondary-light: #334155;
+
   --accent: #3b82f6; /* Trust Blue */
   --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
 
-  /* --- Neutrals & Backgrounds --- */
+  /* --- Neutrals & Surfaces --- */
   --bg-body: #f8fafc; /* Cool Light Grey */
   --bg-card: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.85); /* For Glassmorphism */
+  --bg-glass: rgba(255, 255, 255, 0.9);
 
-  /* --- Text Colors --- */
-  --text-main: #0f172a;
+  --text-main: #1e293b; /* Softer than pure black */
   --text-muted: #64748b;
   --text-light: #94a3b8;
-  --text-white: #ffffff;
+  --text-inverse: #ffffff;
 
-  /* --- UI Elements --- */
+  /* --- Borders & UI --- */
   --border: #e2e8f0;
   --border-focus: rgba(255, 95, 31, 0.4);
-
-  /* --- Spacing & Radius --- */
   --radius-sm: 6px;
   --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-lg: 16px;
   --radius-full: 9999px;
 
-  /* --- Premium Shadows --- */
+  /* --- Elevation (Modern Shadows) --- */
   --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
   --shadow-sm: 0 4px 6px -1px rgba(15, 23, 42, 0.05),
     0 2px 4px -1px rgba(15, 23, 42, 0.03);
@@ -38,8 +38,8 @@
     0 4px 6px -2px rgba(15, 23, 42, 0.04);
   --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.1),
     0 10px 10px -5px rgba(15, 23, 42, 0.04);
-  --shadow-active: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 
-  /* --- Transitions --- */
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* --- Animation --- */
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }

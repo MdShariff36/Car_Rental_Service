@@ -1,21 +1,12 @@
 @media (max-width: 768px) {
-  html {
-    font-size: 15px;
-  }
-
-  .nav {
-    display: none;
-  } /* Simple hiding for now */
-
   .hero {
-    padding: 80px 20px;
-    text-align: center;
+    padding: 60px 20px;
   }
-
   .hero h1 {
-    font-size: 2.25rem;
+    font-size: 2rem;
   }
 
+  /* Stack the search bar */
   .search-box {
     flex-direction: column;
     padding: 20px;
@@ -26,23 +17,28 @@
   .search-box input {
     border-right: none;
     border-bottom: 1px solid var(--border);
-    padding: 12px 0;
+    padding: 10px 0;
   }
 
   .search-box button {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 10px;
   }
 
+  /* Stack Grid */
   .grid-2,
   .grid-3,
   .grid-4 {
     grid-template-columns: 1fr;
   }
 
-  .sidebar,
+  /* Adjust filters to sit on top of cars */
   .filter-panel {
-    position: static;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
+  }
+
+  /* Mobile Nav (Fallback if JS isn't changing) */
+  .nav {
+    display: none; /* In reality, you'd toggle a class here */
   }
 }

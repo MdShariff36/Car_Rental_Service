@@ -4,32 +4,15 @@
   z-index: 1000;
   background: var(--bg-glass);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-xs);
-  padding: 1rem 0;
-  transition: var(--transition);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 0;
 }
 
 .site-header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--secondary);
-  letter-spacing: -0.5px;
-}
-
-.logo img {
-  height: 40px;
-  width: auto;
 }
 
 .nav {
@@ -41,8 +24,9 @@
   font-weight: 500;
   color: var(--text-main);
   font-size: 0.95rem;
+  padding: 0.5rem 0;
   position: relative;
-  padding: 4px 0;
+  transition: color 0.2s;
 }
 
 .nav a:hover,

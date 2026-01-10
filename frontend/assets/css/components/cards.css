@@ -1,76 +1,58 @@
+/* Generic Card */
 .card,
 .card-small {
   background: var(--bg-card);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
+  padding: 24px;
   transition: var(--transition);
-  overflow: hidden;
 }
 
+/* Interactive Cards */
 .card:hover,
 .card-small:hover {
+  border-color: var(--primary-light);
   box-shadow: var(--shadow-md);
-  border-color: rgba(15, 23, 42, 0.1);
+  transform: translateY(-4px);
 }
 
-.card {
-  padding: 32px;
-}
-.card-small {
-  padding: 24px;
+/* Specific Car Card styling */
+.car-card {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-/* Product/Car Card */
-.car-card {
-  position: relative;
   background: var(--bg-card);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  overflow: hidden;
+  overflow: hidden; /* Keeps image inside corners */
   transition: var(--transition);
-  display: flex;
-  flex-direction: column;
+  height: 100%;
 }
 
 .car-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
+  border-color: var(--border-focus);
 }
 
 .car-card img {
   width: 100%;
-  height: 220px;
-  object-fit: cover;
+  height: 200px;
+  object-fit: cover; /* Prevents image stretching */
   border-bottom: 1px solid var(--border);
 }
 
 .car-card > div {
   padding: 20px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-}
-
-.car-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 4px;
-  color: var(--secondary);
 }
 
 .car-card .card-row {
-  margin-top: auto;
+  margin-top: auto; /* Pushes price/button to bottom */
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 16px;
-}
-
-.car-card .price {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--secondary);
 }

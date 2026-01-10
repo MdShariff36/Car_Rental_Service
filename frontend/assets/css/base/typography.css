@@ -2,6 +2,8 @@ body {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
   line-height: 1.6;
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -13,30 +15,35 @@ h6 {
   color: var(--secondary);
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em; /* Tighter headings look more professional */
+  margin-bottom: 0.75rem;
 }
 
 h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 2.75rem;
 }
 h2 {
   font-size: 2rem;
-  margin-bottom: 0.75rem;
 }
 h3 {
   font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-h4 {
-  font-size: 1.25rem;
 }
 
 p {
   color: var(--text-muted);
   margin-bottom: 1rem;
+  max-width: 65ch; /* Optimal reading length */
 }
 
+.text-center {
+  text-align: center;
+}
+.muted {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Enhanced Section Titles */
 .section-title {
   text-align: center;
   margin-bottom: 3rem;
@@ -48,16 +55,9 @@ p {
 
 .section-title::after {
   content: "";
-  width: 60px;
+  width: 50px;
   height: 4px;
   background: var(--primary);
   border-radius: var(--radius-full);
-  margin-top: 12px;
-}
-
-.text-muted {
-  color: var(--text-light);
-}
-.text-center {
-  text-align: center;
+  margin-top: 1rem;
 }

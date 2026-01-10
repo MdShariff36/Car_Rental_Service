@@ -1,6 +1,21 @@
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1200px; /* Standard SaaS width */
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* Intelligent Grid System */
+.grid {
+  display: grid;
+  gap: 24px;
+}
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }

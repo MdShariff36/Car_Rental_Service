@@ -1,18 +1,7 @@
-function loadComponent(id, file) {
-  fetch(file)
-    .then((res) => res.text())
-    .then((html) => {
-      document.getElementById(id).innerHTML = html;
-    })
-    .catch((err) => console.error("Component load error:", err));
-}
+import { loadHeader } from "./components/header.js";
+import { loadFooter } from "./components/footer.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("header")) {
-    loadComponent("header", "components/header.html");
-  }
-
-  if (document.getElementById("footer")) {
-    loadComponent("footer", "components/footer.html");
-  }
+  loadHeader();
+  loadFooter();
 });

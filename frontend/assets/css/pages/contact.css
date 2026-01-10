@@ -1,6 +1,50 @@
-.contact-card {
-  background: var(--bg-card);
-  padding: 40px;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+/* assets/css/pages/contact.css */
+
+/* Remove Bold weight from headings to improve readability */
+.contact-page h1,
+.contact-page h2,
+.contact-page h3,
+.contact-page label {
+  font-weight: 400 !important; /* Forces normal weight to prevent text hiding */
+  color: var(--secondary);
+}
+
+/* Light Blue Styling for Right Side Boxes */
+.blue-info-box {
+  background-color: #e0f2fe !important; /* Light Sky Blue */
+  border: 1px solid #bae6fd !important;
+  box-shadow: none !important; /* Removes heavy shadows */
+}
+
+.blue-info-box h3 {
+  margin-bottom: 15px;
+  color: #0369a1; /* Darker blue for readable contrast */
+}
+
+/* Cleaning up the lists */
+.clean-list {
+  padding: 0;
+  margin: 0;
+}
+
+.clean-list li {
+  margin-bottom: 12px;
+  color: #0c4a6e;
+  font-size: 0.95rem;
+  list-style: none; /* [cite: 1658] */
+}
+
+/* Spacing utility */
+.mt-3 {
+  margin-top: 3rem; /* [cite: 1707] */
+}
+
+.mb-1 {
+  margin-bottom: 1rem; /* [cite: 1709] */
+}
+
+/* Ensure form inputs are clean */
+input,
+textarea {
+  font-weight: 300 !important;
 }

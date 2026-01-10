@@ -1,42 +1,19 @@
-/* Shared styling for full-screen auth pages */
-body.login,
-body.register {
-  background: radial-gradient(circle at top right, #fff7ed, transparent 40%),
-    radial-gradient(circle at bottom left, #f1f5f9, transparent 40%),
+/* Applied to body.login or body.register via HTML classes or generic selector */
+body:has(.login-form),
+body:has(.register-form) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #fff7ed, transparent 40%),
     var(--bg-body);
 }
 
-/* Targets the container section */
-section[style*="min-height: 90vh"] {
-  background: transparent !important; /* Override inline styles */
-  padding: 20px;
-}
-
-/* The Auth Card */
-section[style*="min-height: 90vh"] > div {
+/* The card container for auth */
+section[style*="min-height"] > div {
   background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--white);
-  box-shadow: var(--shadow-active) !important;
-  border-radius: var(--radius-lg) !important;
-  border-top: none !important; /* Remove orange top border if preferred */
-  position: relative;
-  overflow: hidden;
-}
-
-/* Top Accent Line */
-section[style*="min-height: 90vh"] > div::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, var(--primary), var(--warning));
-}
-
-.login h1,
-.register h1 {
-  font-size: 2rem;
-  color: var(--secondary);
+  backdrop-filter: blur(10px);
+  border: 1px solid white !important;
+  box-shadow: var(--shadow-lg) !important;
+  border-top: 5px solid var(--primary) !important; /* Top accent */
 }

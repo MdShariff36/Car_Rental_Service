@@ -1,5 +1,121 @@
-.card-small h3 {
-  font-size: 1.25rem;
-  color: var(--secondary);
-  margin-bottom: 8px;
+:root {
+  --primary-orange: #f36d21;
+  --dark-slate: #1e293b;
+  --white: #ffffff;
+  --bg-soft: #f8fafc;
+}
+
+.services-page {
+  background-color: var(--bg-soft);
+  font-family: "Inter", sans-serif;
+  color: var(--dark-slate);
+}
+
+/* --- Hero Section --- */
+.services-page .page-hero {
+  background: linear-gradient(135deg, #f36d21 0%, #d95a14 100%);
+  color: var(--white);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.services-page .section-title {
+  text-align: center;
+  margin: 50px 0;
+  font-weight: 700;
+}
+
+/* --- The Glow Boxes (Service Cards) --- */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding-bottom: 60px;
+}
+
+.service-card {
+  background: var(--white); /* Stays white to keep text visible */
+  padding: 40px 30px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid transparent; /* Border is invisible at first */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Light shadow */
+}
+
+/* HOVER EFFECT: Background stays white, glow appears outside */
+.service-card:hover {
+  transform: translateY(-5px);
+  background: var(--white); /* Force background to stay white */
+  border-color: var(--primary-orange); /* Surrounding border appears */
+  box-shadow: 0 0 20px rgba(243, 109, 33, 0.4); /* Glow effect outside */
+}
+
+.icon-wrap {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.service-card h3 {
+  color: var(--dark-slate);
+  margin-bottom: 15px;
+}
+
+.service-card p {
+  color: #64748b; /* Gray text for visibility */
+  line-height: 1.6;
+}
+
+/* --- Buttons --- */
+.btn-orange {
+  display: inline-block;
+  background-color: var(--primary-orange);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.btn-outline {
+  display: inline-block;
+  border: 2px solid var(--primary-orange);
+  color: var(--primary-orange);
+  padding: 8px 18px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* --- Corporate Section Glow --- */
+.corporate-card-glow {
+  background: var(--white);
+  padding: 50px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid transparent;
+  margin-bottom: 80px;
+  transition: all 0.4s ease;
+}
+
+.corporate-card-glow:hover {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 30px rgba(243, 109, 33, 0.5); /* Glowing surrounding color */
+}
+
+.banner-img {
+  font-size: 6rem;
+  color: var(--primary-orange);
+  opacity: 0.2;
+}
+
+@media (max-width: 768px) {
+  .corporate-card-glow {
+    flex-direction: column;
+    text-align: center;
+  }
 }
