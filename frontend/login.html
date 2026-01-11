@@ -2,91 +2,37 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Login | Auto Prime</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="assets/css/style.css" />
-  </head>
+    <title>Login | Car Rental</title>
 
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/pages/auth.css" />
+  </head>
   <body>
     <div id="header"></div>
 
-    <!-- COLORFUL BACKGROUND -->
-    <section
-      style="
-        min-height: 90vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #ff6b00, #ffb347);
-        padding: 40px;
-      "
-    >
-      <!-- FORM CARD -->
-      <div
-        style="
-          width: 100%;
-          max-width: 520px;
-          background: white;
-          padding: 45px;
-          border-radius: 22px;
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-          border-top: 8px solid #ff6b00;
-        "
-      >
-        <h1 style="text-align: center; margin-bottom: 5px">Welcome Back</h1>
-        <p class="muted" style="text-align: center; margin-bottom: 35px">
-          Login to your Auto Prime account
-        </p>
+    <section class="auth-container">
+      <h2>Login</h2>
 
-        <!-- EMAIL -->
-        <div style="margin-bottom: 18px">
-          <label>Email Address</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="you@example.com"
-            style="width: 100%"
-            required
-          />
-        </div>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
 
-        <!-- PASSWORD -->
-        <div style="margin-bottom: 25px">
-          <label>Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="••••••••"
-            style="width: 100%"
-            required
-          />
-        </div>
+        <!-- IMPORTANT: type="submit" -->
+        <button type="submit" class="btn">Login</button>
+      </form>
 
-        <!-- LOGIN BUTTON -->
-        <button
-          type="button"
-          class="btn"
-          style="width: 100%; padding: 14px; font-size: 16px"
-          onclick="login()"
-        >
-          Login
-        </button>
-
-        <p class="muted" style="text-align: center; margin-top: 25px">
-          Don’t have an account?
-          <a href="register.html" style="color: #ff6b00; font-weight: 600">
-            Create one
-          </a>
-        </p>
-      </div>
+      <p>
+        Don’t have an account?
+        <a href="register.html">Register</a>
+      </p>
     </section>
 
     <div id="footer"></div>
 
-    <!-- UI SCRIPT -->
-    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/components/header.js"></script>
+    <script src="assets/js/components/footer.js"></script>
 
-    <!-- AUTH SCRIPT (VERY IMPORTANT) -->
-    <script src="assets/js/auth.js"></script>
+    <!-- IMPORTANT: module -->
+    <script type="module" src="assets/js/auth/login.js"></script>
   </body>
 </html>

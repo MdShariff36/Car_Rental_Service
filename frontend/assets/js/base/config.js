@@ -1,4 +1,9 @@
 export const CONFIG = {
   API_BASE_URL: "http://localhost:8080/api",
-  APP_NAME: "Car Rental System",
+  STORAGE_KEYS: {
+    USER: "cr_user",
+    TOKEN: "cr_token",
+    CART: "cr_cart",
+    BOOKINGS: "cr_bookings",
+  },
 };

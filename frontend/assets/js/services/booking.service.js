@@ -1,4 +1,14 @@
-import { api } from "../core/api.js";
+import { Storage } from "../base/storage.js";
+import { CONFIG } from "../base/config.js";
 
-export const bookCar = (data) =>
-  api("/bookings", { method: "POST", body: JSON.stringify(data) });
+export const BookingService = {
+  create(booking) {
+    const bookings = Storage.get(CONFIG.STORAGE_KEYS.BOOKINGS) || [];
+    bookings.push(booking);
+    Storage.set(CONFIG.STORAGE_KEYS.BOOKINGS, bookings);
+  },
+
+  getAll() {
+    return Storage.get(CONFIG.STORAGE_KEYS.BOOKINGS) || [];
+  },
+};

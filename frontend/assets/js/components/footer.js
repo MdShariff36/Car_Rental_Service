@@ -1,3 +1,5 @@
-export function loadFooter() {
-  console.log("Footer loaded");
-}
+fetch("/frontend/components/footer.html")
+  .then((res) => res.text())
+  .then((html) => {
+    document.getElementById("footer").innerHTML = html;
+  });

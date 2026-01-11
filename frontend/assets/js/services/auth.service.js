@@ -1,11 +1,20 @@
-import { api } from "../core/api.js";
-import { storage } from "../base/storage.js";
+import { Storage } from "../base/storage.js";
+import { CONFIG } from "../base/config.js";
 
-export async function login(data) {
-  const res = await api("/auth/login", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-  storage.set("token", res.token);
-  storage.set("user", res.user);
-}
+export const AuthService = {
+  login(email, password) {
+    const user = { id: 1, email, role: "USER" }; // mock
+    Storage.set(CONFIG.STORAGE_KEYS.USER, user);
+    Storage.set(CONFIG.STORAGE_KEYS.TOKEN, "mock-jwt-token");
+    return user;
+  },
+
+  logout() {
+    Storage.clear();
+    window.location.href = "/frontend/index.html";
+  },
+
+  getUser() {
+    return Storage.get(CONFIG.STORAGE_KEYS.USER);
+  },
+};

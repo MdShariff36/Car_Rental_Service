@@ -1,11 +1,20 @@
-export const storage = {
-  set(k, v) {
-    localStorage.setItem(k, JSON.stringify(v));
+import { CONFIG } from "./config.js";
+
+export const Storage = {
+  set(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
   },
-  get(k) {
-    return JSON.parse(localStorage.getItem(k));
+
+  get(key) {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
   },
-  remove(k) {
-    localStorage.removeItem(k);
+
+  remove(key) {
+    localStorage.removeItem(key);
+  },
+
+  clear() {
+    localStorage.clear();
   },
 };

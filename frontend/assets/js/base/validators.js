@@ -1,3 +1,13 @@
-export const isEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+export const Validators = {
+  required(value) {
+    return value !== null && value !== "";
+  },
 
-export const isNotEmpty = (v) => v && v.trim().length > 0;
+  email(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  },
+
+  password(value) {
+    return value.length >= 6;
+  },
+};

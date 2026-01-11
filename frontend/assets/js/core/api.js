@@ -1,15 +1,20 @@
 import { CONFIG } from "../base/config.js";
-import { storage } from "../base/storage.js";
+import { Storage } from "../base/storage.js";
 
-export async function api(url, options = {}) {
-  const token = storage.get("token");
-  const res = await fetch(CONFIG.API_BASE_URL + url, {
+export async function apiRequest(endpoint, options = {}) {
+  const token = Storage.get(CONFIG.STORAGE_KEYS.TOKEN);
+
+  const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
     },
     ...options,
   });
-  if (!res.ok) throw new Error("API Error");
-  return res.json();
+
+  if (!response.ok) {
+    throw new Error("API Error");
+  }
+
+  return response.json();
 }
