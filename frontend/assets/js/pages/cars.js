@@ -1,18 +1,25 @@
-import { CarService } from "../services/car.service.js";
+fetch("http://localhost:8080/api/cars")
+  .then((response) => response.json())
+  .then((cars) => {
+    const carList = document.getElementById("carList");
 
-const list = document.getElementById("carList");
+    carList.innerHTML = ""; // clear old content
 
-CarService.getAll().forEach((car) => {
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <h3>${car.name}</h3>
-    <p>₹${car.price}/day</p>
-    <button data-id="${car.id}">View</button>
-  `;
+    cars.forEach((car) => {
+      const carDiv = document.createElement("div");
+      carDiv.style.border = "1px solid #ccc";
+      carDiv.style.padding = "10px";
+      carDiv.style.margin = "10px 0";
 
-  div.querySelector("button").onclick = () => {
-    window.location.href = `car-details.html?id=${car.id}`;
-  };
+      carDiv.innerHTML = `
+        <h3>${car.name}</h3>
+        <p>Brand: ${car.brand}</p>
+        <p>Price per day: ₹${car.pricePerDay}</p>
+      `;
 
-  list.appendChild(div);
-});
+      carList.appendChild(carDiv);
+    });
+  })
+  .catch((error) => {
+    console.error("Error loading cars:", error);
+  });
