@@ -1,2 +1,3 @@
-INSERT INTO users (name, email, password)
-VALUES ('Muhamedshariff', 'muhamedshariff2006@gmail.com', '1234567890');
+INSERT INTO role(name) VALUES ('ROLE_USER');
+INSERT INTO role(name) VALUES ('ROLE_HOST');
+INSERT INTO role(name) VALUES ('ROLE_ADMIN');
