@@ -1,11 +1,8 @@
-export const CONFIG = {
-  API_BASE_URL: "http://localhost:8080/api",
-  STORAGE_KEYS: {
-    USER: "cr_user",
-    TOKEN: "cr_token",
-    CART: "cr_cart",
-    BOOKINGS: "cr_bookings",
-  },
+export const API_BASE = "http://localhost:8080/api"; // backend URL
+export const APP_VERSION = "1.0.0";
+
+export const ROLES = {
+  USER: "USER",
+  HOST: "HOST",
+  ADMIN: "ADMIN",
 };
-const BASE_URL = "http://localhost:8080/api";
-export default BASE_URL;

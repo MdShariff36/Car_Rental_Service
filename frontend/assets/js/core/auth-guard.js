@@ -1,17 +1,8 @@
-import { Storage } from "../base/storage.js";
-import { CONFIG } from "../base/config.js";
+import { getUser } from "../base/storage.js";
 
-export function requireAuth(role = null) {
-  const user = Storage.get(CONFIG.STORAGE_KEYS.USER);
-
-  if (!user) {
-    alert("Please login first");
-    window.location.href = "/frontend/login.html";
-    return;
-  }
-
-  if (role && user.role !== role) {
-    alert("Unauthorized access");
-    history.back();
-  }
-}
+export const requireAuth = (role = null) => {
+  const user = getUser();
+  if (!user) return (window.location.href = "/login.html");
+  if (role && user.role !== role)
+    return (window.location.href = "/unauthorized.html");
+};

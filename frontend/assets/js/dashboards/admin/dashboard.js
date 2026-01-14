@@ -1,5 +1,6 @@
 import { requireAuth } from "../../core/auth-guard.js";
-requireAuth("ADMIN");
 
-import { requireAuth } from "../../core/auth-guard.js";
-requireAuth("ADMIN");
+export const init = () => {
+  requireAuth("USER");
+  console.log("User Dashboard Loaded");
+};

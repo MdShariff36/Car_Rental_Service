@@ -1,42 +1,26 @@
-import { CONFIG } from "../base/config.js";
-import { Storage } from "../base/storage.js";
+import { API_BASE } from "../base/config.js";
+import { getToken } from "../base/storage.js";
 
-export async function apiRequest(endpoint, options = {}) {
-  const token = Storage.get(CONFIG.STORAGE_KEYS.TOKEN);
+export const api = async (path, method = "GET", body = null) => {
+  const headers = { "Content-Type": "application/json" };
+  const token = getToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-    ...options,
-  });
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null,
+    });
 
-  if (!response.ok) {
-    throw new Error("API Error");
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `API error: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (err) {
+    console.error("API call failed:", err);
+    throw err;
   }
-
-  return response.json();
-}
-import BASE_URL from "../base/config.js";
-
-export async function apiRequest(endpoint, method = "GET", body = null) {
-  const options = {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  if (body) {
-    options.body = JSON.stringify(body);
-  }
-
-  const response = await fetch(`${BASE_URL}${endpoint}`, options);
-
-  if (!response.ok) {
-    throw new Error("API Error");
-  }
-
-  return response.json();
-}
+};

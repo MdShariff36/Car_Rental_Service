@@ -1,12 +1,4 @@
-export const CarService = {
-  getAll() {
-    return [
-      { id: 1, name: "Hyundai Creta", price: 3500 },
-      { id: 2, name: "Maruti Swift", price: 1500 },
-    ];
-  },
+import { api } from "../core/api.js";
 
-  getById(id) {
-    return this.getAll().find((c) => c.id == id);
-  },
-};
+export const getAllCars = () => api("/cars");
+export const getCarById = (id) => api(`/cars/${id}`);

@@ -1,32 +1,30 @@
-import { Storage } from "../base/storage.js";
-import { CONFIG } from "../base/config.js";
+import { login } from "../services/auth.service.js";
+import { validateEmail, validatePassword } from "../base/validators.js";
+import { showLoader, hideLoader } from "../ui/loader.js";
 
-const form = document.getElementById("loginForm");
+export const init = () => {
+  const form = document.getElementById("loginForm");
+  if (!form) return;
 
-form.addEventListener("submit", function (e) {
-  e.preventDefault(); // 🔴 VERY IMPORTANT
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const email = data.get("email");
+    const password = data.get("password");
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+    if (!validateEmail(email) || !validatePassword(password)) {
+      alert("Invalid email or password");
+      return;
+    }
 
-  const users = Storage.get("users") || [];
-
-  const user = users.find((u) => u.email === email && u.password === password);
-
-  if (!user) {
-    alert("Invalid email or password");
-    return;
-  }
-
-  Storage.set(CONFIG.STORAGE_KEYS.USER, user);
-  Storage.set(CONFIG.STORAGE_KEYS.TOKEN, "frontend-login-token");
-
-  // Redirect based on role
-  if (user.role === "ADMIN") {
-    window.location.href = "admin/dashboard.html";
-  } else if (user.role === "HOST") {
-    window.location.href = "host/dashboard.html";
-  } else {
-    window.location.href = "user/dashboard.html";
-  }
-});
+    showLoader();
+    try {
+      await login(email, password);
+      window.location.href = "/index.html";
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      hideLoader();
+    }
+  });
+};

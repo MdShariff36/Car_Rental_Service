@@ -1,3 +1,9 @@
 import { api } from "../core/api.js";
 
-export const getProfile = () => api("/users/me");
+export function createBooking(bookingData) {
+  return api("/bookings", "POST", bookingData);
+}
+
+export function getUserBookings() {
+  return api("/bookings/me");
+}

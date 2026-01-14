@@ -27,24 +27,39 @@
     <section class="hero hero-search">
       <div class="container">
         <h1>Self-Drive Car Rentals Made Easy</h1>
-        <p>
-          Book premium & affordable cars in minutes. No driver. No limits.
-          [cite: 236]
-        </p>
+        <p>Book premium & affordable cars in minutes. No driver. No limits.</p>
 
         <!-- UPDATED SEARCH BOX -->
         <div class="search-box">
-          <div class="search-left">
-            <input type="text" placeholder="Pickup City" />
-            <input type="date" />
-            <input type="time" />
+          <div class="search-column">
+            <label class="search-label">Pickup</label>
+            <div class="input-group">
+              <input type="text" placeholder="Pickup City" class="city-input" />
+              <div class="dt-row">
+                <input type="date" />
+                <input type="time" />
+              </div>
+            </div>
           </div>
-          <div class="search-right">
-            <input type="date" />
-            <input type="time" />
-            <button class="btn btn-primary" onclick="location.href='cars.html'">
+
+          <div class="search-center">
+            <button
+              class="btn btn-primary main-search-btn"
+              onclick="location.href='cars.html'"
+            >
               Search Cars
             </button>
+          </div>
+
+          <div class="search-column">
+            <label class="search-label">Drop-off</label>
+            <div class="input-group">
+              <input type="text" placeholder="Drop City" class="city-input" />
+              <div class="dt-row">
+                <input type="date" />
+                <input type="time" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -53,8 +68,8 @@
     <section class="stats-bar">
       <div class="container stats-grid">
         <div class="stat-item">
-          <h2 class="counter">10,000+</h2>
-          <p>Happy Travelers [cite: 321]</p>
+          <h2 class="counter">100+</h2>
+          <p>Happy Travelers</p>
         </div>
         <div class="stat-item">
           <h2 class="counter">500+</h2>
@@ -66,7 +81,7 @@
         </div>
         <div class="stat-item">
           <h2 class="counter">4.8/5</h2>
-          <p>User Rating [cite: 349]</p>
+          <p>User Rating</p>
         </div>
       </div>
     </section>
@@ -105,7 +120,7 @@
           <div class="offer-content">
             <span class="badge">Weekend Special</span>
             <h3>Unlimited KM</h3>
-            <p>Book for 3+ days and drive without limits. [cite: 252]</p>
+            <p>Book for 3+ days and drive without limits.</p>
             <a href="cars.html" class="btn btn-sm btn-outline">Book Now</a>
           </div>
         </div>
@@ -176,26 +191,26 @@
     </section>
 
     <section class="how-it-works">
-  <h2>How It Works</h2>
-  <div class="steps">
-    <div class="step">
-      <span class="icon">🔍</span>
-      <p>Search Car</p>
-    </div>
-    <div class="step">
-      <span class="icon">📅</span>
-      <p>Select Date & Time</p>
-    </div>
-    <div class="step">
-      <span class="icon">💳</span>
-      <p>Pay Securely</p>
-    </div>
-    <div class="step">
-      <span class="icon">🚘</span>
-      <p>Drive Freely</p>
-    </div>
-  </div>
-</section>
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="icon">🔍</span>
+          <p>Search Car</p>
+        </div>
+        <div class="step">
+          <span class="icon">📅</span>
+          <p>Select Date & Time</p>
+        </div>
+        <div class="step">
+          <span class="icon">💳</span>
+          <p>Pay Securely</p>
+        </div>
+        <div class="step">
+          <span class="icon">🚘</span>
+          <p>Drive Freely</p>
+        </div>
+      </div>
+    </section>
 
     <section class="newsletter-cta">
       <div class="container">

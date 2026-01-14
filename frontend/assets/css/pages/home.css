@@ -117,42 +117,111 @@ a {
 }
 
 /* 🔹 UPDATED SEARCH BOX ONLY */
+/* --- SEARCH BOX GRID LAYOUT --- */
 .search-box {
+  display: grid;
+  /* Column 1: Left Group | Column 2: Button | Column 3: Right Group */
+  grid-template-columns: 1fr auto 1fr;
+  align-items: flex-end; /* Keeps everything aligned at the bottom */
+  gap: 30px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: -60px auto 40px; /* Overlaps slightly with the Hero section */
+  position: relative;
+  z-index: 10;
+}
+
+/* Individual Column Styling */
+.search-column {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  animation: floatUp 2s ease infinite alternate;
-  width: 80%;
-  margin: auto;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.search-box input,
-.search-box button {
-  padding: 12px 14px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
+.search-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #ff5f1f; /* Primary brand orange [cite: 1771] */
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dt-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* Input Fields Styling [cite: 2133-2145] */
 .search-box input {
-  min-width: 150px;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f8fafc;
+  transition: all 0.2s ease;
 }
 
-/* LEFT SIDE — Pickup (1st, 2nd, 3rd input) */
-.search-box input:nth-child(1),
-.search-box input:nth-child(2),
-.search-box input:nth-child(3) {
-  flex: 1;
+.search-box input:focus {
+  border-color: #ff5f1f;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 95, 31, 0.1);
 }
 
-/* RIGHT SIDE — Drop (4th, 5th input + button) */
-.search-box input:nth-child(4),
-.search-box input:nth-child(5),
-.search-box button:nth-child(6) {
-  flex: 1;
-  margin-left: auto;
+/* --- CENTER BUTTON STYLING --- */
+.search-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
+.main-search-btn {
+  white-space: nowrap;
+  height: 54px;
+  padding: 0 40px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: #ff5f1f; /* High-energy Orange [cite: 1771] */
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(255, 95, 31, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.main-search-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(255, 95, 31, 0.4);
+  background: #e04f16; /* Hover shade [cite: 1772] */
+}
+
+/* --- RESPONSIVE FIXES [cite: 2460-2480] --- */
+@media (max-width: 992px) {
+  .search-box {
+    grid-template-columns: 1fr; /* Stack everything on tablet/mobile */
+    gap: 20px;
+    text-align: center;
+  }
+
+  .search-center {
+    order: 3; /* Move button to the bottom when stacked */
+  }
+
+  .dt-row {
+    flex-direction: row;
+  }
+}
 /* Stats Bar */
 .stats-bar {
   background: #fff;

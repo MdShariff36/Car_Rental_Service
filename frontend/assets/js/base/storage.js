@@ -1,20 +1,22 @@
-import { CONFIG } from "./config.js";
+const KEY = "AUTO_PRIME_APP";
 
-export const Storage = {
-  set(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-  },
+export const save = (data) => localStorage.setItem(KEY, JSON.stringify(data));
+export const load = () => JSON.parse(localStorage.getItem(KEY) || "{}");
 
-  get(key) {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : null;
-  },
-
-  remove(key) {
-    localStorage.removeItem(key);
-  },
-
-  clear() {
-    localStorage.clear();
-  },
+export const setToken = (token) => {
+  const data = load();
+  data.token = token;
+  save(data);
 };
+
+export const getToken = () => load()?.token || null;
+
+export const setUser = (user) => {
+  const data = load();
+  data.user = user;
+  save(data);
+};
+
+export const getUser = () => load()?.user || null;
+
+export const clear = () => localStorage.removeItem(KEY);

@@ -1,13 +1,3 @@
-export const Validators = {
-  required(value) {
-    return value !== null && value !== "";
-  },
-
-  email(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  },
-
-  password(value) {
-    return value.length >= 6;
-  },
-};
+export const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+export const validatePassword = (pw) => pw.length >= 6;
+export const validatePhone = (phone) => /^[0-9]{10}$/.test(phone);
