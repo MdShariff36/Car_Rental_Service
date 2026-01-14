@@ -11,7 +11,8 @@ public class ContactService {
 
     private final ContactRepository contactRepository;
 
-    public ContactMessage saveMessage(String email, String subject, String message) {
+    // Fixed: Renamed to match ContactController call "sendMessage"
+    public ContactMessage sendMessage(String email, String subject, String message) {
         ContactMessage contact = new ContactMessage();
         contact.setEmail(email);
         contact.setSubject(subject);

@@ -3,7 +3,9 @@ package com.autoprime.service;
 import com.autoprime.model.Car;
 import com.autoprime.model.Review;
 import com.autoprime.model.User;
+import com.autoprime.repository.CarRepository;
 import com.autoprime.repository.ReviewRepository;
+import com.autoprime.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,16 @@ import java.util.List;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository; // Added
+    private final CarRepository carRepository;   // Added
 
-    public Review addReview(User user, Car car, int rating, String comment) {
+    // Fixed: Added method to match ReviewController
+    public Review addReview(Long userId, Long carId, int rating, String comment) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new RuntimeException("Car not found"));
+
         Review review = new Review();
         review.setUser(user);
         review.setCar(car);
@@ -24,7 +34,10 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public List<Review> getCarReviews(Car car) {
+    // Fixed: Added method to match ReviewController
+    public List<Review> getCarReviews(Long carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new RuntimeException("Car not found"));
         return reviewRepository.findByCar(car);
     }
 }

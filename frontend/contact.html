@@ -5,33 +5,41 @@
     <title>Contact Us | Auto Prime Rental</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/pages/contact.css" />
   </head>
   <body class="contact-page">
     <div id="header"></div>
 
+    <!-- Page Hero -->
     <section class="page-hero">
       <div class="container">
-        <h1 class="section-title">Get In Touch</h1>
-        <p class="text-center">
-          Have questions about our self-drive cars? We're here to help you 24/7.
+        <h1 class="hero-title">Get In Touch</h1>
+        <p class="hero-subtitle">
+          Have questions about our self-drive cars? Our dedicated support team
+          is here to help you 24/7.
         </p>
       </div>
     </section>
 
+    <!-- Contact Form + Info Sidebar -->
     <section class="container mt-3">
       <div class="grid grid-2">
+        <!-- Contact Form Card -->
         <div class="contact-card card">
-          <h3>Send us a Message</h3>
-          <p class="mb-2">
-            Fill out the form below and our team will get back to you shortly.
-          </p>
+          <div class="card-header mb-2">
+            <h3>Send us a Message</h3>
+            <p>
+              Fill out the form below and we'll get back to you within 2
+              business hours.
+            </p>
+          </div>
 
-          <form id="contactForm">
-            <div class="mb-1">
+          <form id="contactForm" class="interactive-form">
+            <div class="form-group mb-1">
               <label for="name">Full Name</label>
               <input type="text" id="name" placeholder="John Doe" required />
             </div>
-            <div class="mb-1">
+            <div class="form-group mb-1">
               <label for="email">Email Address</label>
               <input
                 type="email"
@@ -40,65 +48,68 @@
                 required
               />
             </div>
-            <div class="mb-1">
-              <label for="subject">Subject</label>
+            <div class="form-group mb-1">
+              <label for="subject">How can we help?</label>
               <select id="subject">
-                <option>General Inquiry</option>
-                <option>Booking Support</option>
-                <option>Host Partnership</option>
-                <option>Reporting an Issue</option>
+                <option value="general">General Inquiry</option>
+                <option value="booking">Booking Support</option>
+                <option value="host">Host Partnership</option>
+                <option value="issue">Reporting an Issue</option>
               </select>
             </div>
-            <div class="mb-2">
+            <div class="form-group mb-2">
               <label for="message">Your Message</label>
               <textarea
                 id="message"
-                placeholder="How can we assist you today?"
+                rows="5"
+                placeholder="Tell us more about your requirements..."
               ></textarea>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%">
+            <button type="submit" class="btn btn-primary btn-full">
               Send Message
             </button>
           </form>
         </div>
 
+        <!-- Info Sidebar -->
         <div class="info-sidebar">
-          <div class="card-small mb-2 info-box">
+          <div class="blue-info-box card mb-2">
             <h3>Contact Information</h3>
             <ul class="contact-detail-list">
               <li>
-                <span class="icon-circle">📍</span>
+                <div class="icon-circle">📍</div>
                 <div>
                   <strong>Headquarters</strong>
-                  <p>Main Road, Trichy, Tamil Nadu, India</p>
+                  <p>Main Road, Trichy, Tamil Nadu</p>
                 </div>
               </li>
               <li>
-                <span class="icon-circle">📞</span>
+                <div class="icon-circle">📞</div>
                 <div>
                   <strong>Call Support</strong>
                   <p>+91 9361261582</p>
                 </div>
               </li>
               <li>
-                <span class="icon-circle">📧</span>
+                <div class="icon-circle">📧</div>
                 <div>
                   <strong>Email Us</strong>
-                  <p>muhamedshariff2006@gmail.com</p>
+                  <p>support@autoprime.com</p>
                 </div>
               </li>
             </ul>
-          </div>
 
-          <div class="card-small bg-secondary text-white">
-            <h3>Business Hours</h3>
-            <div class="justify-between flex mt-1">
-              <span>Mon - Sat:</span>
-              <span>09:00 AM - 09:00 PM</span>
-            </div>
-            <div class="justify-between flex mt-1">
-              <span>Sunday:</span>
-              <span>10:00 AM - 04:00 PM</span>
+            <!-- Business Hours integrated -->
+            <div class="business-hours mt-3">
+              <h3>Business Hours</h3>
+              <div class="justify-between flex mt-1">
+                <span>Mon - Sat:</span>
+                <span>09:00 AM - 09:00 PM</span>
+              </div>
+              <div class="justify-between flex mt-1">
+                <span>Sunday:</span>
+                <span>10:00 AM - 04:00 PM</span>
+              </div>
             </div>
           </div>
         </div>
@@ -107,7 +118,7 @@
 
     <div id="footer"></div>
 
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script type="module" src="assets/js/main.js"></script>
+    <script src="assets/js/ui/notifications.js"></script>
   </body>
 </html>

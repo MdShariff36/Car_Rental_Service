@@ -20,7 +20,10 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow();
     }
 
-    public List<Booking> getUserBookings(User user) {
+    // Fixed: Added method to match UserController
+    public List<Booking> getUserBookings(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return bookingRepository.findByUser(user);
     }
 }

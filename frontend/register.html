@@ -2,41 +2,117 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Register | Car Rental</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account | Auto Prime Rental</title>
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/pages/auth.css" />
   </head>
-  <body>
+  <body class="auth-page">
     <div id="header"></div>
 
-    <section class="auth-container">
-      <h2>Create Account</h2>
+    <main class="container">
+      <section class="auth-container">
+        <div class="auth-card">
+          <div class="auth-header">
+            <img
+              src="assets/images/logo/logo.png"
+              alt="Auto Prime"
+              style="height: 50px; margin-bottom: 1rem"
+            />
+            <h2>Join Auto Prime</h2>
+            <p class="muted">Start your journey with premium self-drive cars</p>
+          </div>
 
-      <form id="registerForm">
-        <input type="text" id="name" placeholder="Full Name" required />
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
+          <form id="registerForm">
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="John Doe" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="john@example.com"
+                  required
+                />
+              </div>
+            </div>
 
-        <select id="role">
-          <option value="USER">User</option>
-          <option value="HOST">Host</option>
-        </select>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  placeholder="+91 98765 43210"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="license">License Number</label>
+                <input
+                  type="text"
+                  id="license"
+                  placeholder="DL-1234567890"
+                  required
+                />
+              </div>
+            </div>
 
-        <button type="submit" class="btn">Register</button>
-      </form>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Min. 6 chars"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="role">Register As</label>
+                <select id="role">
+                  <option value="USER">User (Renter)</option>
+                  <option value="HOST">Host (Car Owner)</option>
+                </select>
+              </div>
+            </div>
 
-      <p>
-        Already have an account?
-        <a href="login.html">Login</a>
-      </p>
-    </section>
+            <div class="form-group">
+              <label for="address">Address (Optional)</label>
+              <input
+                type="text"
+                id="address"
+                placeholder="Enter your full residential address"
+              />
+            </div>
+
+            <div class="form-group terms">
+              <input type="checkbox" id="terms" required />
+              <label for="terms"
+                >I agree to the
+                <a href="terms.html">Terms & Conditions</a></label
+              >
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%">
+              Create Account
+            </button>
+          </form>
+
+          <div class="auth-footer">
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <div id="footer"></div>
 
     <script src="assets/js/components/header.js"></script>
     <script src="assets/js/components/footer.js"></script>
-
     <script type="module" src="assets/js/auth/register.js"></script>
   </body>
 </html>
