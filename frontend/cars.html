@@ -1,240 +1,168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Cars | Auto Prime Rental</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <style>
-      /* === Filter Panel Styling === */
-      .filter-panel {
-        background: #f8f8f8;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-      }
+    <title>Cars | Auto Prime Rental</title>
 
-      .filter-panel label {
-        display: block;
-        margin-top: 10px;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/pages/cars.css" />
 
-      .filter-panel select,
-      .filter-panel input[type="range"] {
-        width: 100%;
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-      }
-
-      /* === Car Cards Styling === */
-      .car-card {
-        background: none; /* removed square box */
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-      }
-
-      .car-card:hover {
-        transform: translateY(-5px);
-      }
-
-      .car-card img {
-        width: 100%;
-        border-radius: 12px;
-      }
-
-      .car-card h3 {
-        margin: 10px 0 5px 0;
-      }
-
-      .car-card .card-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .car-badge {
-        position: absolute;
-        background: #ff6b6b;
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        top: 10px;
-        left: 10px;
-      }
-    </style>
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
+
   <body>
-    <!-- HEADER -->
+    <!-- Header -->
     <header class="site-header">
-      <div class="container">
-        <div class="logo">
-          <img src="assets/images/logo/logo.png" alt="Auto Prime" />
+      <div class="container header-container">
+        <a href="index.html" class="logo">
+          <img src="assets/images/logo/logo.png" alt="Auto Prime Logo" />
           <strong>Auto Prime</strong>
-        </div>
+        </a>
+
         <nav class="nav">
           <a href="index.html">Home</a>
           <a href="cars.html" class="active">Cars</a>
           <a href="services.html">Services</a>
           <a href="about.html">About</a>
           <a href="contact.html">Contact</a>
-          <a href="login.html">Login</a>
+          <a href="login.html" class="btn btn-small">Login</a>
         </nav>
       </div>
     </header>
 
-    <!-- HERO -->
-    <section class="container">
-      <h1 class="section-title">Available Cars</h1>
-      <p class="muted" style="text-align: center">
-        Browse cars by type, price, and popularity
-      </p>
+    <!-- Page Title -->
+    <section class="page-header">
+      <div class="container">
+        <h1>Choose Your Car</h1>
+        <p>Wide range of clean, reliable and affordable rental cars</p>
+      </div>
     </section>
 
-    <!-- FILTER + CAR LIST -->
-    <section
-      class="container"
-      style="display: flex; gap: 20px; flex-wrap: wrap"
-    >
-      <!-- FILTER PANEL -->
-      <aside class="filter-panel" style="flex: 1 1 250px">
-        <h3>Filters</h3>
-        <label>Car Type</label>
-        <select>
-          <option>SUV</option>
-          <option>Sedan</option>
-          <option>Hatchback</option>
-          <option>Electric</option>
-        </select>
-
-        <label>Transmission</label>
-        <select>
-          <option>Automatic</option>
-          <option>Manual</option>
-        </select>
-
-        <label>Max Price (₹)</label>
-        <input type="range" min="500" max="5000" step="100" />
-      </aside>
-      <script type="module" src="assets/js/pages/cars.js"></script>
-
-      <!-- CAR LIST -->
-      <div
-        class="grid grid-3"
-        style="
-          flex: 3 1 700px;
-          gap: 20px;
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        "
-      >
-        <!-- Car 1 -->
-        <article class="car-card premium">
-          <span class="car-badge">Popular</span>
+    <!-- Cars Section -->
+    <section class="container section-padding">
+      <div class="car-grid">
+        <!-- Car Card -->
+        <div class="car-card">
           <img
             src="assets/images/car-images/Hyundai Creta/Hyundai Creta.jfif"
             alt="Hyundai Creta"
           />
-          <div style="padding: 10px">
+          <div class="car-info">
             <h3>Hyundai Creta</h3>
-            <p class="muted">SUV • Automatic • 5 Seats</p>
-            <div class="card-row">
-              <span class="price">₹3,500/day</span>
-              <a class="btn btn-sm" href="booking.html">Book Now</a>
+            <div class="car-tags">
+              <span>SUV</span>
+              <span>Automatic</span>
+              <span>5 Seats</span>
             </div>
+            <div class="car-price">₹3,500 <small>/ day</small></div>
+            <a href="car-details.html?car=creta" class="btn">Book Now</a>
           </div>
-        </article>
+        </div>
 
-        <!-- Car 2 -->
-        <article class="car-card">
+        <div class="car-card">
           <img
             src="assets/images/car-images/Toyota innova/Toyota innova.jfif"
             alt="Toyota Innova"
           />
-          <div style="padding: 10px">
+          <div class="car-info">
             <h3>Toyota Innova</h3>
-            <p class="muted">MPV • Manual • 7 Seats</p>
-            <div class="card-row">
-              <span class="price">₹4,200/day</span>
-              <a class="btn btn-sm" href="booking.html">Book Now</a>
+            <div class="car-tags">
+              <span>MPV</span>
+              <span>Manual</span>
+              <span>7 Seats</span>
             </div>
+            <div class="car-price">₹4,200 <small>/ day</small></div>
+            <a href="car-details.html?car=innova" class="btn">Book Now</a>
           </div>
-        </article>
+        </div>
 
-        <!-- Car 3 -->
-        <article class="car-card">
+        <div class="car-card">
           <img
             src="assets/images/car-images/Maruti Swift/Maruti Swift.jfif"
             alt="Maruti Swift"
           />
-          <div style="padding: 10px">
+          <div class="car-info">
             <h3>Maruti Swift</h3>
-            <p class="muted">Hatchback • Manual • 5 Seats</p>
-            <div class="card-row">
-              <span class="price">₹1,500/day</span>
-              <a class="btn btn-sm" href="booking.html">Book Now</a>
+            <div class="car-tags">
+              <span>Hatchback</span>
+              <span>Manual</span>
+              <span>5 Seats</span>
             </div>
+            <div class="car-price">₹1,500 <small>/ day</small></div>
+            <a href="car-details.html?car=swift" class="btn">Book Now</a>
           </div>
-        </article>
+        </div>
 
-        <!-- Additional Cars -->
-        <article class="car-card">
+        <div class="car-card">
           <img
             src="assets/images/car-images/Hyundai i20/Hyundai i20.jfif"
             alt="Hyundai i20"
           />
-          <div style="padding: 10px">
+          <div class="car-info">
             <h3>Hyundai i20</h3>
-            <p class="muted">Hatchback • Automatic • 5 Seats</p>
-            <div class="card-row">
-              <span class="price">₹1,800/day</span>
-              <a class="btn btn-sm" href="booking.html">Book Now</a>
+            <div class="car-tags">
+              <span>Hatchback</span>
+              <span>Automatic</span>
+              <span>5 Seats</span>
             </div>
+            <div class="car-price">₹1,800 <small>/ day</small></div>
+            <a href="car-details.html?car=i20" class="btn">Book Now</a>
           </div>
-        </article>
+        </div>
 
-        <article class="car-card">
+        <div class="car-card">
           <img
             src="assets/images/car-images/Mahindra XUV700/Mahindra XUV700.jfif"
             alt="Mahindra XUV700"
           />
-          <div style="padding: 10px">
+          <div class="car-info">
             <h3>Mahindra XUV700</h3>
-            <p class="muted">SUV • Automatic • 7 Seats</p>
-            <div class="card-row">
-              <span class="price">₹4,000/day</span>
-              <a class="btn btn-sm" href="booking.html">Book Now</a>
+            <div class="car-tags">
+              <span>SUV</span>
+              <span>Automatic</span>
+              <span>7 Seats</span>
             </div>
+            <div class="car-price">₹4,000 <small>/ day</small></div>
+            <a href="car-details.html?car=xuv700" class="btn">Book Now</a>
           </div>
-        </article>
+        </div>
 
-        <article class="car-card">
+        <div class="car-card">
           <img
             src="assets/images/car-images/Tata Nexon/Tata Nexon.jfif"
             alt="Tata Nexon"
           />
-          <div style="padding: 10px">
+          <div class="car-info">
             <h3>Tata Nexon</h3>
-            <p class="muted">SUV • Manual • 5 Seats</p>
-            <div class="card-row">
-              <span class="price">₹2,500/day</span>
-              <a class="btn btn-sm" href="booking.html">Book Now</a>
+            <div class="car-tags">
+              <span>SUV</span>
+              <span>Manual</span>
+              <span>5 Seats</span>
             </div>
+            <div class="car-price">₹2,500 <small>/ day</small></div>
+            <a href="car-details.html?car=nexon" class="btn">Book Now</a>
           </div>
-        </article>
+        </div>
       </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer class="site-footer">
-      <div class="container">© 2025 Auto Prime Rental</div>
+      <div class="container footer-container">
+        <p>© 2026 Auto Prime Rental. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms & Conditions</a>
+        </div>
+      </div>
     </footer>
   </body>
 </html>

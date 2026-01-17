@@ -1,103 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Car Details | Auto Prime</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/pages/car-details.css" />
   </head>
-
   <body>
-    <!-- HEADER -->
-    <div id="header"></div>
+    <header class="site-header">
+      <h2>Auto Prime</h2>
+    </header>
 
-    <!-- HERO -->
-    <section class="page-hero">
-      <div class="container">
-        <h1>Hyundai Creta</h1>
-        <p>SUV • Automatic • 5 Seats</p>
-      </div>
+    <section class="container" id="carDetails">
+      <!-- Dynamic car details load here -->
     </section>
 
-    <!-- CONTENT -->
-    <section class="container grid grid-2">
-      <!-- IMAGE & GALLERY -->
-      <div class="card car-gallery">
-        <!-- Main Image -->
-        <img
-          id="mainCarImage"
-          src="assets/images/car-images/creta-1.jpg"
-          alt="Hyundai Creta"
-          class="main-car-image"
-        />
-
-        <!-- Thumbnail Images -->
-        <div class="thumbnail-list">
-          <img
-            src="assets/images/car-images/creta-1.jpg"
-            alt="Creta Front"
-            onclick="changeCarImage(this.src)"
-          />
-          <img
-            src="assets/images/car-images/creta-2.jpg"
-            alt="Creta Side"
-            onclick="changeCarImage(this.src)"
-          />
-          <img
-            src="assets/images/car-images/creta-3.jpg"
-            alt="Creta Interior"
-            onclick="changeCarImage(this.src)"
-          />
-          <img
-            src="assets/images/car-images/creta-4.jpg"
-            alt="Creta Rear"
-            onclick="changeCarImage(this.src)"
-          />
-        </div>
-      </div>
-
-      <!-- DETAILS -->
-      <div class="card">
-        <h2>₹3,500 / day</h2>
-        <p class="muted">Fuel not included • Unlimited KM available</p>
-
-        <h3 style="margin-top: 20px">Features</h3>
-        <ul class="muted">
-          <li>✔ Air Conditioning</li>
-          <li>✔ Bluetooth</li>
-          <li>✔ Reverse Camera</li>
-          <li>✔ Fastag Enabled</li>
-        </ul>
-
-        <div style="margin-top: 20px">
-          <label>Pickup Date</label>
-          <input type="date" />
-
-          <label>Drop Date</label>
-          <input type="date" />
-
-          <a
-            href="booking.html"
-            class="btn"
-            style="margin-top: 15px; display: block; text-align: center"
-          >
-            Proceed to Booking
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <div id="footer"></div>
-
-    <!-- JS -->
-    <script src="assets/js/ui.js"></script>
-
-    <!-- INLINE SCRIPT FOR IMAGE CHANGE -->
-    <script>
-      function changeCarImage(imageSrc) {
-        document.getElementById("mainCarImage").src = imageSrc;
-      }
-    </script>
+    <script src="assets/js/pages/car-details.js"></script>
   </body>
 </html>
