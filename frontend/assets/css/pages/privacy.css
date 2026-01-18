@@ -1,12 +1,114 @@
-.faq-item,
-.terms-content,
-.privacy-content {
-  max-width: 800px;
+/* FILE: assets/css/pages/privacy.css */
+
+/* --- Page Background --- */
+.privacy-page-section {
+  padding: 60px 0 100px;
+  background-color: var(--bg-body);
+  min-height: 100vh;
+}
+
+.privacy-container {
+  max-width: 850px;
   margin: 0 auto;
 }
-h2 {
+
+/* --- Header --- */
+.privacy-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.privacy-header h1 {
+  font-size: 2.75rem;
+  color: var(--secondary);
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.privacy-date {
+  display: inline-block;
+  background: #e0f2fe; /* Light Blue bg */
+  color: #0284c7; /* Blue text */
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+}
+
+/* --- Content Card --- */
+.privacy-content-card {
+  background: var(--bg-card);
+  padding: 60px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+/* --- Typography --- */
+.privacy-content-card h2 {
+  font-size: 1.5rem;
+  color: var(--secondary);
   margin-top: 40px;
   margin-bottom: 16px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--bg-body);
+  display: flex;
+  align-items: center;
+}
+
+/* Blue vertical accent mark for Privacy headers */
+.privacy-content-card h2::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 24px;
+  background-color: var(--accent); /* Uses the Blue accent [cite: 1777] */
+  margin-right: 12px;
+  border-radius: 2px;
+}
+
+.privacy-content-card h2:first-of-type {
+  margin-top: 0;
+}
+
+.privacy-content-card p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+/* --- List Styling --- */
+.privacy-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.privacy-list li {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 14px;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* Shield/Lock style bullet for Privacy */
+.privacy-list li::before {
+  content: "🛡"; /* Shield icon */
+  position: absolute;
+  left: 0;
+  top: 1px;
+  font-size: 1rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .privacy-content-card {
+    padding: 30px 20px;
+  }
+  .privacy-header h1 {
+    font-size: 2rem;
+  }
 }

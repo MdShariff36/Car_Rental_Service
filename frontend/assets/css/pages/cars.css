@@ -1,83 +1,116 @@
+/* ================= RESET ================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", Arial, sans-serif;
 }
 
 body {
   background: #f4f6f8;
   color: #333;
+  line-height: 1.6;
 }
 
-/* Header */
-.site-header {
-  background: #0f172a;
-  padding: 15px 0;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  gap: 10px;
-}
-
-.logo img {
-  width: 40px;
-}
-
-.nav a {
-  color: #cbd5e1;
-  margin-left: 20px;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.nav a.active,
-.nav a:hover {
-  color: #38bdf8;
-}
-
-/* Layout */
+/* ================= LAYOUT ================= */
 .container {
   width: 90%;
   max-width: 1200px;
   margin: auto;
 }
 
-/* Title */
-.section-title {
-  text-align: center;
-  margin: 40px 0 25px;
-  font-size: 2rem;
+/* ================= HEADER ================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-/* Car Grid */
+.site-header .header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.site-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.site-header .logo img {
+  width: 40px;
+  height: auto;
+}
+
+.site-header .nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.site-header .nav a.active,
+.site-header .nav a:hover {
+  color: #2563eb;
+}
+
+.site-header .btn-small {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+/* ================= PAGE HEADER ================= */
+.page-header {
+  background: #2563eb;
+  color: #fff;
+  padding: 50px 0;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* ================= CAR GRID ================= */
 .car-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
-  margin-bottom: 50px;
+  margin: 50px 0;
 }
 
-/* Card */
+/* ================= CAR CARD ================= */
 .car-card {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .car-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .car-card img {
@@ -86,13 +119,15 @@ body {
   object-fit: cover;
 }
 
-/* Card Info */
+/* ================= CAR INFO ================= */
 .car-info {
-  padding: 15px;
+  padding: 15px 18px;
 }
 
 .car-info h3 {
   margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #111827;
 }
 
 .car-tags {
@@ -107,6 +142,7 @@ body {
   padding: 5px 10px;
   border-radius: 20px;
   font-size: 0.8rem;
+  color: #333;
 }
 
 .car-price {
@@ -115,7 +151,7 @@ body {
   margin-bottom: 12px;
 }
 
-/* Button */
+/* ================= BUTTON ================= */
 .btn {
   display: block;
   text-align: center;
@@ -124,17 +160,55 @@ body {
   padding: 10px;
   border-radius: 8px;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
 }
 
 .btn:hover {
   background: #1d4ed8;
+  transform: translateY(-2px);
 }
 
-/* Footer */
+/* ================= FOOTER ================= */
 .site-footer {
-  background: #0f172a;
-  color: #cbd5e1;
+  background: #111827;
+  color: #fff;
+  padding: 25px 0;
   text-align: center;
-  padding: 15px 0;
+}
+
+.site-footer .footer-links a {
+  color: #9ca3af;
+  margin: 0 10px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.site-footer .footer-links a:hover {
+  color: #fff;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .site-header .header-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-header .nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
 }

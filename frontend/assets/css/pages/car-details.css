@@ -8,12 +8,7 @@ body {
   background: #f4f6f9;
 }
 
-/* Header */
-.site-header {
-  background: #111;
-  color: #fff;
-  padding: 16px 32px;
-}
+/* NOTE: .site-header block removed to allow global white theme */
 
 /* Container */
 .container {

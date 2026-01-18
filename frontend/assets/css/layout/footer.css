@@ -1,9 +1,12 @@
+/* FILE: assets/css/layout/footer.css */
+
 .site-footer {
-  background-color: var(--secondary);
-  color: var(--text-light);
+  background-color: #ffffff; /* White Background */
+  color: #1e293b; /* Dark Text */
   padding: 64px 0 32px;
   margin-top: 80px;
   font-size: 0.9rem;
+  border-top: 1px solid #e2e8f0;
 }
 
 .site-footer .container {
@@ -14,14 +17,15 @@
   gap: 24px;
 }
 
+/* Footer Links */
 .site-footer a {
-  color: var(--text-white);
-  opacity: 0.8;
+  color: #64748b; /* Muted Grey Text */
+  opacity: 1;
   margin: 0 12px;
+  transition: color 0.2s;
 }
 
 .site-footer a:hover {
-  opacity: 1;
-  color: var(--primary);
+  color: #ff5f1f;
   text-decoration: none;
 }
