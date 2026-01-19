@@ -1,4 +1,4 @@
-package com.examplez.auto;
+package com.autoprime.auto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
