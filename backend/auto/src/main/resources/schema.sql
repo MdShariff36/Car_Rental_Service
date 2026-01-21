@@ -1,0 +1,1 @@
+CREATE DATABASE autoprime_db;

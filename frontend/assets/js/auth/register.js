@@ -1,46 +1,60 @@
-import { Storage } from "../base/storage.js";
-import { CONFIG } from "../base/config.js";
+import { API_BASE } from "../base/config.js"; // Ensure config.js has: export const API_BASE = "http://localhost:8080/api";
 
-const form = document.getElementById("registerForm");
+document.addEventListener("DOMContentLoaded", () => {
+  const registerForm = document.getElementById("registerForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", handleRegister);
+  }
+});
 
-// Check if form exists to prevent "null" errors
-if (form) {
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+async function handleRegister(event) {
+  event.preventDefault(); // Stop page reload
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const license = document.getElementById("license").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const role = document.getElementById("role").value;
+  // 1. Collect Data
+  const formData = {
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    password: document.getElementById("password").value.trim(),
+    role: document.getElementById("role").value, // "USER" or "HOST"
+    license: document.getElementById("license").value.trim(),
+    address: document.getElementById("address").value.trim(),
+  };
 
-    // Validation [cite: 2738-2747]
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters");
-      return;
+  // 2. Validation
+  if (formData.password.length < 6) {
+    alert("Password must be at least 6 characters long.");
+    return;
+  }
+
+  const submitBtn = document.querySelector("button[type='submit']");
+  submitBtn.innerText = "Creating Account...";
+  submitBtn.disabled = true;
+
+  try {
+    // 3. Send POST Request to Backend
+    const response = await fetch(`${API_BASE}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+
+    // 4. Handle Success or Failure
+    if (response.ok) {
+      alert("Registration Successful! Please login.");
+      window.location.href = "login.html";
+    } else {
+      alert(result.message || "Registration failed. Please try again.");
     }
-
-    const users = Storage.get("users") || [];
-    if (users.some((u) => u.email === email)) {
-      alert("Email already registered");
-      return;
-    }
-
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      phone,
-      license,
-      password,
-      role,
-    };
-
-    users.push(newUser);
-    Storage.set("users", users);
-
-    alert("Registration successful! Redirecting to login...");
-    window.location.href = "login.html";
-  });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    alert("Network error. Is the backend server running?");
+  } finally {
+    submitBtn.innerText = "Create Account";
+    submitBtn.disabled = false;
+  }
 }
