@@ -1,76 +1,68 @@
-const cars = [
-  {
-    name: "Hyundai Creta",
-    image: "assets/images/car-images/Hyundai Creta/Hyundai Creta.jfif",
-    type: "SUV",
-    transmission: "Automatic",
-    seats: "5 Seats",
-    price: "₹3,500/day",
-    link: "car-details.html?car=creta",
-  },
-  {
-    name: "Toyota Innova",
-    image: "assets/images/car-images/Toyota innova/Toyota innova.jfif",
-    type: "MPV",
-    transmission: "Manual",
-    seats: "7 Seats",
-    price: "₹4,200/day",
-    link: "car-details.html?car=innova",
-  },
-  {
-    name: "Maruti Swift",
-    image: "assets/images/car-images/Maruti Swift/Maruti Swift.jfif",
-    type: "Hatchback",
-    transmission: "Manual",
-    seats: "5 Seats",
-    price: "₹1,500/day",
-    link: "car-details.html?car=swift",
-  },
-  {
-    name: "Hyundai i20",
-    image: "assets/images/car-images/Hyundai i20/Hyundai i20.jfif",
-    type: "Hatchback",
-    transmission: "Automatic",
-    seats: "5 Seats",
-    price: "₹1,800/day",
-    link: "car-details.html?car=i20",
-  },
-  {
-    name: "Mahindra XUV700",
-    image: "assets/images/car-images/Mahindra XUV700/Mahindra XUV700.jfif",
-    type: "SUV",
-    transmission: "Automatic",
-    seats: "7 Seats",
-    price: "₹4,000/day",
-    link: "car-details.html?car=xuv700",
-  },
-  {
-    name: "Tata Nexon",
-    image: "assets/images/car-images/Tata Nexon/Tata Nexon.jfif",
-    type: "SUV",
-    transmission: "Manual",
-    seats: "5 Seats",
-    price: "₹2,500/day",
-    link: "car-details.html?car=nexon",
-  },
-];
+// FILE: frontend/assets/js/pages/cars.js
+import { getAvailableCars } from "../services/car.service.js";
 
-const carGrid = document.getElementById("carGrid");
-
-cars.forEach((car) => {
-  carGrid.innerHTML += `
-    <div class="car-card">
-      <img src="${car.image}" alt="${car.name}">
-      <div class="car-info">
-        <h3>${car.name}</h3>
-        <div class="car-tags">
-          <span>${car.type}</span>
-          <span>${car.transmission}</span>
-          <span>${car.seats}</span>
-        </div>
-        <div class="car-price">${car.price}</div>
-        <a href="${car.link}" class="btn">Book Now</a>
-      </div>
-    </div>
-  `;
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadCars();
 });
+
+async function loadCars() {
+  const carGrid = document.querySelector(".car-grid");
+
+  if (!carGrid) return;
+
+  try {
+    // Show loading state
+    carGrid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+        <p>Loading cars...</p>
+      </div>
+    `;
+
+    // Fetch cars from backend
+    const cars = await getAvailableCars();
+
+    if (cars.length === 0) {
+      carGrid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+          <p>No cars available at the moment.</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Render cars
+    carGrid.innerHTML = cars
+      .map(
+        (car) => `
+      <div class="car-card">
+        <img 
+          src="${car.images && car.images.length > 0 ? car.images[0] : "assets/images/car-placeholder.jpg"}" 
+          alt="${car.name}"
+          onerror="this.src='assets/images/car-placeholder.jpg'"
+        />
+        <div class="car-info">
+          <h3>${car.name}</h3>
+          <div class="car-tags">
+            <span>${car.type}</span>
+            <span>${car.transmission}</span>
+            <span>${car.seats} Seats</span>
+          </div>
+          <div class="car-price">₹${car.pricePerDay} <small>/ day</small></div>
+          <a href="car-details.html?id=${car.id}" class="btn">Book Now</a>
+        </div>
+      </div>
+    `,
+      )
+      .join("");
+  } catch (error) {
+    console.error("Error loading cars:", error);
+    carGrid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+        <p style="color: red;">Failed to load cars. Please try again later.</p>
+        <p style="font-size: 0.9rem; color: #666;">Error: ${error.message}</p>
+      </div>
+    `;
+  }
+}
+
+export const init = loadCars;
