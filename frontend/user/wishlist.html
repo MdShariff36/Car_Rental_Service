@@ -1,4 +1,36 @@
-<div class="grid grid-3">
-  <div class="card-small">BMW X1</div>
-  <div class="card-small">Kia Seltos</div>
-</div>
+<!-- ========================================
+     FILE 2: user/wishlist.html
+======================================== -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wishlist | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header" id="header"></header>
+
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>My Wishlist</h1>
+          <p class="muted">Cars you've saved for later</p>
+        </div>
+
+        <div class="wishlist-grid" id="wishlistGrid">
+          <!-- Wishlist items will load here -->
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/user/wishlist.js"
+    ></script>
+  </body>
+</html>

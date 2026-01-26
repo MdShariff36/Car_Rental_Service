@@ -1,8 +1,97 @@
-<link rel="stylesheet" href="../assets/css/admin-panel.css" />
+<!-- ========================================
+     FILE 7: admin/dashboard.html
+======================================== -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="dashboard-page admin-dashboard">
+    <header class="site-header" id="header"></header>
 
-<div class="grid grid-4">
-  <div class="card-small">Users</div>
-  <div class="card-small">Cars</div>
-  <div class="card-small">Bookings</div>
-  <div class="card-small">Revenue</div>
-</div>
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>Admin Dashboard</h1>
+          <p class="muted">Platform overview and management</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid admin-stats">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <h3>1,247</h3>
+              <p>Total Users</p>
+              <span class="stat-change positive">+12% this month</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🚗</div>
+            <div class="stat-info">
+              <h3>453</h3>
+              <p>Total Cars</p>
+              <span class="stat-change positive">+8% this month</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+              <h3>89</h3>
+              <p>Active Bookings</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <h3>₹12.4L</h3>
+              <p>Monthly Revenue</p>
+              <span class="stat-change positive">+15% this month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="dashboard-charts">
+          <div class="chart-card">
+            <h3>Revenue Overview</h3>
+            <canvas id="revenueChart"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Bookings Trend</h3>
+            <canvas id="bookingsChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="dashboard-section">
+          <h2>Recent Activity</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="recentActivity">
+              <!-- Dynamic content -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/admin/dashboard.js"
+    ></script>
+  </body>
+</html>

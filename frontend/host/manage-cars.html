@@ -1,10 +1,59 @@
-<table class="table">
-  <tr>
-    <th>Car</th>
-    <th>Status</th>
-  </tr>
-  <tr>
-    <td>Creta</td>
-    <td>Available</td>
-  </tr>
-</table>
+<!-- ========================================
+     FILE 6: host/manage-cars.html
+======================================== -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Cars | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header" id="header"></header>
+
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>Manage Your Cars</h1>
+          <a href="add-car.html" class="btn btn-primary">+ Add New Car</a>
+        </div>
+
+        <div class="cars-management-list" id="carsList">
+          <!-- Car Management Card -->
+          <div class="car-manage-card">
+            <img
+              src="../assets/images/car-images/Hyundai Creta/Hyundai Creta.jfif"
+              alt="Car"
+            />
+            <div class="car-info">
+              <h3>Hyundai Creta</h3>
+              <p class="muted">TN-12-AB-1234</p>
+              <div class="car-stats">
+                <span>📅 12 trips</span>
+                <span>💰 ₹42,000 earned</span>
+                <span>⭐ 4.8 rating</span>
+              </div>
+            </div>
+            <div class="car-status">
+              <span class="status-badge available">Available</span>
+            </div>
+            <div class="car-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-outline">View Bookings</button>
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/host/manage-cars.js"
+    ></script>
+  </body>
+</html>

@@ -1,5 +1,130 @@
-<form class="container">
-  <input placeholder="Car Name" />
-  <input placeholder="Price / Day" />
-  <button class="btn btn-primary">Add Car</button>
-</form>
+<!-- ========================================
+     FILE 5: host/add-car.html
+======================================== -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Car | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header" id="header"></header>
+
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>List Your Car</h1>
+          <p class="muted">Fill in the details to list your car</p>
+        </div>
+
+        <form class="add-car-form" id="addCarForm">
+          <!-- Basic Details -->
+          <div class="card">
+            <h3>Basic Details</h3>
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label>Car Brand *</label>
+                <input type="text" required placeholder="e.g., Hyundai" />
+              </div>
+              <div class="form-group">
+                <label>Model *</label>
+                <input type="text" required placeholder="e.g., Creta" />
+              </div>
+            </div>
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label>Year *</label>
+                <input type="number" required min="2000" max="2026" />
+              </div>
+              <div class="form-group">
+                <label>Registration Number *</label>
+                <input type="text" required placeholder="TN-XX-XXXX" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Car Type & Specs -->
+          <div class="card">
+            <h3>Specifications</h3>
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label>Car Type *</label>
+                <select required>
+                  <option value="">Select Type</option>
+                  <option value="hatchback">Hatchback</option>
+                  <option value="sedan">Sedan</option>
+                  <option value="suv">SUV</option>
+                  <option value="mpv">MPV</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Transmission *</label>
+                <select required>
+                  <option value="">Select</option>
+                  <option value="manual">Manual</option>
+                  <option value="automatic">Automatic</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label>Fuel Type *</label>
+                <select required>
+                  <option value="">Select</option>
+                  <option value="petrol">Petrol</option>
+                  <option value="diesel">Diesel</option>
+                  <option value="electric">Electric</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Seating Capacity *</label>
+                <input type="number" required min="2" max="8" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Pricing -->
+          <div class="card">
+            <h3>Pricing</h3>
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label>Price per Day (₹) *</label>
+                <input type="number" required min="500" />
+              </div>
+              <div class="form-group">
+                <label>Security Deposit (₹) *</label>
+                <input type="number" required value="5000" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Photos -->
+          <div class="card">
+            <h3>Car Photos</h3>
+            <div class="photo-upload-area">
+              <input type="file" id="carPhotos" multiple accept="image/*" />
+              <label for="carPhotos" class="upload-label">
+                <span class="icon">📷</span>
+                <p>Click to upload photos</p>
+                <span class="muted">Upload up to 10 images</span>
+              </label>
+            </div>
+            <div class="photo-preview" id="photoPreview"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg">List Car</button>
+        </form>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/host/add-car.js"
+    ></script>
+  </body>
+</html>

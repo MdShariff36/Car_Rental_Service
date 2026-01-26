@@ -1,10 +1,86 @@
-<link rel="stylesheet" href="../assets/css/user-panel.css" />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Dashboard | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/dashboards/user.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header" id="header"></header>
 
-<section class="container">
-  <h2>User Dashboard</h2>
-  <div class="grid grid-3">
-    <div class="card-small">Active Booking</div>
-    <div class="card-small">Total Trips</div>
-    <div class="card-small">Wallet Balance</div>
-  </div>
-</section>
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>Welcome back, <span id="userName">User</span>!</h1>
+          <p class="muted">Here's what's happening with your account</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🚗</div>
+            <div class="stat-info">
+              <h3>2</h3>
+              <p>Active Bookings</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <h3>15</h3>
+              <p>Completed Trips</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <h3>₹12,450</h3>
+              <p>Total Spent</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">❤️</div>
+            <div class="stat-info">
+              <h3>5</h3>
+              <p>Saved Cars</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Trips -->
+        <div class="dashboard-section">
+          <h2>Upcoming Trips</h2>
+          <div class="trips-list" id="upcomingTrips">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <a href="../cars.html" class="action-btn">
+            <span class="icon">🔍</span>
+            Browse Cars
+          </a>
+          <a href="my-bookings.html" class="action-btn">
+            <span class="icon">📋</span>
+            My Bookings
+          </a>
+          <a href="profile.html" class="action-btn">
+            <span class="icon">⚙️</span>
+            Settings
+          </a>
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/user/dashboard.js"
+    ></script>
+  </body>
+</html>

@@ -2,19 +2,532 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Car Details | Auto Prime</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Details | Auto Prime</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/pages/car-details.css" />
   </head>
   <body>
-    <header class="site-header">
-      <h2>Auto Prime</h2>
-    </header>
+    <!-- Header -->
+    <header class="site-header" id="header"></header>
 
-    <section class="container" id="carDetails">
-      <!-- Dynamic car details load here -->
+    <!-- Breadcrumb Navigation -->
+    <div class="container breadcrumb">
+      <a href="index.html">Home</a> › <a href="cars.html">Cars</a> ›
+      <span id="carNameBreadcrumb">Car Details</span>
+    </div>
+
+    <!-- Main Content -->
+    <section class="container car-details-container" id="carDetailsContainer">
+      <div class="car-details-grid">
+        <!-- Left Column: Images -->
+        <div class="car-images-section">
+          <!-- Main Image -->
+          <div class="main-image-wrapper">
+            <img id="mainCarImage" src="" alt="Car" class="main-car-image" />
+
+            <!-- Image Controls -->
+            <button
+              class="image-nav-btn prev"
+              id="prevImage"
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              class="image-nav-btn next"
+              id="nextImage"
+              aria-label="Next image"
+            >
+              ›
+            </button>
+
+            <!-- Wishlist Heart -->
+            <button
+              class="wishlist-btn"
+              id="wishlistBtn"
+              aria-label="Add to wishlist"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                />
+              </svg>
+            </button>
+
+            <!-- 360 View Button -->
+            <button class="view-360-btn" id="view360Btn">
+              <span class="icon">🔄</span> 360° View
+            </button>
+
+            <!-- Zoom Indicator -->
+            <div class="zoom-indicator">Click to zoom</div>
+          </div>
+
+          <!-- Thumbnail Gallery -->
+          <div class="thumbnail-gallery" id="thumbnailGallery">
+            <!-- Thumbnails will be loaded dynamically -->
+          </div>
+        </div>
+
+        <!-- Right Column: Details -->
+        <div class="car-info-section">
+          <!-- Car Header -->
+          <div class="car-header">
+            <div class="car-title-row">
+              <h1 id="carName">Loading...</h1>
+              <div class="car-badges">
+                <span class="badge badge-verified">✓ Verified</span>
+                <span
+                  class="badge badge-popular"
+                  id="popularBadge"
+                  style="display: none"
+                  >🔥 Popular</span
+                >
+              </div>
+            </div>
+
+            <div class="car-meta">
+              <span class="car-type" id="carType"></span>
+              <span class="separator">•</span>
+              <span class="car-rating" id="carRating">
+                <span class="stars">⭐⭐⭐⭐⭐</span>
+                <span class="rating-count">(0 reviews)</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Pricing Section -->
+          <div class="pricing-section">
+            <div class="price-display">
+              <div class="current-price">
+                <span class="currency">₹</span>
+                <span class="amount" id="priceAmount">0</span>
+                <span class="period">/day</span>
+              </div>
+              <div class="price-note">
+                <span
+                  class="original-price"
+                  id="originalPrice"
+                  style="display: none"
+                  >₹5000</span
+                >
+                <span
+                  class="discount-badge"
+                  id="discountBadge"
+                  style="display: none"
+                  >20% OFF</span
+                >
+              </div>
+            </div>
+
+            <div class="price-breakdown">
+              <button class="btn-text" id="showPriceBreakdown">
+                See price breakdown
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Specs -->
+          <div class="quick-specs">
+            <div class="spec-item">
+              <span class="spec-icon">⚙️</span>
+              <span class="spec-label">Transmission</span>
+              <span class="spec-value" id="transmission">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-icon">⛽</span>
+              <span class="spec-label">Fuel</span>
+              <span class="spec-value" id="fuelType">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-icon">👥</span>
+              <span class="spec-label">Seats</span>
+              <span class="spec-value" id="seats">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-icon">🛣️</span>
+              <span class="spec-label">Mileage</span>
+              <span class="spec-value" id="mileage">-</span>
+            </div>
+          </div>
+
+          <!-- Booking Calculator -->
+          <div class="booking-calculator-card">
+            <h3>Calculate Your Trip</h3>
+
+            <div class="date-picker-row">
+              <div class="date-input-group">
+                <label for="startDate">Start Date & Time</label>
+                <div class="datetime-input">
+                  <input type="date" id="startDate" />
+                  <input type="time" id="startTime" value="10:00" />
+                </div>
+              </div>
+
+              <div class="date-input-group">
+                <label for="endDate">End Date & Time</label>
+                <div class="datetime-input">
+                  <input type="date" id="endDate" />
+                  <input type="time" id="endTime" value="10:00" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Trip Summary -->
+            <div class="trip-summary" id="tripSummary">
+              <div class="summary-row">
+                <span>Trip Duration</span>
+                <span id="tripDuration">Select dates</span>
+              </div>
+              <div class="summary-row">
+                <span>Base Price</span>
+                <span id="basePrice">₹0</span>
+              </div>
+              <div
+                class="summary-row discount-row"
+                id="discountRow"
+                style="display: none"
+              >
+                <span>Discount</span>
+                <span class="discount-amount" id="discountAmount">-₹0</span>
+              </div>
+              <div class="summary-row">
+                <span>GST (18%)</span>
+                <span id="gstAmount">₹0</span>
+              </div>
+              <div class="summary-row total-row">
+                <span>Total Amount</span>
+                <span class="total-amount" id="totalAmount">₹0</span>
+              </div>
+            </div>
+
+            <!-- Booking Actions -->
+            <div class="booking-actions">
+              <button class="btn btn-primary btn-full" id="bookNowBtn">
+                Book Now
+              </button>
+              <button class="btn btn-outline btn-full" id="requestQuoteBtn">
+                Request Quote
+              </button>
+            </div>
+
+            <!-- Trust Indicators -->
+            <div class="trust-indicators">
+              <div class="trust-item">
+                <span class="icon">✓</span>
+                <span>Free Cancellation</span>
+              </div>
+              <div class="trust-item">
+                <span class="icon">✓</span>
+                <span>Instant Booking</span>
+              </div>
+              <div class="trust-item">
+                <span class="icon">✓</span>
+                <span>Fully Insured</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabbed Content Section -->
+      <div class="car-details-tabs">
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="overview">Overview</button>
+          <button class="tab-btn" data-tab="features">Features</button>
+          <button class="tab-btn" data-tab="specs">Specifications</button>
+          <button class="tab-btn" data-tab="reviews">Reviews</button>
+          <button class="tab-btn" data-tab="policies">Policies</button>
+          <button class="tab-btn" data-tab="location">Location</button>
+        </div>
+
+        <div class="tabs-content">
+          <!-- Overview Tab -->
+          <div class="tab-pane active" id="overview">
+            <div class="overview-grid">
+              <div class="overview-section">
+                <h3>About This Car</h3>
+                <p id="carDescription">
+                  This vehicle is perfect for your travel needs.
+                  Well-maintained, clean, and ready for your journey.
+                </p>
+              </div>
+
+              <div class="overview-section">
+                <h3>Highlights</h3>
+                <ul class="highlights-list" id="highlightsList">
+                  <li>🛡️ Comprehensive Insurance Included</li>
+                  <li>📍 Free Home Delivery Available</li>
+                  <li>🔧 24/7 Roadside Assistance</li>
+                  <li>🧼 Sanitized Before Every Trip</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Features Tab -->
+          <div class="tab-pane" id="features">
+            <div class="features-grid">
+              <div class="feature-category">
+                <h4>Comfort & Convenience</h4>
+                <ul class="features-list" id="comfortFeatures">
+                  <li>✓ Air Conditioning</li>
+                  <li>✓ Power Steering</li>
+                  <li>✓ Power Windows</li>
+                  <li>✓ Central Locking</li>
+                </ul>
+              </div>
+
+              <div class="feature-category">
+                <h4>Entertainment</h4>
+                <ul class="features-list" id="entertainmentFeatures">
+                  <li>✓ Bluetooth Connectivity</li>
+                  <li>✓ USB Charging Ports</li>
+                  <li>✓ AUX Input</li>
+                  <li>✓ Steering Mounted Controls</li>
+                </ul>
+              </div>
+
+              <div class="feature-category">
+                <h4>Safety</h4>
+                <ul class="features-list" id="safetyFeatures">
+                  <li>✓ Airbags</li>
+                  <li>✓ ABS with EBD</li>
+                  <li>✓ Reverse Parking Camera</li>
+                  <li>✓ Child Safety Locks</li>
+                </ul>
+              </div>
+
+              <div class="feature-category">
+                <h4>Additional</h4>
+                <ul class="features-list" id="additionalFeatures">
+                  <li>✓ FASTag</li>
+                  <li>✓ First Aid Kit</li>
+                  <li>✓ Fire Extinguisher</li>
+                  <li>✓ Tool Kit</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specifications Tab -->
+          <div class="tab-pane" id="specs">
+            <div class="specs-table">
+              <table>
+                <tbody id="specsTableBody">
+                  <tr>
+                    <td class="spec-label">Engine</td>
+                    <td class="spec-value">-</td>
+                  </tr>
+                  <tr>
+                    <td class="spec-label">Max Power</td>
+                    <td class="spec-value">-</td>
+                  </tr>
+                  <tr>
+                    <td class="spec-label">Max Torque</td>
+                    <td class="spec-value">-</td>
+                  </tr>
+                  <tr>
+                    <td class="spec-label">Fuel Tank</td>
+                    <td class="spec-value">-</td>
+                  </tr>
+                  <tr>
+                    <td class="spec-label">Boot Space</td>
+                    <td class="spec-value">-</td>
+                  </tr>
+                  <tr>
+                    <td class="spec-label">Dimensions</td>
+                    <td class="spec-value">-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Reviews Tab -->
+          <div class="tab-pane" id="reviews">
+            <div class="reviews-section">
+              <div class="reviews-summary">
+                <div class="rating-overview">
+                  <div class="rating-number">4.8</div>
+                  <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                  <div class="rating-count">Based on 127 reviews</div>
+                </div>
+
+                <div class="rating-breakdown">
+                  <div class="rating-bar-row">
+                    <span>5 ⭐</span>
+                    <div class="rating-bar">
+                      <div class="rating-bar-fill" style="width: 75%"></div>
+                    </div>
+                    <span>95</span>
+                  </div>
+                  <div class="rating-bar-row">
+                    <span>4 ⭐</span>
+                    <div class="rating-bar">
+                      <div class="rating-bar-fill" style="width: 15%"></div>
+                    </div>
+                    <span>19</span>
+                  </div>
+                  <div class="rating-bar-row">
+                    <span>3 ⭐</span>
+                    <div class="rating-bar">
+                      <div class="rating-bar-fill" style="width: 8%"></div>
+                    </div>
+                    <span>10</span>
+                  </div>
+                  <div class="rating-bar-row">
+                    <span>2 ⭐</span>
+                    <div class="rating-bar">
+                      <div class="rating-bar-fill" style="width: 2%"></div>
+                    </div>
+                    <span>2</span>
+                  </div>
+                  <div class="rating-bar-row">
+                    <span>1 ⭐</span>
+                    <div class="rating-bar">
+                      <div class="rating-bar-fill" style="width: 1%"></div>
+                    </div>
+                    <span>1</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="reviews-list" id="reviewsList">
+                <!-- Reviews will be loaded dynamically -->
+              </div>
+
+              <button
+                class="btn btn-outline load-more-reviews"
+                id="loadMoreReviews"
+              >
+                Load More Reviews
+              </button>
+            </div>
+          </div>
+
+          <!-- Policies Tab -->
+          <div class="tab-pane" id="policies">
+            <div class="policies-content">
+              <div class="policy-section">
+                <h4>🚗 Pickup & Return</h4>
+                <ul>
+                  <li>Pickup time: Flexible (9 AM - 9 PM)</li>
+                  <li>Return within the same time window next day</li>
+                  <li>Late return charges: ₹200/hour</li>
+                  <li>Grace period: 30 minutes</li>
+                </ul>
+              </div>
+
+              <div class="policy-section">
+                <h4>⛽ Fuel Policy</h4>
+                <ul>
+                  <li>Car will be provided with full tank</li>
+                  <li>Return with full tank or pay refueling charges</li>
+                  <li>Refueling charge: ₹80/liter + fuel cost</li>
+                </ul>
+              </div>
+
+              <div class="policy-section">
+                <h4>🛣️ Distance Limit</h4>
+                <ul>
+                  <li>Included: 200 km/day</li>
+                  <li>Extra km charge: ₹12/km</li>
+                  <li>Unlimited km packages available</li>
+                </ul>
+              </div>
+
+              <div class="policy-section">
+                <h4>❌ Cancellation Policy</h4>
+                <ul>
+                  <li>Free cancellation up to 24 hours before pickup</li>
+                  <li>50% refund if cancelled within 24 hours</li>
+                  <li>No refund for no-shows</li>
+                </ul>
+              </div>
+
+              <div class="policy-section">
+                <h4>📋 Documents Required</h4>
+                <ul>
+                  <li>Valid Driving License (Original)</li>
+                  <li>Govt. ID Proof (Aadhar/Passport/Voter ID)</li>
+                  <li>Security deposit: ₹5,000 (Refundable)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location Tab -->
+          <div class="tab-pane" id="location">
+            <div class="location-content">
+              <h4>Pickup Location</h4>
+              <p class="location-address" id="pickupLocation">
+                📍 Main Road, Trichy, Tamil Nadu - 620001
+              </p>
+
+              <!-- Map Placeholder -->
+              <div class="map-container">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.6456!2d78.6869!3d10.7905!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ3JzI1LjgiTiA3OMKwNDEnMTIuOCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                  width="100%"
+                  height="400"
+                  style="border: 0"
+                  allowfullscreen=""
+                  loading="lazy"
+                >
+                </iframe>
+              </div>
+
+              <div class="location-instructions">
+                <h4>How to Reach</h4>
+                <p>
+                  The pickup location is easily accessible from the city center.
+                  You can reach here by taxi, bus, or your own vehicle. Free
+                  parking is available.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Similar Cars Section -->
+      <div class="similar-cars-section">
+        <h2 class="section-title">Similar Cars You Might Like</h2>
+        <div class="similar-cars-slider" id="similarCarsSlider">
+          <!-- Will be loaded dynamically -->
+        </div>
+      </div>
     </section>
 
-    <script src="assets/js/pages/car-details.js"></script>
+    <!-- Sticky Booking Bar (Mobile) -->
+    <div class="sticky-booking-bar" id="stickyBookingBar">
+      <div class="sticky-price">
+        <span class="amount">₹<span id="stickyPrice">0</span></span>
+        <span class="period">/day</span>
+      </div>
+      <button class="btn btn-primary" id="stickyBookBtn">Book Now</button>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div class="image-zoom-modal" id="imageZoomModal" style="display: none">
+      <button class="modal-close" id="closeZoomModal">&times;</button>
+      <img src="" alt="Zoomed car image" id="zoomedImage" />
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer" id="footer"></footer>
+
+    <!-- Scripts -->
+    <script type="module" src="assets/js/main.js"></script>
+    <script type="module" src="assets/js/pages/car-details.js"></script>
   </body>
 </html>

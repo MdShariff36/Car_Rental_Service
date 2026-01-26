@@ -1,44 +1,56 @@
+/* ============================================
+   FILE: assets/css/responsive/mobile.css
+============================================ */
+
 @media (max-width: 768px) {
+  /* Typography */
+  h1 {
+    font-size: var(--font-size-3xl);
+  }
+  h2 {
+    font-size: var(--font-size-2xl);
+  }
+  h3 {
+    font-size: var(--font-size-xl);
+  }
+
+  /* Spacing */
+  .section-padding {
+    padding: var(--space-8) 0;
+  }
+
+  .container {
+    padding: 0 var(--space-3);
+  }
+
+  /* Grids */
+  .intro-grid,
+  .services-grid,
+  .corporate-card-glow {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Header */
+  .site-header {
+    height: 60px;
+  }
+
+  /* Hero */
   .hero {
-    padding: 60px 20px;
-  }
-  .hero h1 {
-    font-size: 2rem;
+    padding: var(--space-12) 0 var(--space-10);
   }
 
-  /* Stack the search bar */
-  .search-box {
+  /* Cards */
+  .card {
+    padding: var(--space-4);
+  }
+
+  /* Buttons */
+  .btn-group {
     flex-direction: column;
-    padding: 20px;
-    background: white;
-    border-radius: var(--radius-md);
   }
 
-  .search-box input {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    padding: 10px 0;
-  }
-
-  .search-box button {
+  .btn-group .btn {
     width: 100%;
-    margin-top: 10px;
-  }
-
-  /* Stack Grid */
-  .grid-2,
-  .grid-3,
-  .grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  /* Adjust filters to sit on top of cars */
-  .filter-panel {
-    margin-bottom: 24px;
-  }
-
-  /* Mobile Nav (Fallback if JS isn't changing) */
-  .nav {
-    display: none; /* In reality, you'd toggle a class here */
   }
 }

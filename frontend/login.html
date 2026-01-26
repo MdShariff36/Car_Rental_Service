@@ -1,72 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CarRent — Login</title>
+    <title>Login | Auto Prime</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/pages/auth.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
+  <body class="auth-page">
+    <header class="site-header" id="header"></header>
 
-  <body>
-    <div class="auth-container">
-      <div class="auth-left">
-        <h1 class="brand">CarRent</h1>
-        <h2 class="subtitle">Welcome Back!</h2>
-        <p class="desc">Login to explore the best car rental deals near you.</p>
+    <main class="container auth-main">
+      <div class="auth-container">
+        <!-- Left: Image/Illustration -->
+        <div class="auth-left">
+          <h1 class="brand">Auto Prime</h1>
+          <h2 class="subtitle">Welcome Back!</h2>
+          <p class="desc">
+            Login to manage your bookings and explore exclusive deals.
+          </p>
+          <div class="illustration">
+            <img src="assets/images/login-illustration.svg" alt="Login" />
+          </div>
+        </div>
 
-        <div class="illustration">
-          <!-- Vector Car SVG -->
-          <svg width="420" viewBox="0 0 800 400" fill="none">
-            <rect
-              x="0"
-              y="130"
-              width="800"
-              height="160"
-              rx="40"
-              fill="#C8D7FF"
-            />
-            <rect
-              x="130"
-              y="60"
-              width="470"
-              height="110"
-              rx="30"
-              fill="#DCE7FF"
-            />
-            <circle cx="240" cy="300" r="50" fill="#2D66FF" />
-            <circle cx="560" cy="300" r="50" fill="#2D66FF" />
-            <circle cx="240" cy="300" r="30" fill="#fff" />
-            <circle cx="560" cy="300" r="30" fill="#fff" />
-          </svg>
+        <!-- Right: Login Form -->
+        <div class="auth-card">
+          <h2 class="login-title">Login to Your Account</h2>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="password" required />
+                <button type="button" class="toggle-password">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-options">
+              <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe" />
+                <span>Remember me</span>
+              </label>
+              <a href="forgot-password.html" class="link-primary"
+                >Forgot password?</a
+              >
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+              Sign In
+            </button>
+          </form>
+
+          <div class="auth-footer">
+            <p>Don't have an account? <a href="register.html">Sign up</a></p>
+          </div>
+
+          <!-- Social Login -->
+          <div class="social-login">
+            <div class="divider"><span>Or continue with</span></div>
+            <div class="social-buttons">
+              <button class="social-btn google">
+                <img src="assets/images/google-icon.svg" alt="Google" />
+                Google
+              </button>
+              <button class="social-btn facebook">
+                <img src="assets/images/facebook-icon.svg" alt="Facebook" />
+                Facebook
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+    </main>
 
-      <div class="auth-card">
-        <h2 class="login-title">Login</h2>
-
-        <form>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" placeholder="you@example.com" required />
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" placeholder="Enter your password" required />
-          </div>
-
-          <button class="btn" type="submit">Sign In</button>
-
-          <div class="form-footer">
-            <span>Don't have an account?</span>
-            <a href="register.html">Register</a>
-          </div>
-        </form>
-      </div>
-    </div>
+    <footer class="site-footer" id="footer"></footer>
+    <script type="module" src="assets/js/auth/login.js"></script>
   </body>
 </html>

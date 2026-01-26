@@ -1,34 +1,57 @@
-.table {
+/* ============================================
+   FILE: assets/css/components/tables.css
+============================================ */
+
+.table,
+.data-table {
   width: 100%;
-  border-collapse: separate; /* Allows border radius */
-  border-spacing: 0;
-  background: white;
-  border-radius: var(--radius-md);
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
-.table th {
-  background: var(--bg-body);
-  color: var(--secondary);
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  padding: 16px;
+.table th,
+.table td,
+.data-table th,
+.data-table td {
+  padding: var(--space-4);
   text-align: left;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-color);
 }
 
-.table td {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-main);
-  vertical-align: middle;
+.table th,
+.data-table th {
+  background: var(--gray-50);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.table tr:last-child td {
+.table td,
+.data-table td {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.table tr:last-child td,
+.data-table tr:last-child td {
   border-bottom: none;
 }
-.table tr:hover td {
-  background-color: var(--bg-body);
+
+.table tr:hover,
+.data-table tbody tr:hover {
+  background: var(--gray-50);
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+  .table,
+  .data-table {
+    display: block;
+    overflow-x: auto;
+  }
 }

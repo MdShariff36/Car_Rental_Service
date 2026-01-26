@@ -1,7 +1,100 @@
-<link rel="stylesheet" href="../assets/css/host-panel.css" />
+<!-- ========================================
+     FILE 4: host/dashboard.html
+======================================== -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Host Dashboard | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="dashboard-page host-dashboard">
+    <header class="site-header" id="header"></header>
 
-<div class="grid grid-3">
-  <div class="card-small">Total Cars: 4</div>
-  <div class="card-small">Active Rentals</div>
-  <div class="card-small">Monthly Earnings</div>
-</div>
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>Host Dashboard</h1>
+          <p class="muted">Manage your car listings and bookings</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card earnings">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <h3>₹45,200</h3>
+              <p>Monthly Earnings</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🚗</div>
+            <div class="stat-info">
+              <h3>4</h3>
+              <p>Total Cars</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+              <h3>12</h3>
+              <p>Active Bookings</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-info">
+              <h3>4.8</h3>
+              <p>Average Rating</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions-host">
+          <a href="add-car.html" class="action-card">
+            <span class="icon">➕</span>
+            <h3>Add New Car</h3>
+          </a>
+          <a href="manage-cars.html" class="action-card">
+            <span class="icon">🚗</span>
+            <h3>Manage Cars</h3>
+          </a>
+          <a href="earnings.html" class="action-card">
+            <span class="icon">💰</span>
+            <h3>View Earnings</h3>
+          </a>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="dashboard-section">
+          <h2>Recent Bookings</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Car</th>
+                <th>Customer</th>
+                <th>Dates</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentBookings">
+              <!-- Dynamic content -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/host/dashboard.js"
+    ></script>
+  </body>
+</html>

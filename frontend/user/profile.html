@@ -1,5 +1,102 @@
-<form class="container">
-  <input placeholder="Name" />
-  <input placeholder="Email" />
-  <button class="btn btn-primary">Update</button>
-</form>
+<!-- ========================================
+     FILE 3: user/profile.html
+======================================== -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile | Auto Prime</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header" id="header"></header>
+
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar" id="sidebar"></aside>
+
+      <main class="dashboard-content">
+        <div class="dashboard-header">
+          <h1>My Profile</h1>
+          <p class="muted">Manage your account information</p>
+        </div>
+
+        <div class="profile-sections">
+          <!-- Personal Info -->
+          <div class="card">
+            <h3>Personal Information</h3>
+            <form class="profile-form">
+              <div class="form-row two-cols">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" value="John" />
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" value="Doe" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" value="john@example.com" />
+              </div>
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" value="+91 9876543210" />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Save Changes
+              </button>
+            </form>
+          </div>
+
+          <!-- License Info -->
+          <div class="card">
+            <h3>Driving License</h3>
+            <form class="profile-form">
+              <div class="form-group">
+                <label>License Number</label>
+                <input type="text" value="DL-XX-2020-1234567" />
+              </div>
+              <div class="form-group">
+                <label>Expiry Date</label>
+                <input type="date" value="2030-12-31" />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Update License
+              </button>
+            </form>
+          </div>
+
+          <!-- Change Password -->
+          <div class="card">
+            <h3>Change Password</h3>
+            <form class="profile-form">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" />
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" />
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Change Password
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="../assets/js/dashboards/user/profile.js"
+    ></script>
+  </body>
+</html>

@@ -1,5 +1,4 @@
-// FILE: frontend/assets/js/pages/cars.js
-import { getAvailableCars } from "../services/car.service.js";
+import { getAllCars } from "../services/car.service.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadCars();
@@ -8,25 +7,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadCars() {
   const carGrid = document.querySelector(".car-grid");
 
-  if (!carGrid) return;
+  if (!carGrid) {
+    console.error("Car grid container not found");
+    return;
+  }
 
   try {
-    // Show loading state
-    carGrid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-        <p>Loading cars...</p>
-      </div>
-    `;
+    // Show loading
+    carGrid.innerHTML =
+      '<p style="text-align: center; padding: 40px;">Loading cars...</p>';
 
-    // Fetch cars from backend
-    const cars = await getAvailableCars();
+    // Fetch from backend
+    const cars = await getAllCars();
 
-    if (cars.length === 0) {
-      carGrid.innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-          <p>No cars available at the moment.</p>
-        </div>
-      `;
+    if (!cars || cars.length === 0) {
+      carGrid.innerHTML =
+        '<p style="text-align: center; padding: 40px;">No cars available</p>';
       return;
     }
 
@@ -36,9 +32,9 @@ async function loadCars() {
         (car) => `
       <div class="car-card">
         <img 
-          src="${car.images && car.images.length > 0 ? car.images[0] : "assets/images/car-placeholder.jpg"}" 
+          src="${car.images && car.images[0] ? car.images[0] : "assets/images/placeholder.jpg"}" 
           alt="${car.name}"
-          onerror="this.src='assets/images/car-placeholder.jpg'"
+          onerror="this.src='assets/images/placeholder.jpg'"
         />
         <div class="car-info">
           <h3>${car.name}</h3>
@@ -57,12 +53,10 @@ async function loadCars() {
   } catch (error) {
     console.error("Error loading cars:", error);
     carGrid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-        <p style="color: red;">Failed to load cars. Please try again later.</p>
-        <p style="font-size: 0.9rem; color: #666;">Error: ${error.message}</p>
+      <div style="text-align: center; padding: 40px; color: #ef4444;">
+        <p>⚠️ Failed to load cars</p>
+        <p style="font-size: 0.9rem; margin-top: 10px;">${error.message}</p>
       </div>
     `;
   }
 }
-
-export const init = loadCars;

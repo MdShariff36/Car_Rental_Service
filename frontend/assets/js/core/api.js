@@ -1,26 +1,57 @@
 import { API_BASE } from "../base/config.js";
 import { getToken } from "../base/storage.js";
 
-export const api = async (path, method = "GET", body = null) => {
-  const headers = { "Content-Type": "application/json" };
+export const api = async (
+  path,
+  method = "GET",
+  body = null,
+  includeAuth = true,
+) => {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+
   const token = getToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  if (includeAuth && token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const config = {
+    method,
+    headers,
+    mode: "cors",
+    credentials: "omit", // ✅ IMPORTANT: Don't send credentials
+  };
+
+  if (body && ["POST", "PUT", "PATCH"].includes(method.toUpperCase())) {
+    config.body = JSON.stringify(body);
+  }
 
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : null,
-    });
+    console.log(`🔵 API Call: ${method} ${API_BASE}${path}`);
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || `API error: ${res.status}`);
+    const response = await fetch(`${API_BASE}${path}`, config);
+
+    const contentType = response.headers.get("content-type");
+    let data;
+
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      data = await response.text();
     }
 
-    return res.json();
-  } catch (err) {
-    console.error("API call failed:", err);
-    throw err;
+    if (!response.ok) {
+      const errorMessage = data?.message || data || `HTTP ${response.status}`;
+      console.error(`❌ API Error:`, errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    console.log("✅ API Response:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ API call failed:", error);
+    throw error;
   }
 };

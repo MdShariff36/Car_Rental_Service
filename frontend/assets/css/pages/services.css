@@ -1,121 +1,120 @@
-:root {
-  --primary-orange: #f36d21;
-  --dark-slate: #1e293b;
-  --white: #ffffff;
-  --bg-soft: #f8fafc;
-}
+/* ============================================
+   FILE: assets/css/pages/services.css
+============================================ */
 
 .services-page {
-  background-color: var(--bg-soft);
-  font-family: "Inter", sans-serif;
-  color: var(--dark-slate);
+  background: var(--bg-secondary);
 }
 
-/* --- Hero Section --- */
-.services-page .page-hero {
-  background: linear-gradient(135deg, #f36d21 0%, #d95a14 100%);
+.page-hero {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8559 100%);
   color: var(--white);
-  padding: 80px 20px;
+  padding: var(--space-16) 0;
   text-align: center;
 }
 
-.services-page .section-title {
-  text-align: center;
-  margin: 50px 0;
-  font-weight: 700;
+.hero-glow-box {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* --- The Glow Boxes (Service Cards) --- */
+.hero-glow-box h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--space-4);
+  color: var(--white);
+}
+
+.hero-glow-box p {
+  font-size: var(--font-size-xl);
+  opacity: 0.95;
+}
+
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  padding-bottom: 60px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  padding: var(--space-12) 0;
 }
 
 .service-card {
-  background: var(--white); /* Stays white to keep text visible */
-  padding: 40px 30px;
-  border-radius: 12px;
+  background: var(--white);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
   text-align: center;
-  border: 2px solid transparent; /* Border is invisible at first */
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Light shadow */
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-base);
 }
 
-/* HOVER EFFECT: Background stays white, glow appears outside */
 .service-card:hover {
+  box-shadow: var(--shadow-lg);
   transform: translateY(-5px);
-  background: var(--white); /* Force background to stay white */
-  border-color: var(--primary-orange); /* Surrounding border appears */
-  box-shadow: 0 0 20px rgba(243, 109, 33, 0.4); /* Glow effect outside */
 }
 
 .icon-wrap {
-  font-size: 3rem;
-  margin-bottom: 20px;
+  font-size: 3.5rem;
+  margin-bottom: var(--space-4);
 }
 
 .service-card h3 {
-  color: var(--dark-slate);
-  margin-bottom: 15px;
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-3);
 }
 
 .service-card p {
-  color: #64748b; /* Gray text for visibility */
-  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-5);
 }
 
-/* --- Buttons --- */
 .btn-orange {
-  display: inline-block;
-  background-color: var(--primary-orange);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  margin-top: 15px;
+  background: var(--primary-color);
+  color: var(--white);
 }
 
-.btn-outline {
-  display: inline-block;
-  border: 2px solid var(--primary-orange);
-  color: var(--primary-orange);
-  padding: 8px 18px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  margin-top: 15px;
+.btn-orange:hover {
+  background: var(--primary-dark);
 }
 
-/* --- Corporate Section Glow --- */
+.corporate-cta {
+  padding: var(--space-12) 0;
+}
+
 .corporate-card-glow {
-  background: var(--white);
-  padding: 50px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-8);
+  padding: var(--space-10);
+  background: linear-gradient(135deg, #4a90e2 0%, #6ba3e8 100%);
+  color: var(--white);
+  border-radius: var(--radius-2xl);
   align-items: center;
-  border: 2px solid transparent;
-  margin-bottom: 80px;
-  transition: all 0.4s ease;
 }
 
-.corporate-card-glow:hover {
-  border-color: var(--primary-orange);
-  box-shadow: 0 0 30px rgba(243, 109, 33, 0.5); /* Glowing surrounding color */
+.banner-content h2 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-4);
+  color: var(--white);
+}
+
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-6) 0;
+}
+
+.check-list li {
+  padding-left: var(--space-6);
+  margin-bottom: var(--space-3);
+  position: relative;
+}
+
+.check-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  font-weight: var(--font-bold);
 }
 
 .banner-img {
-  font-size: 6rem;
-  color: var(--primary-orange);
-  opacity: 0.2;
-}
-
-@media (max-width: 768px) {
-  .corporate-card-glow {
-    flex-direction: column;
-    text-align: center;
-  }
+  font-size: 8rem;
+  text-align: center;
 }

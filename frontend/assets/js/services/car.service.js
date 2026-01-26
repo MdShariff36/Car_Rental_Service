@@ -1,22 +1,55 @@
-// FILE: frontend/assets/js/services/car.service.js
 import { api } from "../core/api.js";
+import { ENDPOINTS } from "../base/config.js";
 
-export const getAllCars = () => api("/cars");
+/**
+ * Get all available cars
+ */
+export const getAllCars = async () => {
+  try {
+    return await api(ENDPOINTS.CARS, "GET", null, false);
+  } catch (error) {
+    console.error("Error fetching cars:", error);
+    throw error;
+  }
+};
 
-export const getAvailableCars = () => api("/cars/available");
+/**
+ * Get car by ID
+ */
+export const getCarById = async (id) => {
+  try {
+    return await api(`/cars/${id}`, "GET", null, false);
+  } catch (error) {
+    console.error("Error fetching car:", error);
+    throw error;
+  }
+};
 
-export const getCarById = (id) => api(`/cars/${id}`);
+/**
+ * Get available cars only
+ */
+export const getAvailableCars = async () => {
+  try {
+    return await api(ENDPOINTS.CARS_AVAILABLE, "GET", null, false);
+  } catch (error) {
+    console.error("Error fetching available cars:", error);
+    throw error;
+  }
+};
 
-export const getCarsByType = (type) => api(`/cars/type/${type}`);
-
-export const searchCars = (name) => api(`/cars/search?name=${name}`);
-
-export const getCarsByPriceRange = (minPrice, maxPrice) =>
-  api(`/cars/price-range?minPrice=${minPrice}&maxPrice=${maxPrice}`);
-
-export const addCar = (carData, ownerId) =>
-  api(`/cars?ownerId=${ownerId}`, "POST", carData);
-
-export const updateCar = (id, carData) => api(`/cars/${id}`, "PUT", carData);
-
-export const deleteCar = (id) => api(`/cars/${id}`, "DELETE");
+/**
+ * Search cars by name
+ */
+export const searchCars = async (searchTerm) => {
+  try {
+    return await api(
+      `${ENDPOINTS.CARS_SEARCH}?name=${searchTerm}`,
+      "GET",
+      null,
+      false,
+    );
+  } catch (error) {
+    console.error("Error searching cars:", error);
+    throw error;
+  }
+};

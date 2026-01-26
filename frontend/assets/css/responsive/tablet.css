@@ -1,22 +1,21 @@
+/* ============================================
+   FILE: assets/css/responsive/tablet.css
+============================================ */
+
 @media (min-width: 769px) and (max-width: 1024px) {
   .container {
-    padding: 0 30px;
+    max-width: var(--container-lg);
   }
-  .grid-3 {
+
+  .grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .sidebar {
-    display: flex;
-    overflow-x: auto;
-    position: static;
-    margin-bottom: 24px;
-    gap: 12px;
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .sidebar a {
-    white-space: nowrap;
-    margin: 0;
-    flex-shrink: 0;
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

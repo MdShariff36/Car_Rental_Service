@@ -1,87 +1,716 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Book Car | Auto Prime</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complete Your Booking | Auto Prime</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/pages/booking.css" />
   </head>
-
   <body>
-    <!-- HEADER -->
-    <header class="site-header">
+    <!-- Header -->
+    <header class="site-header" id="header"></header>
+
+    <!-- Progress Indicator -->
+    <div class="booking-progress-bar">
       <div class="container">
-        <div class="logo">
-          <img src="assets/images/logo/logo.png" />
-          <strong>Auto Prime</strong>
-        </div>
-        <nav class="nav">
-          <a href="index.html">Home</a>
-          <a href="cars.html">Cars</a>
-          <a href="booking.html" class="active">Booking</a>
-        </nav>
-      </div>
-    </header>
-
-    <!-- HERO -->
-    <section class="container">
-      <h1 class="section-title">Complete Your Booking</h1>
-      <p class="muted" style="text-align: center">
-        Choose date, time & confirm your ride
-      </p>
-    </section>
-
-    <!-- BOOKING FORM -->
-    <section class="container">
-      <div class="grid grid-2">
-        <!-- LEFT -->
-        <div class="card">
-          <h3>Booking Details</h3>
-
-          <label>Pickup Location</label>
-          <input type="text" placeholder="City or Area" />
-
-          <label>Pickup Date</label>
-          <input type="date" />
-
-          <label>Pickup Time</label>
-          <input type="time" />
-
-          <label>Drop Date</label>
-          <input type="date" />
-
-          <label>Drop Time</label>
-          <input type="time" />
-        </div>
-
-        <!-- RIGHT -->
-        <div class="card">
-          <h3>Price Summary</h3>
-
-          <div class="summary-row">
-            <span>Car Rent</span>
-            <span>₹3,500</span>
+        <div class="progress-steps">
+          <div class="progress-step active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-label">Trip Details</div>
           </div>
-
-          <div class="summary-row">
-            <span>Insurance</span>
-            <span>₹300</span>
+          <div class="progress-step" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-label">Add-ons</div>
           </div>
-
-          <div class="summary-row total">
-            <span>Total</span>
-            <span>₹3,800</span>
+          <div class="progress-step" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-label">Driver Info</div>
           </div>
-
-          <button class="btn btn-primary" style="width: 100%">
-            Confirm Booking
-          </button>
+          <div class="progress-step" data-step="4">
+            <div class="step-number">4</div>
+            <div class="step-label">Payment</div>
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Main Booking Section -->
+    <section class="container booking-container">
+      <div class="booking-layout">
+        <!-- Left: Booking Form -->
+        <div class="booking-form-section">
+          <!-- Step 1: Trip Details -->
+          <div class="booking-step active" id="step1">
+            <div class="step-header">
+              <h2>Trip Details</h2>
+              <p class="muted">Confirm your pickup and drop-off information</p>
+            </div>
+
+            <div class="card">
+              <div class="form-section">
+                <h3>Pickup Details</h3>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="pickupLocation">Pickup Location *</label>
+                    <input
+                      type="text"
+                      id="pickupLocation"
+                      placeholder="Enter pickup address"
+                      required
+                    />
+                    <button
+                      class="btn-text use-current-location"
+                      id="useCurrentLocation"
+                    >
+                      📍 Use Current Location
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="pickupDate">Pickup Date *</label>
+                    <input type="date" id="pickupDate" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="pickupTime">Pickup Time *</label>
+                    <input type="time" id="pickupTime" value="10:00" required />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3>Drop-off Details</h3>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="sameAsPickup" />
+                  <span>Same as pickup location</span>
+                </label>
+
+                <div class="form-row" id="dropLocationRow">
+                  <div class="form-group">
+                    <label for="dropLocation">Drop-off Location *</label>
+                    <input
+                      type="text"
+                      id="dropLocation"
+                      placeholder="Enter drop-off address"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="dropDate">Drop-off Date *</label>
+                    <input type="date" id="dropDate" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="dropTime">Drop-off Time *</label>
+                    <input type="time" id="dropTime" value="10:00" required />
+                  </div>
+                </div>
+              </div>
+
+              <div class="trip-summary-inline">
+                <div class="summary-item">
+                  <span class="label">Trip Duration</span>
+                  <span class="value" id="tripDurationDisplay">-</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Total Distance</span>
+                  <span class="value" id="estimatedDistance"
+                    >Calculate route</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn btn-primary btn-lg" id="continueToAddons">
+                Continue to Add-ons →
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Add-ons -->
+          <div class="booking-step" id="step2">
+            <div class="step-header">
+              <h2>Enhance Your Trip</h2>
+              <p class="muted">
+                Select optional add-ons for a better experience
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="addons-grid">
+                <label class="addon-card">
+                  <input
+                    type="checkbox"
+                    name="addon"
+                    value="gps"
+                    data-price="200"
+                  />
+                  <div class="addon-content">
+                    <div class="addon-icon">🗺️</div>
+                    <div class="addon-info">
+                      <h4>GPS Navigation</h4>
+                      <p>Real-time navigation system</p>
+                      <span class="addon-price">+₹200/day</span>
+                    </div>
+                  </div>
+                  <div class="addon-check">✓</div>
+                </label>
+
+                <label class="addon-card">
+                  <input
+                    type="checkbox"
+                    name="addon"
+                    value="child-seat"
+                    data-price="150"
+                  />
+                  <div class="addon-content">
+                    <div class="addon-icon">👶</div>
+                    <div class="addon-info">
+                      <h4>Child Safety Seat</h4>
+                      <p>For children under 5 years</p>
+                      <span class="addon-price">+₹150/day</span>
+                    </div>
+                  </div>
+                  <div class="addon-check">✓</div>
+                </label>
+
+                <label class="addon-card">
+                  <input
+                    type="checkbox"
+                    name="addon"
+                    value="wifi"
+                    data-price="300"
+                  />
+                  <div class="addon-content">
+                    <div class="addon-icon">📶</div>
+                    <div class="addon-info">
+                      <h4>Portable WiFi</h4>
+                      <p>Stay connected on the go</p>
+                      <span class="addon-price">+₹300/day</span>
+                    </div>
+                  </div>
+                  <div class="addon-check">✓</div>
+                </label>
+
+                <label class="addon-card">
+                  <input
+                    type="checkbox"
+                    name="addon"
+                    value="dashcam"
+                    data-price="250"
+                  />
+                  <div class="addon-content">
+                    <div class="addon-icon">📹</div>
+                    <div class="addon-info">
+                      <h4>Dash Camera</h4>
+                      <p>Record your journey</p>
+                      <span class="addon-price">+₹250/day</span>
+                    </div>
+                  </div>
+                  <div class="addon-check">✓</div>
+                </label>
+
+                <label class="addon-card">
+                  <input
+                    type="checkbox"
+                    name="addon"
+                    value="extra-insurance"
+                    data-price="500"
+                  />
+                  <div class="addon-content">
+                    <div class="addon-icon">🛡️</div>
+                    <div class="addon-info">
+                      <h4>Extra Insurance</h4>
+                      <p>Zero deductible coverage</p>
+                      <span class="addon-price">+₹500/day</span>
+                    </div>
+                  </div>
+                  <div class="addon-check">✓</div>
+                </label>
+
+                <label class="addon-card">
+                  <input
+                    type="checkbox"
+                    name="addon"
+                    value="fuel-prepaid"
+                    data-price="0"
+                  />
+                  <div class="addon-content">
+                    <div class="addon-icon">⛽</div>
+                    <div class="addon-info">
+                      <h4>Prepaid Fuel</h4>
+                      <p>Skip refueling hassle</p>
+                      <span class="addon-price">Market rate</span>
+                    </div>
+                  </div>
+                  <div class="addon-check">✓</div>
+                </label>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn btn-outline" id="backToStep1">← Back</button>
+              <button class="btn btn-primary btn-lg" id="continueToDriver">
+                Continue to Driver Info →
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Driver Information -->
+          <div class="booking-step" id="step3">
+            <div class="step-header">
+              <h2>Driver Information</h2>
+              <p class="muted">Who will be driving this car?</p>
+            </div>
+
+            <div class="card">
+              <div class="form-section">
+                <h3>Primary Driver</h3>
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="driverName">Full Name *</label>
+                    <input type="text" id="driverName" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="driverPhone">Phone Number *</label>
+                    <input
+                      type="tel"
+                      id="driverPhone"
+                      placeholder="+91"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="driverEmail">Email *</label>
+                    <input type="email" id="driverEmail" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="driverAge">Age *</label>
+                    <input
+                      type="number"
+                      id="driverAge"
+                      min="21"
+                      max="70"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="licenseNumber">License Number *</label>
+                    <input
+                      type="text"
+                      id="licenseNumber"
+                      placeholder="DL-XXXXXXXXX"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="licenseExpiry">License Expiry *</label>
+                    <input type="date" id="licenseExpiry" required />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="licenseIssueState">License Issue State *</label>
+                    <select id="licenseIssueState" required>
+                      <option value="">Select State</option>
+                      <option value="AN">Andaman and Nicobar</option>
+                      <option value="AP">Andhra Pradesh</option>
+                      <option value="AR">Arunachal Pradesh</option>
+                      <option value="AS">Assam</option>
+                      <option value="BR">Bihar</option>
+                      <option value="CH">Chandigarh</option>
+                      <option value="CT">Chhattisgarh</option>
+                      <option value="DN">Dadra and Nagar Haveli</option>
+                      <option value="DD">Daman and Diu</option>
+                      <option value="DL">Delhi</option>
+                      <option value="GA">Goa</option>
+                      <option value="GJ">Gujarat</option>
+                      <option value="HR">Haryana</option>
+                      <option value="HP">Himachal Pradesh</option>
+                      <option value="JK">Jammu and Kashmir</option>
+                      <option value="JH">Jharkhand</option>
+                      <option value="KA">Karnataka</option>
+                      <option value="KL">Kerala</option>
+                      <option value="LA">Ladakh</option>
+                      <option value="LD">Lakshadweep</option>
+                      <option value="MP">Madhya Pradesh</option>
+                      <option value="MH">Maharashtra</option>
+                      <option value="MN">Manipur</option>
+                      <option value="ML">Meghalaya</option>
+                      <option value="MZ">Mizoram</option>
+                      <option value="NL">Nagaland</option>
+                      <option value="OR">Odisha</option>
+                      <option value="PY">Puducherry</option>
+                      <option value="PB">Punjab</option>
+                      <option value="RJ">Rajasthan</option>
+                      <option value="SK">Sikkim</option>
+                      <option value="TN">Tamil Nadu</option>
+                      <option value="TG">Telangana</option>
+                      <option value="TR">Tripura</option>
+                      <option value="UP">Uttar Pradesh</option>
+                      <option value="UT">Uttarakhand</option>
+                      <option value="WB">West Bengal</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3>Additional Driver (Optional)</h3>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="addAdditionalDriver" />
+                  <span>Add another driver (+₹200/day)</span>
+                </label>
+
+                <div
+                  id="additionalDriverFields"
+                  style="display: none; margin-top: 20px"
+                >
+                  <div class="form-row two-cols">
+                    <div class="form-group">
+                      <label for="additionalDriverName">Full Name</label>
+                      <input type="text" id="additionalDriverName" />
+                    </div>
+                    <div class="form-group">
+                      <label for="additionalLicenseNumber"
+                        >License Number</label
+                      >
+                      <input type="text" id="additionalLicenseNumber" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3>Emergency Contact</h3>
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="emergencyName">Contact Name *</label>
+                    <input type="text" id="emergencyName" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="emergencyPhone">Contact Phone *</label>
+                    <input type="tel" id="emergencyPhone" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn btn-outline" id="backToStep2">← Back</button>
+              <button class="btn btn-primary btn-lg" id="continueToPayment">
+                Continue to Payment →
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 4: Payment -->
+          <div class="booking-step" id="step4">
+            <div class="step-header">
+              <h2>Payment Details</h2>
+              <p class="muted">Choose your preferred payment method</p>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="card promo-card">
+              <div class="promo-header">
+                <h3>Have a Promo Code?</h3>
+              </div>
+              <div class="promo-input-group">
+                <input
+                  type="text"
+                  id="promoCode"
+                  placeholder="Enter promo code"
+                  class="promo-input"
+                />
+                <button class="btn btn-outline" id="applyPromo">Apply</button>
+              </div>
+              <div class="promo-message" id="promoMessage"></div>
+              <div class="available-offers">
+                <p class="muted">Available offers:</p>
+                <button class="offer-tag" data-code="FIRSTPRIME">
+                  FIRSTPRIME - 15% off
+                </button>
+                <button class="offer-tag" data-code="WEEKEND50">
+                  WEEKEND50 - ₹500 off
+                </button>
+              </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="card">
+              <h3>Select Payment Method</h3>
+
+              <div class="payment-methods">
+                <label class="payment-method-card active">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="card"
+                    checked
+                  />
+                  <div class="payment-icon">💳</div>
+                  <div class="payment-info">
+                    <h4>Credit/Debit Card</h4>
+                    <p>Visa, Mastercard, RuPay</p>
+                  </div>
+                </label>
+
+                <label class="payment-method-card">
+                  <input type="radio" name="paymentMethod" value="upi" />
+                  <div class="payment-icon">📱</div>
+                  <div class="payment-info">
+                    <h4>UPI</h4>
+                    <p>Google Pay, PhonePe, Paytm</p>
+                  </div>
+                </label>
+
+                <label class="payment-method-card">
+                  <input type="radio" name="paymentMethod" value="netbanking" />
+                  <div class="payment-icon">🏦</div>
+                  <div class="payment-info">
+                    <h4>Net Banking</h4>
+                    <p>All major banks</p>
+                  </div>
+                </label>
+
+                <label class="payment-method-card">
+                  <input type="radio" name="paymentMethod" value="wallet" />
+                  <div class="payment-icon">👛</div>
+                  <div class="payment-info">
+                    <h4>Wallet</h4>
+                    <p>Paytm, PhonePe, Amazon Pay</p>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Card Payment Form -->
+              <div class="payment-form" id="cardPaymentForm">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="cardNumber">Card Number *</label>
+                    <input
+                      type="text"
+                      id="cardNumber"
+                      placeholder="1234 5678 9012 3456"
+                      maxlength="19"
+                    />
+                  </div>
+                </div>
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="cardExpiry">Expiry Date *</label>
+                    <input
+                      type="text"
+                      id="cardExpiry"
+                      placeholder="MM/YY"
+                      maxlength="5"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="cardCVV">CVV *</label>
+                    <input
+                      type="text"
+                      id="cardCVV"
+                      placeholder="123"
+                      maxlength="3"
+                    />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="cardName">Cardholder Name *</label>
+                    <input
+                      type="text"
+                      id="cardName"
+                      placeholder="Name on card"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- UPI Payment Form -->
+              <div
+                class="payment-form"
+                id="upiPaymentForm"
+                style="display: none"
+              >
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="upiId">UPI ID *</label>
+                    <input type="text" id="upiId" placeholder="yourname@upi" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="card terms-card">
+              <label class="checkbox-label">
+                <input type="checkbox" id="acceptTerms" required />
+                <span>
+                  I agree to the
+                  <a href="terms.html" target="_blank">Terms & Conditions</a>
+                  and <a href="privacy.html" target="_blank">Privacy Policy</a>
+                </span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="acceptCancellation" required />
+                <span>I understand the cancellation and refund policy</span>
+              </label>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn btn-outline" id="backToStep3">← Back</button>
+              <button
+                class="btn btn-primary btn-lg btn-full"
+                id="confirmBooking"
+              >
+                <span class="icon">🔒</span> Pay ₹<span id="finalPayAmount"
+                  >0</span
+                >
+              </button>
+            </div>
+
+            <div class="security-badges">
+              <span>🔒 SSL Secured</span>
+              <span>✓ Safe & Secure</span>
+              <span>💳 PCI Compliant</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Booking Summary -->
+        <div class="booking-summary-section">
+          <div class="summary-card sticky">
+            <h3>Booking Summary</h3>
+
+            <!-- Car Details -->
+            <div class="summary-car-info">
+              <img
+                src=""
+                alt="Car"
+                id="summaryCarImage"
+                class="summary-car-image"
+              />
+              <div class="summary-car-details">
+                <h4 id="summaryCarName">Loading...</h4>
+                <p class="muted" id="summaryCarType">-</p>
+              </div>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <!-- Trip Info -->
+            <div class="summary-section">
+              <div class="summary-row">
+                <span class="label">📅 Pickup</span>
+                <span class="value" id="summaryPickupDate">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">📅 Drop-off</span>
+                <span class="value" id="summaryDropDate">-</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">⏱️ Duration</span>
+                <span class="value" id="summaryDuration">-</span>
+              </div>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <!-- Price Breakdown -->
+            <div class="summary-section">
+              <h4>Price Breakdown</h4>
+              <div class="summary-row">
+                <span>Base Rent</span>
+                <span id="summaryBasePrice">₹0</span>
+              </div>
+              <div
+                class="summary-row"
+                id="summaryAddonsRow"
+                style="display: none"
+              >
+                <span>Add-ons</span>
+                <span id="summaryAddonsPrice">₹0</span>
+              </div>
+              <div
+                class="summary-row"
+                id="summaryAdditionalDriverRow"
+                style="display: none"
+              >
+                <span>Additional Driver</span>
+                <span id="summaryAdditionalDriverPrice">₹0</span>
+              </div>
+              <div
+                class="summary-row"
+                id="summaryDiscountRow"
+                style="display: none"
+              >
+                <span class="discount-label">Discount</span>
+                <span class="discount-amount" id="summaryDiscountAmount"
+                  >-₹0</span
+                >
+              </div>
+              <div class="summary-row">
+                <span>GST (18%)</span>
+                <span id="summaryGST">₹0</span>
+              </div>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <!-- Total -->
+            <div class="summary-total">
+              <span>Total Amount</span>
+              <span class="total-amount"
+                >₹<span id="summaryTotal">0</span></span
+              >
+            </div>
+
+            <!-- Security Deposit Note -->
+            <div class="summary-note">
+              <p class="muted">
+                <strong>Note:</strong> A refundable security deposit of ₹5,000
+                will be blocked on your card.
+              </p>
+            </div>
+
+            <!-- Help Section -->
+            <div class="summary-help">
+              <p>Need help?</p>
+              <a href="tel:+919361261582" class="help-link">
+                📞 Call +91-9361261582
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <footer class="site-footer">
-      <div class="container">© 2025 Auto Prime Rental</div>
-    </footer>
+    <!-- Footer -->
+    <footer class="site-footer" id="footer"></footer>
+
+    <!-- Loading Overlay -->
+    <div id="loader" class="loader-overlay" style="display: none">
+      <div class="spinner"></div>
+      <p>Processing your booking...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="assets/js/main.js"></script>
+    <script type="module" src="assets/js/pages/booking.js"></script>
   </body>
 </html>

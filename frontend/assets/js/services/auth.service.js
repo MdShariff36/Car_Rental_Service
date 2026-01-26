@@ -1,47 +1,61 @@
-// FILE: frontend/assets/js/services/auth.service.js
 import { api } from "../core/api.js";
+import { ENDPOINTS } from "../base/config.js";
+import { setToken, setUser, clear } from "../base/storage.js";
 
+/**
+ * Register a new user
+ */
 export const register = async (userData) => {
-  return api("/auth/register", "POST", userData);
+  try {
+    const response = await api(ENDPOINTS.REGISTER, "POST", userData, false);
+
+    // Save token and user data
+    if (response.token) {
+      setToken(response.token);
+      setUser(response.user);
+    }
+
+    return response;
+  } catch (error) {
+    throw new Error(error.message || "Registration failed");
+  }
 };
 
+/**
+ * Login user
+ */
 export const login = async (email, password) => {
-  return api("/auth/login", "POST", { email, password });
+  try {
+    const response = await api(
+      ENDPOINTS.LOGIN,
+      "POST",
+      { email, password },
+      false,
+    );
+
+    // Save token and user data
+    if (response.token) {
+      setToken(response.token);
+      setUser(response.user);
+    }
+
+    return response;
+  } catch (error) {
+    throw new Error(error.message || "Login failed");
+  }
 };
 
-// FILE: frontend/assets/js/services/booking.service.js
-import { api } from "../core/api.js";
+/**
+ * Logout user
+ */
+export const logout = () => {
+  clear();
+  window.location.href = "/index.html";
+};
 
-export const createBooking = (bookingData, userId, carId) =>
-  api(`/bookings?userId=${userId}&carId=${carId}`, "POST", bookingData);
-
-export const getUserBookings = (userId) => api(`/bookings/user/${userId}`);
-
-export const getBookingById = (id) => api(`/bookings/${id}`);
-
-export const updateBookingStatus = (id, status) =>
-  api(`/bookings/${id}/status?status=${status}`, "PATCH");
-
-// FILE: frontend/assets/js/services/contact.service.js
-import { api } from "../core/api.js";
-
-export const submitContactMessage = (messageData) =>
-  api("/contact", "POST", messageData);
-
-// FILE: frontend/assets/js/services/wishlist.service.js
-import { api } from "../core/api.js";
-
-export const getUserWishlist = (userId) => api(`/wishlist/user/${userId}`);
-
-export const addToWishlist = (userId, carId) =>
-  api(`/wishlist?userId=${userId}&carId=${carId}`, "POST");
-
-export const removeFromWishlist = (id) => api(`/wishlist/${id}`, "DELETE");
-
-// FILE: frontend/assets/js/services/review.service.js
-import { api } from "../core/api.js";
-
-export const getCarReviews = (carId) => api(`/reviews/car/${carId}`);
-
-export const addReview = (reviewData, userId, carId) =>
-  api(`/reviews?userId=${userId}&carId=${carId}`, "POST", reviewData);
+/**
+ * Check if user is authenticated
+ */
+export const isAuthenticated = () => {
+  return !!getToken();
+};

@@ -1,198 +1,37 @@
-:root {
-  --primary: #f36d21;
-  --dark-slate: #1e293b;
-  --white: #ffffff;
-  --bg-body: #f7f7f7;
-  --text-gray: #64748b;
-  --shadow-light: rgba(0, 0, 0, 0.05);
+/* ============================================
+   FILE: assets/css/pages/contact.css
+============================================ */
+
+.contact-page {
+  background: var(--bg-secondary);
 }
 
-/* =======================
-   Global Layout
-======================= */
-body {
-  margin: 0;
-  font-family: "Inter", Arial, sans-serif;
-  background: var(--bg-body);
-  color: var(--dark-slate);
-  line-height: 1.6;
-}
-
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* =======================
-   Header
-======================= */
-#header {
+.contact-card {
   background: var(--white);
-  padding: 18px 0;
-  border-bottom: 1px solid #e5e5e5;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 3px 6px var(--shadow-light);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
 }
 
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo a {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--dark-slate);
-  text-decoration: none;
-}
-
-.nav a {
-  margin-left: 22px;
-  font-size: 1rem;
-  text-decoration: none;
-  color: var(--dark-slate);
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.nav a:hover,
-.nav a.active {
-  color: var(--primary);
-}
-
-.btn-login {
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: var(--primary);
-  color: var(--white);
-  text-decoration: none;
-  transition: background 0.3s;
-}
-
-.btn-login:hover {
-  background: #d95a14;
-}
-
-/* =======================
-   Page Hero
-======================= */
-.page-hero {
-  background: linear-gradient(135deg, #f36d21 0%, #d95a14 100%);
-  color: var(--white);
-  padding: 80px 20px;
-  text-align: center;
-}
-
-.page-hero .hero-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.page-hero .hero-subtitle {
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: auto;
-  opacity: 0.9;
-}
-
-/* =======================
-   Contact Cards
-======================= */
-.card {
-  background: var(--white);
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 6px 18px var(--shadow-light);
-  transition: all 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-.contact-card h3 {
-  margin-bottom: 10px;
-  font-size: 1.4rem;
-}
-
-.contact-card p {
-  color: var(--text-gray);
-  margin-bottom: 20px;
-}
-
-/* =======================
-   Form Styles
-======================= */
 .interactive-form .form-group {
-  margin-bottom: 18px;
+  margin-bottom: var(--space-5);
+}
+
+.info-sidebar {
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
 }
 
-.interactive-form label {
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-.interactive-form input,
-.interactive-form select,
-.interactive-form textarea {
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition:
-    border 0.3s,
-    box-shadow 0.3s;
-}
-
-.interactive-form input:focus,
-.interactive-form select:focus,
-.interactive-form textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 8px rgba(243, 109, 33, 0.3);
-  outline: none;
-}
-
-.btn-full {
-  width: 100%;
-  text-align: center;
-  background: var(--primary);
+.blue-info-box {
+  background: linear-gradient(135deg, #4a90e2 0%, #6ba3e8 100%);
   color: var(--white);
-  padding: 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
+  padding: var(--space-8);
 }
 
-.btn-full:hover {
-  background: #d95a14;
-  transform: translateY(-2px);
-}
-
-/* =======================
-   Info Sidebar (Contact Info)
-======================= */
-.info-sidebar .blue-info-box {
-  background: var(--white); /* FULL WHITE */
-  color: var(--dark-slate); /* Dark text */
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 6px 18px var(--shadow-light);
-}
-
-.info-sidebar h3 {
-  margin-bottom: 15px;
-  color: var(--dark-slate);
+.blue-info-box h3 {
+  color: var(--white);
+  margin-bottom: var(--space-6);
 }
 
 .contact-detail-list {
@@ -202,117 +41,36 @@ body {
 
 .contact-detail-list li {
   display: flex;
-  align-items: flex-start;
-  margin-bottom: 15px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .icon-circle {
-  font-size: 1.5rem;
-  margin-right: 12px;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  flex-shrink: 0;
 }
 
 .contact-detail-list strong {
   display: block;
-  font-weight: 600;
-  margin-bottom: 3px;
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-base);
 }
 
 .contact-detail-list p {
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
   margin: 0;
-  color: var(--text-gray);
 }
 
 .business-hours h3 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-.business-hours .flex {
-  display: flex;
-  justify-content: space-between;
-}
-
-/* =======================
-   Footer
-======================= */
-#footer {
-  background: var(--white);
-  color: var(--dark-slate);
-  padding: 50px 0 30px;
-  border-top: 1px solid #e5e5e5;
-}
-
-.footer-column h4 {
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-}
-
-.footer-column p,
-.footer-column a {
-  font-size: 0.95rem;
-  color: #555;
-  text-decoration: none;
-  line-height: 1.6;
-}
-
-.footer-column ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-bottom {
-  text-align: center;
-  font-size: 0.85rem;
-  opacity: 0.7;
-  margin-top: 20px;
-}
-
-/* =======================
-   Grid Layout
-======================= */
-.grid {
-  display: grid;
-  gap: 24px;
-}
-
-.grid-2 {
-  grid-template-columns: 1.3fr 0.9fr;
-}
-
-.grid-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-/* =======================
-   Responsive
-======================= */
-@media (max-width: 1024px) {
-  .grid-2,
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .page-hero .hero-title {
-    font-size: 2rem;
-  }
-
-  .page-hero .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .card {
-    padding: 25px;
-  }
-}
-
-@media (max-width: 768px) {
-  .nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .btn-login {
-    padding: 6px 12px;
-  }
+  color: var(--white);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-lg);
 }

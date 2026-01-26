@@ -1,38 +1,76 @@
-<!DOCTYPE html>
+<!-- ========================================
+     FILE 9: booking-confirmation.html
+======================================== -->
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Booking Confirmed | Auto Prime</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Confirmed | Auto Prime</title>
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
-
   <body>
-    <div id="header"></div>
+    <header class="site-header" id="header"></header>
 
-    <section class="page-hero">
+    <section class="confirmation-page">
       <div class="container">
-        <h1>Booking Confirmed 🎉</h1>
-        <p>Your car is reserved successfully</p>
+        <div class="confirmation-card">
+          <div class="success-icon">✅</div>
+          <h1>Booking Confirmed!</h1>
+          <p class="confirmation-message">
+            Your booking has been successfully confirmed. We've sent a
+            confirmation email to your inbox.
+          </p>
+
+          <div class="booking-reference">
+            <p class="muted">Booking Reference</p>
+            <h2 id="bookingRef">AP-2026-12345</h2>
+          </div>
+
+          <div class="confirmation-details">
+            <div class="detail-row">
+              <span class="label">Car</span>
+              <span class="value" id="carName">Hyundai Creta</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Pickup</span>
+              <span class="value" id="pickupDetails"
+                >Jan 28, 2026, 10:00 AM</span
+              >
+            </div>
+            <div class="detail-row">
+              <span class="label">Drop-off</span>
+              <span class="value" id="dropDetails">Jan 31, 2026, 10:00 AM</span>
+            </div>
+            <div class="detail-row total">
+              <span class="label">Total Paid</span>
+              <span class="value" id="totalPaid">₹10,500</span>
+            </div>
+          </div>
+
+          <div class="confirmation-actions">
+            <a href="user/my-bookings.html" class="btn btn-primary"
+              >View My Bookings</a
+            >
+            <a href="index.html" class="btn btn-outline">Back to Home</a>
+          </div>
+
+          <div class="next-steps">
+            <h3>What's Next?</h3>
+            <ul>
+              <li>📧 Check your email for booking details</li>
+              <li>📋 Keep your documents ready (License, ID)</li>
+              <li>📞 Call us at +91-9361261582 for any queries</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="container">
-      <div
-        class="card"
-        style="max-width: 600px; margin: auto; text-align: center"
-      >
-        <h2>Hyundai Creta</h2>
-        <p class="muted">Pickup on 12 June</p>
-        <p class="muted">Drop on 14 June</p>
-        <h3>Total Paid: ₹7,000</h3>
-        <a href="user/dashboard.html" class="btn" style="margin-top: 15px">
-          Go to Dashboard
-        </a>
-      </div>
-    </section>
-
-    <div id="footer"></div>
-    <script src="assets/js/ui.js"></script>
+    <footer class="site-footer" id="footer"></footer>
+    <script
+      type="module"
+      src="assets/js/pages/booking-confirmation.js"
+    ></script>
   </body>
 </html>

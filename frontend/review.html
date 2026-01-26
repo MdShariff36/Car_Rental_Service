@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Reviews | Auto Prime</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="site-header" id="header"></header>
+
+    <section class="page-header">
+      <div class="container">
+        <h1>What Our Customers Say</h1>
+        <div class="overall-rating">
+          <span class="rating-number">4.8</span>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <span class="muted">Based on 5,247 reviews</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="reviews-filter">
+        <button class="filter-btn active" data-rating="all">All Reviews</button>
+        <button class="filter-btn" data-rating="5">5 Stars</button>
+        <button class="filter-btn" data-rating="4">4 Stars</button>
+        <button class="filter-btn" data-rating="3">3 Stars</button>
+      </div>
+
+      <div class="reviews-list" id="reviewsList">
+        <!-- Reviews will load dynamically -->
+      </div>
+    </section>
+
+    <footer class="site-footer" id="footer"></footer>
+  </body>
+</html>

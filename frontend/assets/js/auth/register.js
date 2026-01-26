@@ -1,6 +1,9 @@
-// FILE: frontend/assets/js/auth/register.js
 import { register } from "../services/auth.service.js";
-import { setToken, setUser } from "../base/storage.js";
+import {
+  validateEmail,
+  validatePassword,
+  validatePhone,
+} from "../base/validators.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const registerForm = document.getElementById("registerForm");
@@ -13,50 +16,70 @@ document.addEventListener("DOMContentLoaded", () => {
 async function handleRegister(event) {
   event.preventDefault();
 
-  // Show loading state
-  const submitBtn = event.target.querySelector("button[type='submit']");
+  // 1. Collect Data
+  const formData = {
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    password: document.getElementById("password").value.trim(),
+    role: document.getElementById("role").value, // "USER" or "HOST"
+    license: document.getElementById("license").value.trim(),
+    address: document.getElementById("address").value.trim(),
+  };
+
+  // 2. Validation
+  if (!formData.name || formData.name.length < 2) {
+    alert("Please enter a valid name (at least 2 characters)");
+    return;
+  }
+
+  if (!validateEmail(formData.email)) {
+    alert("Please enter a valid email address");
+    return;
+  }
+
+  if (!validatePhone(formData.phone)) {
+    alert("Please enter a valid 10-digit phone number");
+    return;
+  }
+
+  if (!validatePassword(formData.password)) {
+    alert("Password must be at least 6 characters long");
+    return;
+  }
+
+  if (!formData.license) {
+    alert("Please enter your license number");
+    return;
+  }
+
+  // 3. Terms checkbox validation
+  const termsCheckbox = document.getElementById("terms");
+  if (termsCheckbox && !termsCheckbox.checked) {
+    alert("Please accept the Terms & Conditions");
+    return;
+  }
+
+  const submitBtn = document.querySelector("button[type='submit']");
   const originalText = submitBtn.innerText;
   submitBtn.innerText = "Creating Account...";
   submitBtn.disabled = true;
 
   try {
-    // Collect form data
-    const formData = {
-      name: document.getElementById("name").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      password: document.getElementById("password").value.trim(),
-      role: document.getElementById("role").value,
-      license: document.getElementById("license").value.trim(),
-      address: document.getElementById("address").value.trim(),
-    };
-
-    // Validate password
-    if (formData.password.length < 6) {
-      throw new Error("Password must be at least 6 characters long");
-    }
-
-    // Call backend API
+    // 4. Send POST Request to Backend
     const response = await register(formData);
 
-    // Store token and user data
-    if (response.token) {
-      setToken(response.token);
-      setUser(response.user);
-    }
-
-    // Show success message
-    alert(
-      response.message || "Registration successful! Redirecting to login...",
-    );
+    // 5. Handle Success
+    alert(response.message || "Registration Successful! Please login.");
 
     // Redirect to login page
-    window.location.href = "../login.html";
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1000);
   } catch (error) {
     console.error("Registration error:", error);
     alert(error.message || "Registration failed. Please try again.");
-
-    // Reset button
+  } finally {
     submitBtn.innerText = originalText;
     submitBtn.disabled = false;
   }

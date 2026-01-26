@@ -1,116 +1,70 @@
-/* FILE: assets/css/pages/terms.css */
+/* ============================================
+   FILE: assets/css/pages/terms.css
+   FILE: assets/css/pages/privacy.css
+============================================ */
 
-/* --- Page Background --- */
-.terms-page-section {
-  padding: 60px 0 100px;
-  background-color: var(--bg-body); /* Cool Light Grey */
-  min-height: 100vh; /* Ensures full height since header/footer are gone */
+.terms-page-section,
+.privacy-page-section {
+  background: var(--bg-secondary);
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--space-12) 0;
 }
 
-.terms-container {
-  max-width: 850px;
+.terms-container,
+.privacy-container {
+  max-width: 900px;
   margin: 0 auto;
 }
 
-/* --- Header Area (Title) --- */
-.terms-header {
+.terms-header,
+.privacy-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-10);
 }
 
-.terms-header h1 {
-  font-size: 2.75rem;
-  color: var(--secondary); /* Navy */
-  font-weight: 800;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
+.terms-header h1,
+.privacy-header h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--space-3);
 }
 
-.terms-updated {
-  display: inline-block;
-  background: var(--primary-light); /* Soft Orange bg */
-  color: var(--primary); /* Brand Orange */
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 6px 16px;
-  border-radius: var(--radius-full);
+.terms-updated,
+.privacy-date {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
 }
 
-/* --- Content Card --- */
-.terms-content-card {
-  background: var(--bg-card);
-  padding: 60px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg); /* */
-  border: 1px solid var(--border);
+.terms-content-card,
+.privacy-content-card {
+  background: var(--white);
+  padding: var(--space-10);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
 }
 
-/* --- Typography --- */
-.terms-content-card h2 {
-  font-size: 1.5rem;
-  color: var(--secondary);
-  margin-top: 40px;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--bg-body);
-  display: flex;
-  align-items: center;
+.terms-content-card h2,
+.privacy-content-card h2 {
+  font-size: var(--font-size-2xl);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+  color: var(--primary-color);
 }
 
-/* Orange vertical accent mark next to headings */
-.terms-content-card h2::before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 24px;
-  background-color: var(--primary);
-  margin-right: 12px;
-  border-radius: 2px;
-}
-
-.terms-content-card h2:first-of-type {
+.terms-content-card h2:first-child,
+.privacy-content-card h2:first-child {
   margin-top: 0;
 }
 
-.terms-content-card p {
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: var(--text-muted); /* */
-  margin-bottom: 24px;
+.terms-list,
+.privacy-list {
+  list-style: disc;
+  padding-left: var(--space-6);
+  margin: var(--space-4) 0;
 }
 
-/* --- List Styling --- */
-.terms-list {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 30px;
-}
-
-.terms-list li {
-  position: relative;
-  padding-left: 30px;
-  margin-bottom: 14px;
-  color: var(--text-main);
-  line-height: 1.6;
-}
-
-/* Custom checkmark bullet */
-.terms-list li::before {
-  content: "✔";
-  position: absolute;
-  left: 0;
-  top: 2px;
-  color: var(--primary);
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-/* --- Responsive --- */
-@media (max-width: 768px) {
-  .terms-content-card {
-    padding: 30px 20px;
-  }
-  .terms-header h1 {
-    font-size: 2rem;
-  }
+.terms-list li,
+.privacy-list li {
+  margin-bottom: var(--space-3);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
 }
