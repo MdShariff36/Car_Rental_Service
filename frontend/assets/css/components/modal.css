@@ -1,129 +1,76 @@
-/* ============================================
-   FILE: assets/css/components/modal.css
-============================================ */
-
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  display: none;
   justify-content: center;
-  z-index: var(--z-modal-backdrop);
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition-base);
+  align-items: center;
+  z-index: 2000;
 }
 
-.modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
+/* Active State */
+.modal-overlay.open {
+  display: flex;
 }
 
-.modal {
+/* Modal Content */
+.modal-content {
   background: var(--white);
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  max-width: 500px;
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
   width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-2xl);
-  transform: scale(0.9);
-  transition: var(--transition-base);
-  z-index: var(--z-modal);
+  max-width: 500px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.3s ease-out;
 }
 
-.modal-overlay.active .modal {
-  transform: scale(1);
+/* Modal Sizes */
+.modal-sm {
+  max-width: 400px;
+}
+.modal-lg {
+  max-width: 720px;
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-6);
-}
-
-.modal-header h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--text-primary);
-}
-
-.modal-close,
-.btn-close {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--gray-100);
+/* Close Button */
+.modal-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: none;
   border: none;
-  border-radius: var(--radius-full);
+  font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
-  font-size: var(--font-size-xl);
-  color: var(--text-secondary);
-  transition: var(--transition-base);
+  color: var(--gray-400);
+  padding: 0.25rem;
+  transition: color var(--transition-fast);
 }
 
 .modal-close:hover,
-.btn-close:hover {
-  background: var(--gray-200);
-  color: var(--text-primary);
+.modal-close:focus-visible {
+  color: var(--primary-500);
+  outline: none;
 }
 
-.modal-body {
-  margin-bottom: var(--space-6);
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal-content {
+    animation: none;
+  }
 }
 
-.modal-footer {
-  display: flex;
-  gap: var(--space-3);
-  justify-content: flex-end;
-}
-
-/* Badges */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-1) var(--space-3);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-semibold);
-  border-radius: var(--radius-full);
-  white-space: nowrap;
-}
-
-.badge-verified {
-  background: var(--success-light);
-  color: var(--success);
-}
-
-.badge-popular {
-  background: var(--warning-light);
-  color: var(--warning);
-}
-
-.status-badge {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-medium);
-}
-
-.status-badge.available {
-  background: var(--success-light);
-  color: var(--success);
-}
-
-.status-badge.booked {
-  background: var(--warning-light);
-  color: var(--warning);
-}
-
-.status-confirmed {
-  background: var(--success-light);
-  color: var(--success);
+/* Animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

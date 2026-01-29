@@ -1,0 +1,64 @@
+/* Filter Group */
+.filter-group {
+  margin-bottom: var(--spacing-xl);
+}
+
+.filter-group h4 {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--gray-800);
+  font-weight: 600;
+}
+
+/* Price Range Display */
+.price-range-display {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Range Slider */
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-500);
+  cursor: pointer;
+}
+
+input[type="range"]:focus-visible {
+  outline: none;
+}
+
+/* Filter List */
+.filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+  padding: 0.25rem 0;
+  transition: color var(--transition-fast);
+}
+
+.filter-item:hover {
+  color: var(--primary-600);
+}
+
+.filter-item input {
+  cursor: pointer;
+}
+
+/* Disabled Filter */
+.filter-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

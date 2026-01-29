@@ -1,415 +1,334 @@
-/* ============================================
-   FILE: assets/css/pages/cars.css
-   Cars Listing Page
-============================================ */
+/* FILE: assets/css/pages/cars.css */
 
+/* Page Header */
 .cars-header {
-  background: linear-gradient(135deg, #4a90e2 0%, #6ba3e8 100%);
-  color: var(--white);
-  padding: var(--space-12) 0;
+  background-color: var(--gray-100);
+  padding: var(--spacing-2xl) 0;
   text-align: center;
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .cars-header h1 {
-  font-size: var(--font-size-4xl);
-  margin-bottom: var(--space-3);
-  color: var(--white);
+  margin-bottom: var(--spacing-xs);
 }
 
-.cars-header p {
-  font-size: var(--font-size-lg);
-  opacity: 0.95;
-  margin-bottom: var(--space-6);
-}
-
-/* Quick Search Bar */
 .quick-search-bar {
-  display: flex;
-  gap: var(--space-3);
   max-width: 600px;
-  margin: 0 auto;
+  margin: var(--spacing-lg) auto 0;
+  display: flex;
+  gap: var(--spacing-sm);
 }
 
-.search-input {
+.quick-search-bar .search-input {
   flex: 1;
-  padding: var(--space-4);
-  border: none;
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-base);
 }
 
-/* Cars Page Layout */
+/* Main Layout */
 .cars-page-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
-  gap: var(--space-8);
-  margin-top: var(--space-8);
+  gap: var(--spacing-xl);
+  align-items: start;
 }
 
-/* Filters Sidebar */
+/* Sidebar Filters */
 .filters-sidebar {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
   position: sticky;
-  top: calc(var(--header-height) + var(--space-4));
-  height: fit-content;
+  top: 90px; /* Header height + spacing */
 }
 
 .filters-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-6);
-}
-
-.filters-header h3 {
-  font-size: var(--font-size-xl);
-  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .filter-group {
-  margin-bottom: var(--space-6);
-  padding-bottom: var(--space-6);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.filter-group:last-child {
-  border-bottom: none;
+  margin-bottom: var(--spacing-xl);
 }
 
 .filter-group h4 {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-semibold);
-  color: var(--text-primary);
-  margin-bottom: var(--space-4);
+  font-size: 1rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--gray-800);
 }
 
-/* Price Range */
 .price-range-display {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--space-3);
-  font-weight: var(--font-medium);
-  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  margin-bottom: var(--spacing-sm);
 }
 
 input[type="range"] {
   width: 100%;
-  height: 6px;
-  background: var(--gray-200);
-  border-radius: var(--radius-full);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--spacing-xs);
 }
 
-input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  background: var(--primary-color);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-}
-
-/* Mobile Filter Toggle */
-.mobile-filter-toggle {
-  display: none;
-  width: 100%;
-  margin-bottom: var(--space-4);
-}
-
-/* Cars Controls */
+/* Controls (Sort/View) */
 .cars-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-6);
-  padding: var(--space-4);
-  background: var(--white);
-  border-radius: var(--radius-lg);
-}
-
-.results-count {
-  font-weight: var(--font-medium);
-  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .controls-right {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--spacing-md);
   align-items: center;
 }
 
 .sort-select {
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-}
-
-.view-toggle {
-  display: flex;
-  gap: var(--space-1);
+  padding: 0.5rem 2rem 0.5rem 1rem;
+  min-width: 180px;
 }
 
 .view-btn {
-  padding: var(--space-2);
-  background: var(--white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: var(--transition-base);
-}
-
-.view-btn.active {
-  background: var(--primary-color);
-  color: var(--white);
-  border-color: var(--primary-color);
-}
-
-/* Active Filters */
-.active-filters {
-  margin-bottom: var(--space-4);
-  padding: var(--space-4);
-  background: var(--gray-50);
-  border-radius: var(--radius-lg);
-}
-
-.filter-tags {
+  background: none;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  width: 36px;
+  height: 36px;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.filter-tag {
-  display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background: var(--white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-sm);
+  justify-content: center;
+  color: var(--gray-500);
+  cursor: pointer;
 }
 
-/* Car Grid */
+.view-btn.active,
+.view-btn:hover {
+  background-color: var(--primary-50);
+  border-color: var(--primary-500);
+  color: var(--primary-600);
+}
+
+/* Cars Grid */
 .car-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--space-6);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
 }
 
-/* Car Card */
 .car-card {
   background: var(--white);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: var(--transition-base);
-  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
 }
 
 .car-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--primary-200);
 }
 
-.car-card-image {
+.car-img-wrapper {
   position: relative;
-  width: 100%;
-  height: 220px;
+  height: 200px;
+  background-color: var(--gray-50);
   overflow: hidden;
 }
 
-.car-card-image img {
+.car-img-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transition-slow);
+  transition: transform 0.5s ease;
 }
 
-.car-card:hover .car-card-image img {
+.car-card:hover .car-img-wrapper img {
   transform: scale(1.05);
 }
 
-.car-card-body {
-  padding: var(--space-5);
-}
-
-.car-card-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-semibold);
-  color: var(--text-primary);
-  margin-bottom: var(--space-2);
-}
-
-.car-card-meta {
+.wishlist-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: flex;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-  color: var(--text-muted);
-  font-size: var(--font-size-sm);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
-.car-card-price {
+.car-content {
+  padding: var(--spacing-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.car-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.car-title-row h3 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.car-rating {
+  font-size: 0.85rem;
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.car-specs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.car-price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border-light);
+  margin-top: auto;
 }
 
 .price {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-bold);
-  color: var(--primary-color);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gray-900);
 }
 
-.price .period {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-normal);
-  color: var(--text-muted);
+.price span {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--gray-500);
 }
 
-/* No Results */
-.no-results {
-  text-align: center;
-  padding: var(--space-16) var(--space-4);
-}
-
-.no-results-icon {
-  font-size: 5rem;
-  margin-bottom: var(--space-4);
-  opacity: 0.3;
-}
-
-.no-results h3 {
-  font-size: var(--font-size-2xl);
-  margin-bottom: var(--space-3);
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-8);
-}
-
-.pagination-btn {
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border-color);
+/* Skeleton Loader */
+.skeleton-card {
+  background: var(--white);
   border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  height: 380px;
+}
+
+.skeleton-img {
+  height: 200px;
+  background-color: var(--gray-200);
+  animation: pulse 1.5s infinite;
+}
+
+.skeleton-content {
+  padding: var(--spacing-lg);
+}
+
+.skeleton-text {
+  height: 20px;
+  background-color: var(--gray-200);
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  animation: pulse 1.5s infinite;
+}
+
+.skeleton-text.short {
+  width: 60%;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Mobile Filters */
+.mobile-filter-toggle {
+  display: none;
   background: var(--white);
-  cursor: pointer;
-  transition: var(--transition-base);
-}
-
-.pagination-btn:hover:not(:disabled) {
-  background: var(--primary-color);
-  color: var(--white);
-  border-color: var(--primary-color);
-}
-
-.pagination-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.pagination-number {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--gray-300);
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
-  background: var(--white);
-  cursor: pointer;
-  transition: var(--transition-base);
-}
-
-.pagination-number.active {
-  background: var(--primary-color);
-  color: var(--white);
-  border-color: var(--primary-color);
-}
-
-/* Compare Panel */
-.compare-panel {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--white);
-  padding: var(--space-4);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-  z-index: var(--z-fixed);
-  transform: translateY(100%);
-  transition: var(--transition-base);
-}
-
-.compare-panel.active {
-  transform: translateY(0);
-}
-
-.compare-header {
-  display: flex;
-  justify-content: space-between;
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+  justify-content: center;
   align-items: center;
-  margin-bottom: var(--space-4);
-}
-
-.compare-items {
-  display: flex;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-}
-
-.compare-actions {
-  display: flex;
-  gap: var(--space-3);
-  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .cars-page-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .filters-sidebar {
-    position: static;
-  }
-
-  .mobile-filter-toggle {
-    display: block;
-  }
-
-  .filters-content {
-    display: none;
-  }
-
-  .filters-content.active {
-    display: block;
+  .car-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
+  .cars-page-layout {
+    display: block;
+  }
+
+  .filters-sidebar {
+    display: none; /* JS toggle */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 2000;
+    overflow-y: auto;
+  }
+
+  .filters-sidebar.active {
+    display: block;
+  }
+  .mobile-filter-toggle {
+    display: flex;
+  }
+
   .car-grid {
     grid-template-columns: 1fr;
   }
 
-  .quick-search-bar {
-    flex-direction: column;
-  }
-
   .cars-controls {
     flex-direction: column;
+    gap: var(--spacing-md);
     align-items: stretch;
-    gap: var(--space-3);
   }
-
   .controls-right {
     justify-content: space-between;
   }

@@ -1,14 +1,16 @@
-/* ============================================
-   FILE: assets/css/layout/container.css
-============================================ */
-
 .container {
   width: 100%;
-  max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: 0 var(--space-4);
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--spacing-md);
 }
 
+/* Standard vertical section spacing */
 .section-padding {
-  padding: var(--space-12) 0;
+  padding-block: var(--spacing-2xl);
+}
+
+/* Narrow container variant (optional, for auth pages) */
+.container-sm {
+  max-width: 720px;
 }

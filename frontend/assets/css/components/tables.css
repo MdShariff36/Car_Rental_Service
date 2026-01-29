@@ -1,57 +1,76 @@
-/* ============================================
-   FILE: assets/css/components/tables.css
-============================================ */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--spacing-lg);
+}
 
-.table,
-.data-table {
+/* Base Table */
+.table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--white);
+  background-color: var(--white);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
 
+/* Table Head */
+.table thead {
+  background-color: var(--primary-700);
+  color: var(--white);
+}
+
 .table th,
-.table td,
-.data-table th,
-.data-table td {
-  padding: var(--space-4);
+.table td {
+  padding: var(--spacing-md) var(--spacing-lg);
   text-align: left;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.9rem;
 }
 
-.table th,
-.data-table th {
-  background: var(--gray-50);
-  font-weight: var(--font-semibold);
-  color: var(--text-primary);
-  font-size: var(--font-size-sm);
+.table th {
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
-.table td,
-.data-table td {
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
+/* Hover */
+.table tbody tr:hover {
+  background-color: var(--primary-50);
 }
 
-.table tr:last-child td,
-.data-table tr:last-child td {
+/* Remove last border */
+.table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.table tr:hover,
-.data-table tbody tr:hover {
-  background: var(--gray-50);
+/* Striped Variant */
+.table-striped tbody tr:nth-child(even) {
+  background-color: var(--gray-50);
 }
 
-/* Responsive Table */
-@media (max-width: 768px) {
-  .table,
-  .data-table {
-    display: block;
-    overflow-x: auto;
-  }
+/* Numeric Alignment */
+.table .text-right {
+  text-align: right;
+}
+
+.table .text-center {
+  text-align: center;
+}
+
+/* Empty State */
+.table-empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--gray-400);
+  font-size: 0.9rem;
+}
+
+/* Focus (Accessibility) */
+.table td:focus-visible,
+.table th:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: -2px;
 }

@@ -1,132 +1,160 @@
-/* ============================================
-   FILE: assets/css/pages/about.css
-============================================ */
+/* FILE: assets/css/pages/about.css */
 
-.about-page {
-  background: var(--bg-secondary);
-}
-
+/* 1. Hero Section - Modern Gradient & Depth */
 .about-hero {
-  background: linear-gradient(135deg, #4a90e2 0%, #6ba3e8 100%);
-  color: var(--white);
-  padding: var(--space-16) 0;
+  background: linear-gradient(
+    135deg,
+    var(--gray-900) 0%,
+    var(--primary-700) 100%
+  );
+  padding: 100px 0;
   text-align: center;
-}
-
-.hero-title {
-  font-size: var(--font-size-4xl);
-  margin-bottom: var(--space-4);
   color: var(--white);
+  margin-bottom: var(--spacing-2xl);
 }
 
-.hero-subtitle {
-  font-size: var(--font-size-xl);
-  opacity: 0.95;
+.about-hero .hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: var(--spacing-md);
 }
 
+.about-hero .hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--primary-100);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* 2. Who We Are Section - Grid Layout */
 .who-we-are {
-  padding: var(--space-12) 0;
+  padding: var(--spacing-2xl) 0;
 }
 
 .intro-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: var(--space-8);
+  gap: var(--spacing-2xl);
+  align-items: center;
 }
 
-.section-title.left-align {
-  text-align: left;
-  margin-bottom: var(--space-4);
+.intro-text .highlight-blue {
+  color: var(--secondary-500);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
 }
 
+.intro-text p {
+  color: var(--gray-600);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Value Cards for Stats */
 .intro-stats {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--spacing-lg);
 }
 
 .value-card {
-  padding: var(--space-6);
   background: var(--white);
-  border-radius: var(--radius-xl);
-  border-left: 4px solid var(--primary-color);
-  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border-left: 5px solid var(--primary-500);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal);
+}
+
+.value-card:hover {
+  transform: translateX(10px);
 }
 
 .value-icon {
-  font-size: 2.5rem;
-  margin-bottom: var(--space-3);
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
   display: block;
 }
 
+/* 3. Team Section - Modern Cards */
 .team-bg {
-  background: var(--gray-50);
-  padding: var(--space-16) 0;
-}
-
-.section-subtitle {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--space-8);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  background-color: var(--gray-100);
+  padding: var(--spacing-2xl) 0;
+  margin: var(--spacing-2xl) 0;
 }
 
 .team-card {
   background: var(--white);
-  padding: var(--space-6);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
   text-align: center;
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition-base);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--gray-200);
 }
 
 .team-card:hover {
+  transform: translateY(-10px);
   box-shadow: var(--shadow-lg);
-  transform: translateY(-5px);
+  border-color: var(--primary-400);
 }
 
 .team-card img {
-  width: 150px;
-  height: 150px;
-  border-radius: var(--radius-full);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto var(--spacing-md);
+  border: 4px solid var(--primary-50);
   object-fit: cover;
-  margin: 0 auto var(--space-4);
-}
-
-.team-card h3 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--space-2);
 }
 
 .team-card .role {
-  color: var(--primary-color);
-  font-weight: var(--font-medium);
-  margin-bottom: var(--space-3);
+  color: var(--primary-600);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--spacing-sm);
 }
 
+/* 4. Mission Card - Impactful Design */
 .mission-section {
-  padding: var(--space-12) 0;
+  padding-bottom: 100px;
 }
 
 .mission-card {
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8559 100%);
-  color: var(--white);
-  padding: var(--space-12);
-  border-radius: var(--radius-2xl);
+  background: linear-gradient(
+    rgba(20, 184, 166, 0.05),
+    rgba(20, 184, 166, 0.1)
+  );
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
   text-align: center;
-}
-
-.mission-card h2 {
-  color: var(--white);
-  margin-bottom: var(--space-6);
+  border: 2px dashed var(--primary-400);
 }
 
 .mission-card p {
-  font-size: var(--font-size-lg);
-  line-height: var(--line-height-relaxed);
-  max-width: 800px;
+  font-size: 1.5rem;
+  color: var(--gray-800);
+  font-weight: 500;
+  font-style: italic;
+  max-width: 900px;
   margin: 0 auto;
+}
+
+/* 5. Responsive Adjustments */
+@media (max-width: 768px) {
+  .intro-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-hero .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .team-card {
+    margin-bottom: var(--spacing-md);
+  }
 }

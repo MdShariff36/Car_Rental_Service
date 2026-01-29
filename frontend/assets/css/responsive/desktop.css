@@ -1,19 +1,72 @@
-/* ============================================
-   FILE: assets/css/responsive/desktop.css
-============================================ */
+/* FILE: assets/css/responsive/desktop.css */
 
-@media (min-width: 1025px) {
+@media (min-width: 992px) {
+  /* Reset Nav for Desktop */
+  .nav {
+    display: flex !important;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    background: transparent;
+    flex-direction: row;
+    padding: 0;
+    box-shadow: none;
+    transform: none;
+    height: auto;
+  }
+
+  .nav a {
+    border-bottom: none;
+    padding: 0;
+    width: auto;
+  }
+
+  .mobile-toggle {
+    display: none !important;
+  }
+
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  /* Hover Effects (Only on devices with cursor) */
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-8px);
+  }
+
+  /* Layout Constraints */
   .container {
-    max-width: var(--container-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Wide Screens */
+@media (min-width: 1400px) {
+  :root {
+    --container-width: 1320px;
   }
 
-  /* Hover effects for desktop only */
-  .hover-lift {
-    transition: var(--transition-base);
+  .car-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  .hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+  .hero h1 {
+    font-size: 4rem;
   }
+}
+
+/* Utilities */
+.desktop-only {
+  display: block;
+}
+
+.mobile-visible {
+  display: none !important;
 }

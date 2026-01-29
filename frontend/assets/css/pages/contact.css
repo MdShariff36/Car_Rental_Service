@@ -1,76 +1,187 @@
-/* ============================================
-   FILE: assets/css/pages/contact.css
-============================================ */
-
-.contact-page {
-  background: var(--bg-secondary);
+/* ===============================
+   PAGE HERO
+================================ */
+.page-hero {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #ffffff;
+  padding: 4rem 0;
+  text-align: center;
 }
 
+.hero-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* ===============================
+   LAYOUT
+================================ */
+.contact-section {
+  padding: 4rem 0;
+  background: #f8fafc;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* ===============================
+   LEFT FORM CARD
+================================ */
 .contact-card {
-  background: var(--white);
-  padding: var(--space-8);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
 }
 
-.interactive-form .form-group {
-  margin-bottom: var(--space-5);
+.contact-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #0f172a;
 }
 
-.info-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+.contact-card .muted {
+  color: #64748b;
+  margin-bottom: 2rem;
 }
 
-.blue-info-box {
-  background: linear-gradient(135deg, #4a90e2 0%, #6ba3e8 100%);
-  color: var(--white);
-  padding: var(--space-8);
+/* ===============================
+   FORM
+================================ */
+.interactive-form label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  color: #0f172a;
 }
 
-.blue-info-box h3 {
-  color: var(--white);
-  margin-bottom: var(--space-6);
+.interactive-form input,
+.interactive-form select,
+.interactive-form textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 1.3rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.95rem;
+  transition: 0.25s ease;
 }
 
-.contact-detail-list {
-  list-style: none;
-  padding: 0;
+.interactive-form input:focus,
+.interactive-form select:focus,
+.interactive-form textarea:focus {
+  background: #ffffff;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.2);
+  outline: none;
 }
 
+.interactive-form button {
+  background: #14b8a6;
+  color: #ffffff;
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.interactive-form button:hover {
+  background: #0f766e;
+  transform: translateY(-1px);
+}
+
+/* ===============================
+   RIGHT CONTACT INFO CARD
+================================ */
+.info-card {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.info-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+  color: #0f172a;
+}
+
+/* THIS FIXES YOUR INVISIBLE TEXT */
 .contact-detail-list li {
   display: flex;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.icon-circle {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-xl);
-  flex-shrink: 0;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: #0f172a; /* force dark text */
 }
 
 .contact-detail-list strong {
   display: block;
-  margin-bottom: var(--space-1);
-  font-size: var(--font-size-base);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
 }
 
 .contact-detail-list p {
-  font-size: var(--font-size-sm);
-  opacity: 0.9;
   margin: 0;
+  font-size: 0.95rem;
+  color: #475569; /* visible gray */
+}
+
+/* ICON */
+.icon-circle {
+  width: 42px;
+  height: 42px;
+  background: rgba(20, 184, 166, 0.15);
+  color: #0f766e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ===============================
+   BUSINESS HOURS
+================================ */
+.business-hours {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
 }
 
 .business-hours h3 {
-  color: var(--white);
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-lg);
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  color: #0f172a;
+}
+
+.business-hours p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,70 +1,79 @@
-/* ============================================
-   FILE: assets/css/pages/terms.css
-   FILE: assets/css/pages/privacy.css
-============================================ */
+/* FILE: assets/css/pages/privacy.css */
 
-.terms-page-section,
 .privacy-page-section {
-  background: var(--bg-secondary);
-  min-height: calc(100vh - var(--header-height));
-  padding: var(--space-12) 0;
+  padding: var(--spacing-2xl) 0;
+  background-color: var(--gray-50);
+  min-height: 80vh;
 }
 
-.terms-container,
 .privacy-container {
   max-width: 900px;
-  margin: 0 auto;
 }
 
-.terms-header,
 .privacy-header {
   text-align: center;
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--spacing-xl);
 }
 
-.terms-header h1,
 .privacy-header h1 {
-  font-size: var(--font-size-4xl);
-  margin-bottom: var(--space-3);
+  font-size: 2.5rem;
+  color: var(--primary-700);
 }
 
-.terms-updated,
 .privacy-date {
-  color: var(--text-muted);
-  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  font-size: 0.9rem;
 }
 
-.terms-content-card,
 .privacy-content-card {
   background: var(--white);
-  padding: var(--space-10);
-  border-radius: var(--radius-2xl);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--primary-500);
 }
 
-.terms-content-card h2,
 .privacy-content-card h2 {
-  font-size: var(--font-size-2xl);
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-4);
-  color: var(--primary-color);
+  font-size: 1.4rem;
+  color: var(--gray-900);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.terms-content-card h2:first-child,
-.privacy-content-card h2:first-child {
-  margin-top: 0;
+.privacy-content-card p {
+  color: var(--gray-600);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-md);
 }
 
-.terms-list,
 .privacy-list {
-  list-style: disc;
-  padding-left: var(--space-6);
-  margin: var(--space-4) 0;
+  background: var(--primary-50);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
 }
 
-.terms-list li,
 .privacy-list li {
-  margin-bottom: var(--space-3);
-  color: var(--text-secondary);
-  line-height: var(--line-height-relaxed);
+  margin-bottom: 0.75rem;
+  color: var(--primary-700);
+  list-style: none;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.privacy-list li::before {
+  content: "•";
+  color: var(--primary-500);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+@media (max-width: 768px) {
+  .privacy-content-card {
+    padding: var(--spacing-lg);
+  }
 }
