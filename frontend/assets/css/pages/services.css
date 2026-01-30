@@ -1044,6 +1044,103 @@ button {
   color: var(--gray-600);
   line-height: 1.6;
 }
+/* ============================================
+   CORPORATE LEASING CENTER SPOTLIGHT
+   ============================================ */
+
+.corporate-leasing-spotlight {
+  min-height: calc(100vh - 80px); /* header-safe center */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-hero);
+  position: relative;
+  overflow: hidden;
+}
+
+/* soft background glow */
+.corporate-leasing-spotlight::before {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(20, 184, 166, 0.18) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: pulse 10s ease-in-out infinite;
+}
+
+/* MAIN BOX */
+.corporate-leasing-box {
+  background: var(--gradient-primary);
+  color: white;
+  padding: var(--space-16) var(--space-20);
+  border-radius: var(--radius-3xl);
+  max-width: 900px;
+  width: calc(100% - 80px);
+  text-align: center;
+  box-shadow: var(--shadow-primary-lg);
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* TITLE */
+.corporate-leasing-box h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.02em;
+}
+
+/* SUBTITLE */
+.corporate-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--primary-50);
+  margin-bottom: var(--space-10);
+}
+
+/* FEATURES LIST */
+.corporate-features {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--space-12);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.corporate-features li {
+  font-size: 1.05rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.corporate-features li::before {
+  content: "✓";
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+/* CTA BUTTON */
+.corporate-leasing-box .btn-white {
+  padding: var(--space-4) var(--space-12);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
 
 /* ============================================
    TESTIMONIALS SECTION
