@@ -3,36 +3,375 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Customer Reviews | Auto Prime</title>
-    <link rel="stylesheet" href="assets/css/pages/reviews.css" />
+    <title>Customer Reviews - Auto Prime Rental</title>
+    <link rel="stylesheet" href="assets/css/reviews.css" />
   </head>
   <body>
-    <header class="site-header" id="header"></header>
+    <div class="reviews-container">
+      <div class="reviews-header">
+        <h1>Customer Reviews</h1>
+        <p>
+          See what our customers are saying about their Auto Prime Rental
+          experience
+        </p>
+      </div>
 
-    <section class="page-header">
-      <div class="container">
-        <h1>What Our Customers Say</h1>
-        <div class="overall-rating">
-          <span class="rating-number">4.8</span>
-          <div class="stars">⭐⭐⭐⭐⭐</div>
-          <span class="muted">Based on 5,247 reviews</span>
+      <div class="reviews-summary">
+        <div class="reviews-overall">
+          <div class="reviews-overall-score">4.8</div>
+          <div class="reviews-overall-stars">
+            <span class="review-star">★</span>
+            <span class="review-star">★</span>
+            <span class="review-star">★</span>
+            <span class="review-star">★</span>
+            <span class="review-star">★</span>
+          </div>
+          <div class="reviews-overall-count">Based on 2,847 reviews</div>
+        </div>
+
+        <div class="reviews-breakdown">
+          <div class="reviews-breakdown-item">
+            <span class="reviews-breakdown-label">5 ★</span>
+            <div class="reviews-breakdown-bar">
+              <div class="reviews-breakdown-fill" style="width: 78%"></div>
+            </div>
+            <span class="reviews-breakdown-count">2,220</span>
+          </div>
+          <div class="reviews-breakdown-item">
+            <span class="reviews-breakdown-label">4 ★</span>
+            <div class="reviews-breakdown-bar">
+              <div class="reviews-breakdown-fill" style="width: 15%"></div>
+            </div>
+            <span class="reviews-breakdown-count">427</span>
+          </div>
+          <div class="reviews-breakdown-item">
+            <span class="reviews-breakdown-label">3 ★</span>
+            <div class="reviews-breakdown-bar">
+              <div class="reviews-breakdown-fill" style="width: 5%"></div>
+            </div>
+            <span class="reviews-breakdown-count">142</span>
+          </div>
+          <div class="reviews-breakdown-item">
+            <span class="reviews-breakdown-label">2 ★</span>
+            <div class="reviews-breakdown-bar">
+              <div class="reviews-breakdown-fill" style="width: 1.5%"></div>
+            </div>
+            <span class="reviews-breakdown-count">43</span>
+          </div>
+          <div class="reviews-breakdown-item">
+            <span class="reviews-breakdown-label">1 ★</span>
+            <div class="reviews-breakdown-bar">
+              <div class="reviews-breakdown-fill" style="width: 0.5%"></div>
+            </div>
+            <span class="reviews-breakdown-count">15</span>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="container">
-      <div class="reviews-filter">
-        <button class="filter-btn active" data-rating="all">All Reviews</button>
-        <button class="filter-btn" data-rating="5">5 Stars</button>
-        <button class="filter-btn" data-rating="4">4 Stars</button>
-        <button class="filter-btn" data-rating="3">3 Stars</button>
+      <div class="reviews-filters">
+        <button class="reviews-filter-btn active">All Reviews</button>
+        <button class="reviews-filter-btn">5 Stars</button>
+        <button class="reviews-filter-btn">4 Stars</button>
+        <button class="reviews-filter-btn">3 Stars & Below</button>
+        <button class="reviews-filter-btn">Verified Only</button>
       </div>
 
-      <div class="reviews-list" id="reviewsList">
-        <!-- Reviews will load dynamically -->
-      </div>
-    </section>
+      <div class="reviews-grid">
+        <article class="review-card verified">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-user-avatar">ST</div>
+              <div class="review-user-info">
+                <h3 class="review-user-name">Sarah Thompson</h3>
+                <div class="review-user-meta">
+                  <span>Los Angeles, CA</span>
+                  <span class="review-user-badge">✓ Verified Renter</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="review-stars">
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+              </div>
+              <span class="review-date">2 days ago</span>
+            </div>
+          </div>
+          <div class="review-content">
+            <h4 class="review-title">
+              Outstanding Service and Pristine Vehicle!
+            </h4>
+            <div class="review-car">
+              <span>🚗 Tesla Model 3 • 7-day rental</span>
+            </div>
+            <p class="review-text">
+              I rented a Tesla Model 3 for a week-long business trip and the
+              experience exceeded all expectations. The car was spotless, fully
+              charged, and the pickup process was incredibly smooth. The staff
+              was knowledgeable and took time to explain all the features.
+              Return was just as easy. Will definitely be using Auto Prime
+              Rental again!
+            </p>
+          </div>
+          <div class="review-footer">
+            <div class="review-helpful">
+              <span class="review-helpful-text">Helpful?</span>
+              <button class="review-helpful-btn">👍 84</button>
+              <button class="review-helpful-btn">👎 2</button>
+            </div>
+            <div class="review-actions">
+              <button class="review-action-btn">🚩 Report</button>
+            </div>
+          </div>
+        </article>
 
-    <footer class="site-footer" id="footer"></footer>
+        <article class="review-card">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-user-avatar">MR</div>
+              <div class="review-user-info">
+                <h3 class="review-user-name">Michael Rodriguez</h3>
+                <div class="review-user-meta">
+                  <span>Miami, FL</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="review-stars">
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+              </div>
+              <span class="review-date">5 days ago</span>
+            </div>
+          </div>
+          <div class="review-content">
+            <h4 class="review-title">Perfect for Family Road Trip</h4>
+            <div class="review-car">
+              <span>🚗 Honda CR-V • 5-day rental</span>
+            </div>
+            <p class="review-text">
+              Rented the Honda CR-V for a family road trip and it was perfect.
+              Spacious, comfortable, and great fuel economy. The booking process
+              was straightforward, and the customer service team was incredibly
+              helpful when I had questions. Highly recommend for families!
+            </p>
+          </div>
+          <div class="review-footer">
+            <div class="review-helpful">
+              <span class="review-helpful-text">Helpful?</span>
+              <button class="review-helpful-btn">👍 62</button>
+              <button class="review-helpful-btn">👎 1</button>
+            </div>
+            <div class="review-actions">
+              <button class="review-action-btn">🚩 Report</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-card verified">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-user-avatar">EC</div>
+              <div class="review-user-info">
+                <h3 class="review-user-name">Emily Chen</h3>
+                <div class="review-user-meta">
+                  <span>San Francisco, CA</span>
+                  <span class="review-user-badge">✓ Verified Renter</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="review-stars">
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star empty">☆</span>
+              </div>
+              <span class="review-date">1 week ago</span>
+            </div>
+          </div>
+          <div class="review-content">
+            <h4 class="review-title">Great Value and Clean Vehicles</h4>
+            <div class="review-car">
+              <span>🚗 Toyota Camry • 3-day rental</span>
+            </div>
+            <p class="review-text">
+              Very satisfied with my rental experience. The Toyota Camry was
+              clean and well-maintained. Pricing was competitive and transparent
+              with no hidden fees. Only minor issue was a short wait time during
+              pickup, but the staff made up for it with excellent service.
+            </p>
+          </div>
+          <div class="review-footer">
+            <div class="review-helpful">
+              <span class="review-helpful-text">Helpful?</span>
+              <button class="review-helpful-btn">👍 45</button>
+              <button class="review-helpful-btn">👎 3</button>
+            </div>
+            <div class="review-actions">
+              <button class="review-action-btn">🚩 Report</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-user-avatar">DJ</div>
+              <div class="review-user-info">
+                <h3 class="review-user-name">David Johnson</h3>
+                <div class="review-user-meta">
+                  <span>Chicago, IL</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="review-stars">
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+              </div>
+              <span class="review-date">1 week ago</span>
+            </div>
+          </div>
+          <div class="review-content">
+            <h4 class="review-title">
+              Luxury Experience Without the Luxury Price
+            </h4>
+            <div class="review-car">
+              <span>🚗 BMW 5 Series • Weekend rental</span>
+            </div>
+            <p class="review-text">
+              Treated myself to a BMW 5 Series for the weekend and it was
+              fantastic! The car was immaculate and drove like a dream. The
+              upgrade pricing was very reasonable. Customer service went above
+              and beyond to ensure I had everything I needed. Five stars!
+            </p>
+          </div>
+          <div class="review-footer">
+            <div class="review-helpful">
+              <span class="review-helpful-text">Helpful?</span>
+              <button class="review-helpful-btn">👍 71</button>
+              <button class="review-helpful-btn">👎 0</button>
+            </div>
+            <div class="review-actions">
+              <button class="review-action-btn">🚩 Report</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-card verified">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-user-avatar">JM</div>
+              <div class="review-user-info">
+                <h3 class="review-user-name">Jessica Martinez</h3>
+                <div class="review-user-meta">
+                  <span>Austin, TX</span>
+                  <span class="review-user-badge">✓ Verified Renter</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="review-stars">
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+              </div>
+              <span class="review-date">2 weeks ago</span>
+            </div>
+          </div>
+          <div class="review-content">
+            <h4 class="review-title">Easy Process, Great Communication</h4>
+            <div class="review-car">
+              <span>🚗 Jeep Wrangler • 4-day rental</span>
+            </div>
+            <p class="review-text">
+              First time renting with Auto Prime and I was impressed from start
+              to finish. The online booking was user-friendly, I received timely
+              confirmations and reminders, and the Jeep Wrangler was exactly
+              what I needed for my camping trip. Will definitely rent again!
+            </p>
+          </div>
+          <div class="review-footer">
+            <div class="review-helpful">
+              <span class="review-helpful-text">Helpful?</span>
+              <button class="review-helpful-btn">👍 58</button>
+              <button class="review-helpful-btn">👎 1</button>
+            </div>
+            <div class="review-actions">
+              <button class="review-action-btn">🚩 Report</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-user-avatar">KB</div>
+              <div class="review-user-info">
+                <h3 class="review-user-name">Kevin Brown</h3>
+                <div class="review-user-meta">
+                  <span>Seattle, WA</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="review-stars">
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+                <span class="review-star">★</span>
+              </div>
+              <span class="review-date">2 weeks ago</span>
+            </div>
+          </div>
+          <div class="review-content">
+            <h4 class="review-title">Reliable and Professional</h4>
+            <div class="review-car">
+              <span>🚗 Ford Mustang • Weekend rental</span>
+            </div>
+            <p class="review-text">
+              Needed a car for a weekend getaway and Auto Prime delivered. The
+              Mustang was fun to drive and in excellent condition. No pressure
+              sales tactics, just honest service. The return process was quick
+              and painless. Already planning my next rental!
+            </p>
+          </div>
+          <div class="review-footer">
+            <div class="review-helpful">
+              <span class="review-helpful-text">Helpful?</span>
+              <button class="review-helpful-btn">👍 39</button>
+              <button class="review-helpful-btn">👎 2</button>
+            </div>
+            <div class="review-actions">
+              <button class="review-action-btn">🚩 Report</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="reviews-load-more">
+        <button class="reviews-load-btn">🔄 Load More Reviews</button>
+      </div>
+
+      <div class="reviews-cta">
+        <h2>Share Your Experience</h2>
+        <p>Recently rented with us? We'd love to hear about your experience!</p>
+        <a href="#" class="reviews-cta-btn">✍️ Write a Review</a>
+      </div>
+    </div>
   </body>
 </html>

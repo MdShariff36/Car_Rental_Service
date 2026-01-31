@@ -1,35 +1,326 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>FAQ — Auto Prime Rental</title>
-    <link rel="stylesheet" href="assets/css/pages/faq.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ - Auto Prime Rental</title>
+    <link rel="stylesheet" href="assets/css/faq.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <div class="logo">
-          <img src="assets/images/logo.png" /> <strong>Auto Prime</strong>
+    <div class="faq-container">
+      <div class="faq-header">
+        <h1>Frequently Asked Questions</h1>
+        <p>
+          Find quick answers to the most common questions about our car rental
+          services
+        </p>
+      </div>
+
+      <div class="faq-search-box">
+        <span class="faq-search-icon">🔍</span>
+        <input
+          type="text"
+          class="faq-search-input"
+          placeholder="Search FAQs..."
+        />
+      </div>
+
+      <div class="faq-categories">
+        <a href="#" class="faq-category-tab active">⭐ All Questions</a>
+        <a href="#" class="faq-category-tab">📅 Booking</a>
+        <a href="#" class="faq-category-tab">💳 Payment</a>
+        <a href="#" class="faq-category-tab">🛡️ Insurance</a>
+        <a href="#" class="faq-category-tab">🚗 Vehicles</a>
+      </div>
+
+      <div class="faq-stats">
+        <div class="faq-stat-item">
+          <div class="faq-stat-icon">💬</div>
+          <div class="faq-stat-number">500+</div>
+          <div class="faq-stat-label">Questions Answered</div>
         </div>
-        <nav class="nav"><a href="index.html">Home</a></nav>
+        <div class="faq-stat-item">
+          <div class="faq-stat-icon">👥</div>
+          <div class="faq-stat-number">10K+</div>
+          <div class="faq-stat-label">Happy Customers</div>
+        </div>
+        <div class="faq-stat-item">
+          <div class="faq-stat-icon">⏰</div>
+          <div class="faq-stat-number">24/7</div>
+          <div class="faq-stat-label">Support Available</div>
+        </div>
       </div>
-    </header>
 
-    <main class="container" style="padding: 40px 0">
-      <h1>Frequently Asked Questions</h1>
+      <div class="faq-accordion">
+        <div class="faq-item popular">
+          <span class="faq-badge">🔥 Most Popular</span>
+          <input type="radio" name="faq" id="faq1" class="faq-toggle" />
+          <label for="faq1" class="faq-question">
+            <span class="faq-question-text"
+              >How do I make a reservation with Auto Prime Rental?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Making a reservation is simple! Visit our website, select your
+              pickup location and dates, browse available vehicles, and complete
+              the booking form. You'll receive instant confirmation via email.
+              You can also call our 24/7 customer service at 1-800-AUTO-PRIME or
+              use our mobile app for convenient booking on the go.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div style="margin-top: 22px" class="card-small">
-        <h3>What documents are needed?</h3>
-        <p class="muted">Valid license, ID proof, and phone number.</p>
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq2" class="faq-toggle" />
+          <label for="faq2" class="faq-question">
+            <span class="faq-question-text"
+              >What documents do I need to pick up my rental car?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              You'll need a valid driver's license (held for at least 1 year), a
+              major credit card in your name, and your booking confirmation.
+              International renters should also bring their passport and an
+              International Driving Permit if required. All drivers must be at
+              least 21 years old (25 for luxury vehicles).
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <h3>Is fuel included?</h3>
-        <p class="muted">No, fuel is paid by the customer.</p>
+        <div class="faq-item popular">
+          <span class="faq-badge">🔥 Most Popular</span>
+          <input type="radio" name="faq" id="faq3" class="faq-toggle" />
+          <label for="faq3" class="faq-question">
+            <span class="faq-question-text"
+              >Can I cancel or modify my reservation?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Yes! You can cancel or modify your reservation up to 24 hours
+              before pickup at no charge. Cancellations made within 24 hours may
+              incur a fee. To modify your booking, log into your account or
+              contact customer service. Prepaid reservations may have different
+              cancellation terms, so please review your booking confirmation.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <h3>Is there a security deposit?</h3>
-        <p class="muted">Yes, refundable at end of the trip.</p>
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq4" class="faq-toggle" />
+          <label for="faq4" class="faq-question">
+            <span class="faq-question-text"
+              >What insurance options are available?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              We offer several protection options: Collision Damage Waiver
+              (CDW), Personal Accident Insurance (PAI), Personal Effects
+              Coverage (PEC), and Supplemental Liability Protection (SLP). Your
+              personal auto insurance or credit card may already provide
+              coverage, so check before purchasing. Our team can help you choose
+              the right protection for your needs.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq5" class="faq-toggle" />
+          <label for="faq5" class="faq-question">
+            <span class="faq-question-text">What is your fuel policy?</span>
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              We operate on a "full-to-full" policy. You'll receive the car with
+              a full tank and should return it full to avoid refueling charges.
+              If you prefer convenience, you can prepay for fuel at a
+              competitive rate and return the car at any level. Gas stations are
+              located near all our rental locations.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq6" class="faq-toggle" />
+          <label for="faq6" class="faq-question">
+            <span class="faq-question-text"
+              >Can I add an additional driver?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Yes, you can add additional drivers at the time of booking or
+              during pickup. Additional drivers must meet the same age and
+              license requirements as the primary driver and must be present
+              with valid ID. There's a small daily fee per additional driver,
+              though spouses and domestic partners often qualify for free
+              additional driver status.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item popular">
+          <span class="faq-badge">🔥 Most Popular</span>
+          <input type="radio" name="faq" id="faq7" class="faq-toggle" />
+          <label for="faq7" class="faq-question">
+            <span class="faq-question-text"
+              >What happens if I return the car late?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              We offer a 29-minute grace period at no charge. Returns beyond
+              this may incur late fees. If you return more than 2 hours late,
+              you'll be charged for an additional day. If you know you'll be
+              late, please contact us immediately to extend your rental and
+              avoid extra charges.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq8" class="faq-toggle" />
+          <label for="faq8" class="faq-question">
+            <span class="faq-question-text"
+              >Are there mileage restrictions?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Most rentals include unlimited mileage for local travel. Some
+              specialty vehicles or one-way rentals may have mileage caps with
+              charges for excess miles. Check your rental agreement for specific
+              terms. If you're planning a long road trip, let us know and we'll
+              ensure you have the right plan.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq9" class="faq-toggle" />
+          <label for="faq9" class="faq-question">
+            <span class="faq-question-text"
+              >Can I rent a car with a debit card?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Debit cards are accepted at most locations with additional
+              verification requirements. You'll need to provide proof of
+              round-trip travel and pass a credit check. A larger deposit may be
+              required. Credit cards are preferred for faster processing.
+              Contact your rental location in advance to confirm policies.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <input type="radio" name="faq" id="faq10" class="faq-toggle" />
+          <label for="faq10" class="faq-question">
+            <span class="faq-question-text"
+              >What if the car breaks down or I have an accident?</span
+            >
+            <span class="faq-icon"></span>
+          </label>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Call our 24/7 roadside assistance immediately at 1-800-ROAD-HELP.
+              For breakdowns, we'll send help or provide a replacement vehicle.
+              In case of an accident, ensure everyone's safety first, call
+              emergency services if needed, then contact us. Don't leave the
+              scene until authorities arrive.
+              <div class="faq-helpful">
+                <span class="faq-helpful-text">Was this helpful?</span>
+                <div class="faq-helpful-buttons">
+                  <button class="faq-helpful-btn">👍 Yes</button>
+                  <button class="faq-helpful-btn">👎 No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </main>
 
-    <footer class="site-footer">© Auto Prime Rental 2025</footer>
+      <div class="faq-contact">
+        <h2>Still Have Questions?</h2>
+        <p>Our support team is here to help you 24/7</p>
+        <a href="#" class="faq-contact-btn">🎧 Contact Support</a>
+      </div>
+    </div>
   </body>
 </html>

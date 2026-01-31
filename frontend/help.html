@@ -3,152 +3,217 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Help Center | Auto Prime</title>
-    <link rel="stylesheet" href="assets/css/pages/help.css" />
+    <title>Help Center - Auto Prime Rental</title>
+    <link rel="stylesheet" href="assets/css/help-center.css" />
   </head>
   <body>
-    <header class="site-header" id="header"></header>
-
-    <section class="page-header help-header">
-      <div class="container">
+    <div class="help-container">
+      <div class="help-header">
         <h1>How Can We Help You?</h1>
+        <p>
+          Search our knowledge base or browse categories below to find answers
+        </p>
+
         <div class="help-search">
-          <input type="text" placeholder="Search for help..." id="helpSearch" />
-          <button class="btn btn-primary">Search</button>
+          <div class="help-search-wrapper">
+            <span class="help-search-icon">🔍</span>
+            <input
+              type="text"
+              class="help-search-input"
+              placeholder="Search for help articles, guides, or FAQs..."
+            />
+            <button class="help-search-btn">Search</button>
+          </div>
+
+          <div class="help-popular-searches">
+            <span>Popular:</span>
+            <a href="#" class="help-popular-tag">Booking</a>
+            <a href="#" class="help-popular-tag">Cancellation</a>
+            <a href="#" class="help-popular-tag">Insurance</a>
+            <a href="#" class="help-popular-tag">Payment</a>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="container">
       <div class="help-categories">
-        <a href="#booking" class="help-category-card">
-          <span class="icon">📅</span>
-          <h3>Booking Help</h3>
-          <p>Learn how to book a car</p>
-        </a>
-        <a href="#payment" class="help-category-card">
-          <span class="icon">💳</span>
-          <h3>Payments</h3>
-          <p>Payment methods & refunds</p>
-        </a>
-        <a href="#cancellation" class="help-category-card">
-          <span class="icon">❌</span>
-          <h3>Cancellation</h3>
-          <p>Cancel or modify booking</p>
-        </a>
-        <a href="#documents" class="help-category-card">
-          <span class="icon">📋</span>
-          <h3>Documents</h3>
-          <p>Required documents</p>
-        </a>
-        <a href="#insurance" class="help-category-card">
-          <span class="icon">🛡️</span>
-          <h3>Insurance</h3>
-          <p>Coverage & claims</p>
-        </a>
-        <a href="#emergency" class="help-category-card">
-          <span class="icon">🚨</span>
-          <h3>Emergency</h3>
-          <p>24/7 support</p>
-        </a>
-      </div>
+        <h2 class="help-categories-title">Browse Help Topics</h2>
 
-      <div class="faq-section">
-        <h2>Frequently Asked Questions</h2>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>How do I book a car?</span>
-            <span class="icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>
-              To book a car: 1) Search for available cars on your dates. 2)
-              Select your preferred car. 3) Complete booking details. 4) Make
-              payment. You'll receive instant confirmation.
+        <div class="help-categories-grid">
+          <a href="#" class="help-category-card">
+            <div class="help-category-icon">📅</div>
+            <h3 class="help-category-title">Booking & Reservations</h3>
+            <p class="help-category-desc">
+              Learn how to book, modify, or cancel your rental reservation
             </p>
-          </div>
-        </div>
+            <span class="help-category-count">24 articles</span>
+          </a>
 
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>What documents do I need?</span>
-            <span class="icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>
-              You need: Valid Driving License (original), Government ID proof
-              (Aadhar/Passport), and a security deposit of ₹5,000.
+          <a href="#" class="help-category-card">
+            <div class="help-category-icon">💳</div>
+            <h3 class="help-category-title">Payments & Billing</h3>
+            <p class="help-category-desc">
+              Payment methods, invoices, and refund information
             </p>
-          </div>
-        </div>
+            <span class="help-category-count">18 articles</span>
+          </a>
 
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>Can I cancel my booking?</span>
-            <span class="icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>
-              Yes! Free cancellation up to 24 hours before pickup. 50% refund if
-              cancelled within 24 hours. No refund for no-shows.
+          <a href="#" class="help-category-card">
+            <div class="help-category-icon">🚗</div>
+            <h3 class="help-category-title">Vehicle Information</h3>
+            <p class="help-category-desc">
+              Car features, specifications, and rental options
             </p>
-          </div>
-        </div>
+            <span class="help-category-count">32 articles</span>
+          </a>
 
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>Is fuel included?</span>
-            <span class="icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>
-              No, fuel is not included. Car will be provided with full tank.
-              Please return with full tank or pay refueling charges.
+          <a href="#" class="help-category-card">
+            <div class="help-category-icon">🛡️</div>
+            <h3 class="help-category-title">Insurance & Protection</h3>
+            <p class="help-category-desc">
+              Coverage options, claims, and protection plans
             </p>
-          </div>
-        </div>
+            <span class="help-category-count">15 articles</span>
+          </a>
 
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>What if I have an accident?</span>
-            <span class="icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>
-              All cars are insured. Immediately call our 24/7 helpline:
-              +91-9361261582. Do not leave the accident spot.
+          <a href="#" class="help-category-card">
+            <div class="help-category-icon">👤</div>
+            <h3 class="help-category-title">Account & Profile</h3>
+            <p class="help-category-desc">
+              Manage your account, preferences, and personal data
             </p>
-          </div>
+            <span class="help-category-count">12 articles</span>
+          </a>
+
+          <a href="#" class="help-category-card">
+            <div class="help-category-icon">📍</div>
+            <h3 class="help-category-title">Pickup & Return</h3>
+            <p class="help-category-desc">
+              Location details, hours, and return procedures
+            </p>
+            <span class="help-category-count">20 articles</span>
+          </a>
         </div>
       </div>
 
-      <div class="contact-support">
+      <div class="help-stats">
+        <div class="help-stat-item">
+          <div class="help-stat-number">500+</div>
+          <div class="help-stat-label">Help Articles</div>
+        </div>
+        <div class="help-stat-item">
+          <div class="help-stat-number">24/7</div>
+          <div class="help-stat-label">Support Available</div>
+        </div>
+        <div class="help-stat-item">
+          <div class="help-stat-number">95%</div>
+          <div class="help-stat-label">Issues Resolved</div>
+        </div>
+        <div class="help-stat-item">
+          <div class="help-stat-number">&lt;2min</div>
+          <div class="help-stat-label">Avg Response Time</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-links-section">
+      <div class="help-links-container">
+        <h2 class="help-links-title">Popular Help Articles</h2>
+
+        <div class="help-links-grid">
+          <div class="help-link-group">
+            <h3 class="help-link-group-title">
+              <span class="help-link-group-icon">❓</span>
+              Getting Started
+            </h3>
+            <div class="help-link-list">
+              <a href="#" class="help-link-item">
+                <span>How to create an account</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Making your first booking</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Understanding rental requirements</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Driver license verification</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="help-link-group">
+            <h3 class="help-link-group-title">
+              <span class="help-link-group-icon">✏️</span>
+              Managing Bookings
+            </h3>
+            <div class="help-link-list">
+              <a href="#" class="help-link-item">
+                <span>How to modify your reservation</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Cancellation policy explained</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Extending your rental period</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Adding additional drivers</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="help-link-group">
+            <h3 class="help-link-group-title">
+              <span class="help-link-group-icon">💰</span>
+              Payments & Fees
+            </h3>
+            <div class="help-link-list">
+              <a href="#" class="help-link-item">
+                <span>Accepted payment methods</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Understanding your invoice</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Security deposit information</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+              <a href="#" class="help-link-item">
+                <span>Requesting a refund</span>
+                <span class="help-link-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="help-container">
+      <div class="help-contact">
         <h2>Still Need Help?</h2>
-        <div class="support-options">
-          <div class="support-card">
-            <span class="icon">📞</span>
-            <h3>Call Us</h3>
-            <p>+91-9361261582</p>
-            <p class="muted">24/7 Available</p>
-          </div>
-          <div class="support-card">
-            <span class="icon">📧</span>
-            <h3>Email Us</h3>
-            <p>support@autoprime.com</p>
-            <p class="muted">Response in 2 hours</p>
-          </div>
-          <div class="support-card">
-            <span class="icon">💬</span>
-            <h3>Live Chat</h3>
-            <p>Chat with us now</p>
-            <button class="btn btn-primary btn-sm">Start Chat</button>
-          </div>
+        <p>
+          Can't find what you're looking for? Our support team is ready to
+          assist you 24/7
+        </p>
+        <div class="help-contact-buttons">
+          <a href="#" class="help-contact-btn help-contact-btn-primary"
+            >💬 Start Live Chat</a
+          >
+          <a href="#" class="help-contact-btn help-contact-btn-secondary"
+            >✉️ Email Support</a
+          >
         </div>
       </div>
-    </section>
-
-    <footer class="site-footer" id="footer"></footer>
-    <script type="module" src="assets/js/pages/help.js"></script>
+    </div>
   </body>
 </html>

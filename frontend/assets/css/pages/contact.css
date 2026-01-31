@@ -45,7 +45,14 @@
   max-width: 640px;
   margin: auto;
 }
-
+.page-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  color: #ffffff;
+  background-color: #0f766e;
+}
 /* ===============================
    LAYOUT
 ================================ */
