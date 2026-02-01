@@ -1,117 +1,133 @@
-// ============================================================================
 // FILE: assets/js/dashboards/host/manage-cars.js
-// ============================================================================
 
-/**
- * Manage Cars Page
- * Host's car listing management
- */
+import { requireHost } from "../../../core/auth-guard.js";
+import { initHostSidebar } from "../../../components/sidebar-host.js";
+import { carService } from "../../../services/car.service.js";
+import { storage } from "../../../base/storage.js";
+import { formatCurrency } from "../../../base/helpers.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
+import { showNotification } from "../../../ui/notifications.js";
+import { confirmModal } from "../../../components/modal.js";
 
-import HostService from "../../services/host.service.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import Helpers from "../../base/helpers.js";
-import SidebarHost from "../../components/sidebar-host.js";
+export const initManageCars = async () => {
+  if (!requireHost()) return;
 
-const ManageCarsPage = {
-  init() {
-    if (!AuthGuard.requireRole("HOST")) return;
-
-    SidebarHost.init();
-
-    this.loadCars();
-    this.setupDeleteHandlers();
-  },
-
-  async loadCars() {
-    const container = document.getElementById("carsTableBody");
-
-    if (!container) return;
-
-    Loader.show("Loading cars...");
-
-    try {
-      const response = await HostService.getCars();
-
-      Loader.hide();
-
-      if (response.success && response.data) {
-        if (response.data.length === 0) {
-          container.innerHTML =
-            '<tr><td colspan="7" class="text-center">No cars listed yet. <a href="add-car.html">Add your first car</a></td></tr>';
-        } else {
-          container.innerHTML = response.data
-            .map((car) => this.createCarRow(car))
-            .join("");
-        }
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Failed to load cars");
-    }
-  },
-
-  createCarRow(car) {
-    const statusClass = car.active ? "badge-success" : "badge-secondary";
-    const statusText = car.active ? "Active" : "Inactive";
-
-    return `
-      <tr>
-        <td>
-          <img src="${car.image}" alt="${car.name}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
-        </td>
-        <td><strong>${car.name}</strong></td>
-        <td>${car.type}</td>
-        <td>${Helpers.formatCurrency(car.pricePerDay)}/day</td>
-        <td><span class="badge ${statusClass}">${statusText}</span></td>
-        <td>${car.bookings || 0} bookings</td>
-        <td>
-          <div class="action-buttons">
-            <a href="edit-car.html?id=${car.id}" class="btn btn-sm btn-outline">Edit</a>
-            <button class="btn btn-sm btn-danger" onclick="window.ManageCarsPage.deleteCar('${car.id}')">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  },
-
-  async deleteCar(carId) {
-    if (
-      !confirm(
-        "Are you sure you want to delete this car? This action cannot be undone.",
-      )
-    )
-      return;
-
-    Loader.show("Deleting car...");
-
-    try {
-      const response = await HostService.deleteCar(carId);
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("Car deleted successfully");
-        this.loadCars();
-      } else {
-        Notifications.error(response.error || "Failed to delete car");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error deleting car");
-    }
-  },
-
-  setupDeleteHandlers() {
-    window.ManageCarsPage = this;
-  },
+  initHostSidebar();
+  await loadCars();
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => ManageCarsPage.init());
-} else {
-  ManageCarsPage.init();
-}
+const loadCars = async () => {
+  showLoader();
 
-export default ManageCarsPage;
+  try {
+    const user = storage.getUser();
+    const cars = await carService.getHostCars(user.id);
+    displayCars(cars);
+  } catch (error) {
+    console.error("Failed to load cars:", error);
+  } finally {
+    hideLoader();
+  }
+};
+
+const displayCars = (cars) => {
+  const container = document.querySelector("#cars-list");
+  if (!container) return;
+
+  if (cars.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-5">
+        <h3>No cars added yet</h3>
+        <p>Start adding your cars to get bookings!</p>
+        <a href="/host/add-car" class="btn btn-primary">Add Car</a>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Price/Day</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${cars
+          .map(
+            (car) => `
+          <tr>
+            <td><img src="${car.image}" alt="${car.name}" style="width: 60px; height: 40px; object-fit: cover;" onerror="this.src='/assets/images/car-placeholder.jpg'"></td>
+            <td>${car.name}</td>
+            <td>${car.type}</td>
+            <td>${formatCurrency(car.pricePerDay)}</td>
+            <td>
+              <span class="badge bg-${car.available ? "success" : "danger"}">
+                ${car.available ? "Available" : "Unavailable"}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-primary" data-toggle-availability="${car.id}">
+                ${car.available ? "Mark Unavailable" : "Mark Available"}
+              </button>
+              <button class="btn btn-sm btn-danger" data-delete-car="${car.id}">Delete</button>
+            </td>
+          </tr>
+        `,
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
+
+  setupCarActions();
+};
+
+const setupCarActions = () => {
+  document.querySelectorAll("[data-toggle-availability]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const carId = btn.getAttribute("data-toggle-availability");
+
+      showLoader();
+
+      try {
+        const car = await carService.getCarById(carId);
+        await carService.updateCar(carId, { available: !car.available });
+        showNotification("Car availability updated", "success");
+        await loadCars();
+      } catch (error) {
+        showNotification("Failed to update availability", "error");
+      } finally {
+        hideLoader();
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-delete-car]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const carId = btn.getAttribute("data-delete-car");
+
+      const confirmed = await confirmModal(
+        "Are you sure you want to delete this car?",
+      );
+      if (!confirmed) return;
+
+      showLoader();
+
+      try {
+        await carService.deleteCar(carId);
+        showNotification("Car deleted successfully", "success");
+        await loadCars();
+      } catch (error) {
+        showNotification("Failed to delete car", "error");
+      } finally {
+        hideLoader();
+      }
+    });
+  });
+};

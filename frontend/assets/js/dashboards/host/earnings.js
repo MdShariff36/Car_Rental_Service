@@ -1,123 +1,92 @@
-// ============================================================================
 // FILE: assets/js/dashboards/host/earnings.js
-// ============================================================================
 
-/**
- * Earnings Page
- * Host earnings and payout management
- */
+import { requireHost } from "../../../core/auth-guard.js";
+import { initHostSidebar } from "../../../components/sidebar-host.js";
+import { hostService } from "../../../services/host.service.js";
+import { storage } from "../../../base/storage.js";
+import { formatCurrency, formatDate } from "../../../base/helpers.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
 
-import HostService from "../../services/host.service.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import Helpers from "../../base/helpers.js";
-import SidebarHost from "../../components/sidebar-host.js";
+export const initEarnings = async () => {
+  if (!requireHost()) return;
 
-const EarningsPage = {
-  init() {
-    if (!AuthGuard.requireRole("HOST")) return;
+  initHostSidebar();
+  await loadEarnings();
+};
 
-    SidebarHost.init();
+const loadEarnings = async () => {
+  showLoader();
 
-    this.loadEarnings();
-    this.loadPayouts();
-    this.setupPayoutRequest();
-  },
+  try {
+    const user = storage.getUser();
+    const earnings = await hostService.getHostEarnings(user.id);
 
-  async loadEarnings() {
-    try {
-      const response = await HostService.getEarnings("month");
+    displayStats(earnings);
+    displayEarningsList(earnings.earnings);
+  } catch (error) {
+    console.error("Failed to load earnings:", error);
+  } finally {
+    hideLoader();
+  }
+};
 
-      if (response.success && response.data) {
-        const totalEarningsEl = document.getElementById("totalEarnings");
-        if (totalEarningsEl)
-          totalEarningsEl.textContent = Helpers.formatCurrency(
-            response.data.total || 0,
-          );
+const displayStats = (earnings) => {
+  const statsContainer = document.querySelector("#earnings-stats");
+  if (!statsContainer) return;
 
-        const pendingEl = document.getElementById("pendingEarnings");
-        if (pendingEl)
-          pendingEl.textContent = Helpers.formatCurrency(
-            response.data.pending || 0,
-          );
+  statsContainer.innerHTML = `
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h3>${formatCurrency(earnings.total)}</h3>
+        <p>Total Earnings</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h3>${formatCurrency(earnings.thisMonth)}</h3>
+        <p>This Month</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h3>${earnings.bookingsCount}</h3>
+        <p>Completed Bookings</p>
+      </div>
+    </div>
+  `;
+};
 
-        const availableEl = document.getElementById("availableForPayout");
-        if (availableEl)
-          availableEl.textContent = Helpers.formatCurrency(
-            response.data.available || 0,
-          );
-      }
-    } catch (error) {
-      console.error("Error loading earnings:", error);
-    }
-  },
+const displayEarningsList = (earningsList) => {
+  const container = document.querySelector("#earnings-list");
+  if (!container) return;
 
-  async loadPayouts() {
-    const container = document.getElementById("payoutsTableBody");
+  if (earningsList.length === 0) {
+    container.innerHTML = '<p class="text-center">No earnings yet.</p>';
+    return;
+  }
 
-    if (!container) return;
-
-    try {
-      const response = await HostService.getPayouts();
-
-      if (response.success && response.data) {
-        container.innerHTML = response.data
+  container.innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Booking ID</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${earningsList
           .map(
-            (payout) => `
+            (earning) => `
           <tr>
-            <td>${Helpers.formatDate(payout.requestedAt)}</td>
-            <td>${Helpers.formatCurrency(payout.amount)}</td>
-            <td><span class="badge badge-${payout.status.toLowerCase()}">${payout.status}</span></td>
-            <td>${payout.processedAt ? Helpers.formatDate(payout.processedAt) : "-"}</td>
+            <td>${formatDate(earning.date)}</td>
+            <td>${earning.id}</td>
+            <td>${formatCurrency(earning.amount)}</td>
           </tr>
         `,
           )
-          .join("");
-      }
-    } catch (error) {
-      console.error("Error loading payouts:", error);
-    }
-  },
-
-  setupPayoutRequest() {
-    const requestBtn = document.getElementById("requestPayoutBtn");
-
-    if (!requestBtn) return;
-
-    requestBtn.addEventListener("click", async () => {
-      const amount = prompt("Enter payout amount:");
-
-      if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-        Notifications.error("Please enter a valid amount");
-        return;
-      }
-
-      Loader.show("Requesting payout...");
-
-      try {
-        const response = await HostService.requestPayout(parseFloat(amount));
-
-        Loader.hide();
-
-        if (response.success) {
-          Notifications.success("Payout requested successfully");
-          this.loadPayouts();
-        } else {
-          Notifications.error(response.error || "Failed to request payout");
-        }
-      } catch (error) {
-        Loader.hide();
-        Notifications.error("Error requesting payout");
-      }
-    });
-  },
+          .join("")}
+      </tbody>
+    </table>
+  `;
 };
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => EarningsPage.init());
-} else {
-  EarningsPage.init();
-}
-
-export default EarningsPage;

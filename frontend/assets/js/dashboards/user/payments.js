@@ -1,83 +1,107 @@
-// ============================================================================
 // FILE: assets/js/dashboards/user/payments.js
-// ============================================================================
 
-/**
- * Payments Page
- * User's payment history
- */
+import { requireUser } from "../../../core/auth-guard.js";
+import { initUserSidebar } from "../../../components/sidebar-user.js";
+import { paymentService } from "../../../services/payment.service.js";
+import { storage } from "../../../base/storage.js";
+import { formatCurrency, formatDateTime } from "../../../base/helpers.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
 
-import UserService from "../../services/user.service.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import Helpers from "../../base/helpers.js";
-import SidebarUser from "../../components/sidebar-user.js";
+export const initPayments = async () => {
+  if (!requireUser()) return;
 
-const PaymentsPage = {
-  init() {
-    if (!AuthGuard.requireRole("USER")) return;
-
-    SidebarUser.init();
-
-    this.loadPayments();
-  },
-
-  async loadPayments() {
-    const container = document.getElementById("paymentsContainer");
-
-    if (!container) return;
-
-    Loader.show("Loading payments...");
-
-    try {
-      const response = await UserService.getPayments();
-
-      Loader.hide();
-
-      if (response.success && response.data) {
-        if (response.data.length === 0) {
-          container.innerHTML =
-            '<tr><td colspan="6" class="text-center">No payments found</td></tr>';
-        } else {
-          container.innerHTML = response.data
-            .map((payment) => this.createPaymentRow(payment))
-            .join("");
-        }
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Failed to load payments");
-      console.error("Error:", error);
-    }
-  },
-
-  createPaymentRow(payment) {
-    const statusClass =
-      {
-        SUCCESS: "badge-success",
-        PENDING: "badge-warning",
-        FAILED: "badge-danger",
-        REFUNDED: "badge-info",
-      }[payment.status] || "badge-secondary";
-
-    return `
-      <tr>
-        <td>#${payment.id}</td>
-        <td>${Helpers.formatDate(payment.createdAt)}</td>
-        <td>#${payment.bookingId}</td>
-        <td>${payment.paymentMethod}</td>
-        <td>${Helpers.formatCurrency(payment.amount)}</td>
-        <td><span class="badge ${statusClass}">${payment.status}</span></td>
-      </tr>
-    `;
-  },
+  initUserSidebar();
+  await loadPayments();
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => PaymentsPage.init());
-} else {
-  PaymentsPage.init();
-}
+const loadPayments = async () => {
+  showLoader();
 
-export default PaymentsPage;
+  try {
+    const user = storage.getUser();
+    const payments = await paymentService.getUserPayments(user.id);
+    const stats = await paymentService.getPaymentStats(user.id, user.role);
+
+    displayStats(stats);
+    displayPayments(payments);
+  } catch (error) {
+    console.error("Failed to load payments:", error);
+  } finally {
+    hideLoader();
+  }
+};
+
+const displayStats = (stats) => {
+  const statsContainer = document.querySelector("#payment-stats");
+  if (!statsContainer) return;
+
+  statsContainer.innerHTML = `
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h3>${stats.total}</h3>
+        <p>Total Payments</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h3>${formatCurrency(stats.totalAmount)}</h3>
+        <p>Total Spent</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h3>${stats.completed}</h3>
+        <p>Successful</p>
+      </div>
+    </div>
+  `;
+};
+
+const displayPayments = (payments) => {
+  const container = document.querySelector("#payments-list");
+  if (!container) return;
+
+  if (payments.length === 0) {
+    container.innerHTML = '<p class="text-center">No payments found.</p>';
+    return;
+  }
+
+  container.innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Date</th>
+          <th>Method</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${payments
+          .map(
+            (payment) => `
+          <tr>
+            <td>${payment.transactionId || payment.id}</td>
+            <td>${formatDateTime(payment.createdAt)}</td>
+            <td>${payment.method}</td>
+            <td>${formatCurrency(payment.amount)}</td>
+            <td><span class="badge bg-${getStatusColor(payment.status)}">${payment.status}</span></td>
+          </tr>
+        `,
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
+};
+
+const getStatusColor = (status) => {
+  const colors = {
+    pending: "warning",
+    completed: "success",
+    failed: "danger",
+    refunded: "info",
+  };
+  return colors[status] || "secondary";
+};

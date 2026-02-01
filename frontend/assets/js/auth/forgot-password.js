@@ -1,82 +1,88 @@
-// Login Form JavaScript
+// Forgot Password JavaScript
 
 document.addEventListener("DOMContentLoaded", function () {
   // Get elements
-  const loginForm = document.getElementById("loginForm");
-  const passwordInput = document.getElementById("password");
-  const togglePasswordBtn = document.getElementById("togglePassword");
+  const resetForm = document.getElementById("resetForm");
   const emailInput = document.getElementById("email");
+  const emailFormSection = document.getElementById("emailForm");
+  const successSection = document.getElementById("successMessage");
+  const sentEmailSpan = document.getElementById("sentEmail");
+  const resendLink = document.getElementById("resendLink");
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
 
-  // Toggle password visibility
-  if (togglePasswordBtn) {
-    togglePasswordBtn.addEventListener("click", function () {
-      const type =
-        passwordInput.getAttribute("type") === "password" ? "text" : "password";
-      passwordInput.setAttribute("type", type);
+  // Form submission
+  resetForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      // Toggle eye icons
-      const eyeOpen = this.querySelector(".eye-open");
-      const eyeClosed = this.querySelector(".eye-closed");
+    const email = emailInput.value.trim();
 
-      if (type === "password") {
-        eyeOpen.style.display = "block";
-        eyeClosed.style.display = "none";
-      } else {
-        eyeOpen.style.display = "none";
-        eyeClosed.style.display = "block";
-      }
-    });
-  }
+    // Validate email
+    if (!email) {
+      showNotification("Please enter your email address", "error");
+      return;
+    }
 
-  // Form validation and submission
-  if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
+    if (!isValidEmail(email)) {
+      showNotification("Please enter a valid email address", "error");
+      emailInput.focus();
+      return;
+    }
+
+    // Show loading state
+    const submitBtn = resetForm.querySelector(".submit-btn");
+    const originalHTML = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="btn-text">Sending...</span>';
+    submitBtn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+      // Success - show success message
+      emailFormSection.style.display = "none";
+      successSection.style.display = "block";
+      sentEmailSpan.textContent = email;
+
+      // Reset button
+      submitBtn.innerHTML = originalHTML;
+      submitBtn.disabled = false;
+
+      showNotification("Password reset link sent successfully!", "success");
+    }, 1500);
+  });
+
+  // Resend link functionality
+  if (resendLink) {
+    resendLink.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+      const email = sentEmailSpan.textContent;
 
-      // Basic validation
-      if (!email || !password) {
-        showNotification("Please fill in all fields", "error");
-        return;
-      }
+      // Show loading notification
+      showNotification("Resending email...", "info");
 
-      if (!isValidEmail(email)) {
-        showNotification("Please enter a valid email address", "error");
-        emailInput.focus();
-        return;
-      }
-
-      // Show loading state
-      const submitBtn = loginForm.querySelector(".submit-btn");
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span class="btn-text">Signing in...</span>';
-      submitBtn.disabled = true;
-
-      // Simulate API call (replace with actual API call)
+      // Simulate resend
       setTimeout(() => {
-        // Success
-        showNotification("Login successful! Redirecting...", "success");
-
-        // Redirect after a short delay
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1500);
+        showNotification("Email resent successfully!", "success");
       }, 1500);
     });
   }
 
-  // Input focus animations
-  const inputs = document.querySelectorAll(".form-input");
-  inputs.forEach((input) => {
-    input.addEventListener("focus", function () {
-      this.parentElement.classList.add("focused");
+  // Try again button
+  if (tryAgainBtn) {
+    tryAgainBtn.addEventListener("click", function () {
+      successSection.style.display = "none";
+      emailFormSection.style.display = "block";
+      emailInput.value = "";
+      emailInput.focus();
     });
+  }
 
-    input.addEventListener("blur", function () {
-      this.parentElement.classList.remove("focused");
-    });
+  // Input focus effect
+  emailInput.addEventListener("focus", function () {
+    this.parentElement.classList.add("focused");
+  });
+
+  emailInput.addEventListener("blur", function () {
+    this.parentElement.classList.remove("focused");
   });
 
   // Email validation helper
@@ -87,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Notification helper
   function showNotification(message, type = "info") {
-    // Create notification element
     const notification = document.createElement("div");
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
@@ -97,7 +102,6 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-    // Add styles if not already added
     if (!document.querySelector("#notification-styles")) {
       const style = document.createElement("style");
       style.id = "notification-styles";
@@ -115,6 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     gap: 0.75rem;
                     z-index: 10000;
                     animation: slideInRight 0.3s ease-out;
+                    max-width: 400px;
                 }
 
                 .notification-success {
@@ -144,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     border-radius: 50%;
                     font-weight: bold;
                     font-size: 14px;
+                    flex-shrink: 0;
                 }
 
                 .notification-success .notification-icon {
@@ -164,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .notification-message {
                     color: #0F172A;
                     font-weight: 500;
+                    font-size: 0.95rem;
                 }
 
                 @keyframes slideInRight {
@@ -187,14 +194,21 @@ document.addEventListener("DOMContentLoaded", function () {
                         opacity: 0;
                     }
                 }
+
+                @media (max-width: 480px) {
+                    .notification {
+                        top: 1rem;
+                        right: 1rem;
+                        left: 1rem;
+                        max-width: none;
+                    }
+                }
             `;
       document.head.appendChild(style);
     }
 
-    // Add to document
     document.body.appendChild(notification);
 
-    // Remove after 4 seconds
     setTimeout(() => {
       notification.style.animation = "slideOutRight 0.3s ease-out";
       setTimeout(() => {
@@ -203,14 +217,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 4000);
   }
 
-  // Social login buttons (placeholder functionality)
-  const socialBtns = document.querySelectorAll(".social-btn");
-  socialBtns.forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const provider = this.classList.contains("google-btn")
-        ? "Google"
-        : "Apple";
-      showNotification(`${provider} login coming soon!`, "info");
-    });
-  });
+  // Auto-focus on email input
+  emailInput.focus();
 });

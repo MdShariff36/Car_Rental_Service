@@ -1,122 +1,109 @@
-// ============================================================================
 // FILE: assets/js/dashboards/host/add-car.js
-// ============================================================================
 
-/**
- * Add Car Page
- * Add new car listing
- */
+import { requireHost } from "../../../core/auth-guard.js";
+import { initHostSidebar } from "../../../components/sidebar-host.js";
+import { carService } from "../../../services/car.service.js";
+import { CONFIG } from "../../../base/config.js";
+import {
+  validateRequired,
+  validateNumber,
+  validateMin,
+  showFieldError,
+  showFieldSuccess,
+  clearFormValidation,
+} from "../../../base/validators.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
+import { showNotification } from "../../../ui/notifications.js";
 
-import HostService from "../../services/host.service.js";
-import Validators from "../../base/validators.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import SidebarHost from "../../components/sidebar-host.js";
+export const initAddCar = () => {
+  if (!requireHost()) return;
 
-const AddCarPage = {
-  init() {
-    if (!AuthGuard.requireRole("HOST")) return;
-
-    SidebarHost.init();
-
-    this.setupCarForm();
-    this.setupImageUpload();
-  },
-
-  setupCarForm() {
-    const carForm = document.getElementById("addCarForm");
-
-    if (!carForm) return;
-
-    carForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(carForm);
-      const carData = {
-        name: formData.get("name"),
-        type: formData.get("type"),
-        transmission: formData.get("transmission"),
-        fuelType: formData.get("fuelType"),
-        seats: formData.get("seats"),
-        year: formData.get("year"),
-        pricePerDay: formData.get("pricePerDay"),
-        kmLimit: formData.get("kmLimit"),
-        unlimitedKm: formData.get("unlimitedKm") === "on",
-        location: formData.get("location"),
-        description: formData.get("description"),
-        features: formData
-          .get("features")
-          ?.split(",")
-          .map((f) => f.trim()),
-      };
-
-      // Validate
-      if (!carData.name || !carData.type || !carData.pricePerDay) {
-        Notifications.error("Please fill in all required fields");
-        return;
-      }
-
-      await this.submitCar(carData);
-    });
-  },
-
-  async submitCar(carData) {
-    Loader.show("Adding car...");
-
-    try {
-      const response = await HostService.addCar(carData);
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("Car added successfully!");
-
-        setTimeout(() => {
-          window.location.href = "manage-cars.html";
-        }, 1500);
-      } else {
-        Notifications.error(response.error || "Failed to add car");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error adding car");
-    }
-  },
-
-  setupImageUpload() {
-    const imageInput = document.getElementById("carImages");
-    const preview = document.getElementById("imagePreview");
-
-    if (!imageInput || !preview) return;
-
-    imageInput.addEventListener("change", (e) => {
-      const files = Array.from(e.target.files);
-
-      preview.innerHTML = "";
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.style.width = "100px";
-          img.style.height = "100px";
-          img.style.objectFit = "cover";
-          img.style.borderRadius = "8px";
-          img.style.margin = "5px";
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-  },
+  initHostSidebar();
+  setupAddCarForm();
+  setupImagePreview();
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => AddCarPage.init());
-} else {
-  AddCarPage.init();
-}
+const setupAddCarForm = () => {
+  const form = document.querySelector("#add-car-form");
+  if (!form) return;
 
-export default AddCarPage;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    clearFormValidation("add-car-form");
+
+    const formData = new FormData(form);
+    const carData = {
+      name: formData.get("name"),
+      brand: formData.get("brand"),
+      type: formData.get("type"),
+      year: parseInt(formData.get("year")),
+      seats: parseInt(formData.get("seats")),
+      transmission: formData.get("transmission"),
+      fuel: formData.get("fuel"),
+      pricePerDay: parseFloat(formData.get("pricePerDay")),
+      image: formData.get("image") || "/assets/images/car-placeholder.jpg",
+      features: Array.from(formData.getAll("features")),
+      description: formData.get("description"),
+      location: formData.get("location"),
+    };
+
+    let isValid = true;
+
+    const nameValidation = validateRequired(carData.name, "Car name");
+    if (!nameValidation.valid) {
+      showFieldError("name", nameValidation.message);
+      isValid = false;
+    } else {
+      showFieldSuccess("name");
+    }
+
+    const priceValidation = validateMin(
+      carData.pricePerDay,
+      0,
+      "Price per day",
+    );
+    if (!priceValidation.valid) {
+      showFieldError("pricePerDay", priceValidation.message);
+      isValid = false;
+    } else {
+      showFieldSuccess("pricePerDay");
+    }
+
+    if (!isValid) return;
+
+    showLoader();
+
+    try {
+      await carService.createCar(carData);
+      showNotification("Car added successfully!", "success");
+
+      setTimeout(() => {
+        window.location.href = "/host/manage-cars";
+      }, 1500);
+    } catch (error) {
+      showNotification("Failed to add car", "error");
+    } finally {
+      hideLoader();
+    }
+  });
+};
+
+const setupImagePreview = () => {
+  const imageInput = document.querySelector("#carImage");
+  const preview = document.querySelector("#image-preview");
+
+  imageInput?.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (preview && event.target?.result) {
+        preview.src = event.target.result;
+        preview.style.display = "block";
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+};

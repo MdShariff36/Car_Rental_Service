@@ -1,123 +1,132 @@
-// ============================================================================
 // FILE: assets/js/services/admin.service.js
-// ============================================================================
 
-/**
- * Admin Service
- * Handles admin-specific operations
- */
+import { storage } from "../base/storage.js";
+import { CONFIG } from "../base/config.js";
 
-import API from "../core/api.js";
-
-const AdminService = {
-  /**
-   * Get admin dashboard stats
-   */
+class AdminService {
   async getDashboardStats() {
-    return await API.get("/admin/dashboard/stats");
-  },
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-  /**
-   * Get all users
-   */
-  async getUsers(filters = {}) {
-    const queryString = new URLSearchParams(filters).toString();
-    return await API.get(`/admin/users?${queryString}`);
-  },
+    const users = storage.get("users", []);
+    const cars = storage.get("cars", []);
+    const bookings = storage.get("bookings", []);
+    const payments = storage.get("payments", []);
 
-  /**
-   * Get user by ID
-   */
-  async getUserById(userId) {
-    return await API.get(`/admin/users/${userId}`);
-  },
+    const totalRevenue = payments
+      .filter((p) => p.status === CONFIG.PAYMENT.STATUS.COMPLETED)
+      .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-  /**
-   * Update user
-   */
-  async updateUser(userId, userData) {
-    return await API.put(`/admin/users/${userId}`, userData);
-  },
+    const activeBookings = bookings.filter(
+      (b) =>
+        b.status === CONFIG.BOOKING.STATUS.CONFIRMED ||
+        b.status === CONFIG.BOOKING.STATUS.ONGOING,
+    ).length;
 
-  /**
-   * Delete user
-   */
-  async deleteUser(userId) {
-    return await API.delete(`/admin/users/${userId}`);
-  },
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
 
-  /**
-   * Suspend user
-   */
-  async suspendUser(userId, reason) {
-    return await API.post(`/admin/users/${userId}/suspend`, { reason });
-  },
+    const monthlyRevenue = payments
+      .filter((p) => {
+        const date = new Date(p.createdAt);
+        return (
+          date.getMonth() === thisMonth &&
+          date.getFullYear() === thisYear &&
+          p.status === CONFIG.PAYMENT.STATUS.COMPLETED
+        );
+      })
+      .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-  /**
-   * Activate user
-   */
-  async activateUser(userId) {
-    return await API.post(`/admin/users/${userId}/activate`);
-  },
+    return {
+      totalUsers: users.length,
+      totalCars: cars.length,
+      totalBookings: bookings.length,
+      activeBookings,
+      totalRevenue,
+      monthlyRevenue,
+      recentBookings: bookings.slice(0, 5),
+    };
+  }
 
-  /**
-   * Get all bookings
-   */
-  async getBookings(filters = {}) {
-    const queryString = new URLSearchParams(filters).toString();
-    return await API.get(`/admin/bookings?${queryString}`);
-  },
+  async getReports(type = "monthly") {
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-  /**
-   * Get all cars
-   */
-  async getCars(filters = {}) {
-    const queryString = new URLSearchParams(filters).toString();
-    return await API.get(`/admin/cars?${queryString}`);
-  },
+    const bookings = storage.get("bookings", []);
+    const payments = storage.get("payments", []);
+    const cars = storage.get("cars", []);
 
-  /**
-   * Approve car
-   */
-  async approveCar(carId) {
-    return await API.post(`/admin/cars/${carId}/approve`);
-  },
+    const now = new Date();
+    let startDate;
 
-  /**
-   * Reject car
-   */
-  async rejectCar(carId, reason) {
-    return await API.post(`/admin/cars/${carId}/reject`, { reason });
-  },
+    if (type === "daily") {
+      startDate = new Date(now.setDate(now.getDate() - 30));
+    } else if (type === "monthly") {
+      startDate = new Date(now.setMonth(now.getMonth() - 12));
+    } else {
+      startDate = new Date(now.setFullYear(now.getFullYear() - 5));
+    }
 
-  /**
-   * Get reports
-   */
-  async getReports(type, period) {
-    return await API.get(`/admin/reports/${type}?period=${period}`);
-  },
+    const filteredBookings = bookings.filter(
+      (b) => new Date(b.createdAt) >= startDate,
+    );
 
-  /**
-   * Get system settings
-   */
-  async getSettings() {
-    return await API.get("/admin/settings");
-  },
+    const filteredPayments = payments.filter(
+      (p) =>
+        new Date(p.createdAt) >= startDate &&
+        p.status === CONFIG.PAYMENT.STATUS.COMPLETED,
+    );
 
-  /**
-   * Update settings
-   */
-  async updateSettings(settings) {
-    return await API.put("/admin/settings", settings);
-  },
+    return {
+      bookings: filteredBookings.length,
+      revenue: filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0),
+      averageBookingValue:
+        filteredPayments.length > 0
+          ? filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0) /
+            filteredPayments.length
+          : 0,
+      popularCars: this._getPopularCars(filteredBookings, cars),
+    };
+  }
 
-  /**
-   * Get payment transactions
-   */
-  async getTransactions(filters = {}) {
-    const queryString = new URLSearchParams(filters).toString();
-    return await API.get(`/admin/transactions?${queryString}`);
-  },
-};
+  _getPopularCars(bookings, cars) {
+    const carBookingCounts = {};
 
-export default AdminService;
+    bookings.forEach((booking) => {
+      carBookingCounts[booking.carId] =
+        (carBookingCounts[booking.carId] || 0) + 1;
+    });
+
+    return Object.entries(carBookingCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([carId, count]) => {
+        const car = cars.find((c) => c.id === carId);
+        return { car, bookingCount: count };
+      });
+  }
+
+  async getSystemSettings() {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    return storage.get("settings", {
+      siteName: "CarRental",
+      siteEmail: "info@carrental.com",
+      sitePhone: "+91 1234567890",
+      currency: "INR",
+      commissionRate: 10,
+      taxRate: 18,
+      maintenanceMode: false,
+    });
+  }
+
+  async updateSystemSettings(settings) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const currentSettings = storage.get("settings", {});
+    const updatedSettings = { ...currentSettings, ...settings };
+
+    storage.set("settings", updatedSettings);
+    return updatedSettings;
+  }
+}
+
+export const adminService = new AdminService();

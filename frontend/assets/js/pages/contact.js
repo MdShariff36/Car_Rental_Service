@@ -1,103 +1,95 @@
-// ============================================================================
-// AUTO PRIME RENTAL - SIMPLE PAGES & AUTH
-// Contact, FAQ, Terms, Privacy, and Authentication pages
-// ============================================================================
-
-// ============================================================================
 // FILE: assets/js/pages/contact.js
-// ============================================================================
 
-/**
- * Contact Page
- * Contact form submission
- */
+import { showNotification } from "../ui/notifications.js";
+import {
+  validateEmail,
+  validateRequired,
+  showFieldError,
+  showFieldSuccess,
+  clearFormValidation,
+} from "../base/validators.js";
 
-import Validators from "../base/validators.js";
-import API from "../core/api.js";
-import Loader from "../ui/loader.js";
-import Notifications from "../ui/notifications.js";
-
-const ContactPage = {
-  init() {
-    this.setupContactForm();
-  },
-
-  setupContactForm() {
-    const contactForm = document.getElementById("contactForm");
-
-    if (!contactForm) return;
-
-    contactForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("name")?.value;
-      const email = document.getElementById("email")?.value;
-      const phone = document.getElementById("phone")?.value;
-      const subject = document.getElementById("subject")?.value;
-      const message = document.getElementById("message")?.value;
-
-      // Validate
-      const nameValidation = Validators.required(name, "Name");
-      if (!nameValidation.valid) {
-        Notifications.error(nameValidation.message);
-        return;
-      }
-
-      const emailValidation = Validators.email(email);
-      if (!emailValidation.valid) {
-        Notifications.error(emailValidation.message);
-        return;
-      }
-
-      if (phone) {
-        const phoneValidation = Validators.phone(phone);
-        if (!phoneValidation.valid) {
-          Notifications.error(phoneValidation.message);
-          return;
-        }
-      }
-
-      const messageValidation = Validators.required(message, "Message");
-      if (!messageValidation.valid) {
-        Notifications.error(messageValidation.message);
-        return;
-      }
-
-      // Submit
-      await this.submitContact({ name, email, phone, subject, message });
-    });
-  },
-
-  async submitContact(data) {
-    Loader.show("Sending message...");
-
-    try {
-      const response = await API.post("/contact", data);
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success(
-          "Message sent successfully! We will get back to you soon.",
-        );
-
-        const form = document.getElementById("contactForm");
-        if (form) form.reset();
-      } else {
-        Notifications.error("Failed to send message. Please try again.");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error sending message");
-      console.error("Contact error:", error);
-    }
-  },
+export const initContact = () => {
+  setupContactForm();
+  initMap();
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => ContactPage.init());
-} else {
-  ContactPage.init();
-}
+const setupContactForm = () => {
+  const form = document.querySelector("#contact-form");
+  if (!form) return;
 
-export default ContactPage;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    clearFormValidation("contact-form");
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      subject: formData.get("subject"),
+      message: formData.get("message"),
+    };
+
+    let isValid = true;
+
+    const nameValidation = validateRequired(data.name, "Name");
+    if (!nameValidation.valid) {
+      showFieldError("name", nameValidation.message);
+      isValid = false;
+    } else {
+      showFieldSuccess("name");
+    }
+
+    const emailValidation = validateEmail(data.email);
+    if (!emailValidation.valid) {
+      showFieldError("email", emailValidation.message);
+      isValid = false;
+    } else {
+      showFieldSuccess("email");
+    }
+
+    const messageValidation = validateRequired(data.message, "Message");
+    if (!messageValidation.valid) {
+      showFieldError("message", messageValidation.message);
+      isValid = false;
+    } else {
+      showFieldSuccess("message");
+    }
+
+    if (!isValid) return;
+
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button?.textContent;
+    if (button) button.textContent = "Sending...";
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      showNotification(
+        "Message sent successfully! We will get back to you soon.",
+        "success",
+      );
+      form.reset();
+      clearFormValidation("contact-form");
+    } catch (error) {
+      showNotification("Failed to send message. Please try again.", "error");
+    } finally {
+      if (button && originalText) {
+        button.textContent = originalText;
+      }
+    }
+  });
+};
+
+const initMap = () => {
+  const mapContainer = document.querySelector("#contact-map");
+  if (!mapContainer) return;
+
+  mapContainer.innerHTML = `
+    <div class="map-placeholder">
+      <p>Map Location</p>
+      <small>123 Car Rental Street, City, Country</small>
+    </div>
+  `;
+};

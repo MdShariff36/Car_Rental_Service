@@ -1,103 +1,107 @@
-// ============================================================================
 // FILE: assets/js/services/host.service.js
-// ============================================================================
 
-/**
- * Host Service
- * Handles host-specific operations
- */
+import { storage } from "../base/storage.js";
+import { CONFIG } from "../base/config.js";
 
-import API from "../core/api.js";
+class HostService {
+  async getHostDashboard(hostId) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-const HostService = {
-  /**
-   * Get host dashboard stats
-   */
-  async getDashboardStats() {
-    return await API.get("/host/dashboard/stats");
-  },
+    const cars = storage.get("cars", []);
+    const bookings = storage.get("bookings", []);
+    const payments = storage.get("payments", []);
 
-  /**
-   * Get host cars
-   */
-  async getCars() {
-    return await API.get("/host/cars");
-  },
+    const hostCars = cars.filter((c) => c.hostId === hostId);
+    const hostCarIds = hostCars.map((c) => c.id);
+    const hostBookings = bookings.filter((b) => hostCarIds.includes(b.carId));
 
-  /**
-   * Add new car
-   */
-  async addCar(carData) {
-    return await API.post("/host/cars", carData);
-  },
+    const totalEarnings = hostBookings
+      .filter((b) => b.status === CONFIG.BOOKING.STATUS.COMPLETED)
+      .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
 
-  /**
-   * Update car
-   */
-  async updateCar(carId, carData) {
-    return await API.put(`/host/cars/${carId}`, carData);
-  },
+    const activeBookings = hostBookings.filter(
+      (b) =>
+        b.status === CONFIG.BOOKING.STATUS.CONFIRMED ||
+        b.status === CONFIG.BOOKING.STATUS.ONGOING,
+    ).length;
 
-  /**
-   * Delete car
-   */
-  async deleteCar(carId) {
-    return await API.delete(`/host/cars/${carId}`);
-  },
+    return {
+      totalCars: hostCars.length,
+      activeCars: hostCars.filter((c) => c.available).length,
+      totalBookings: hostBookings.length,
+      activeBookings,
+      totalEarnings,
+      recentBookings: hostBookings.slice(0, 5),
+    };
+  }
 
-  /**
-   * Upload car images
-   */
-  async uploadCarImages(carId, files) {
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("images", file);
-    });
-    return await API.upload(`/host/cars/${carId}/images`, formData);
-  },
+  async getHostEarnings(hostId) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-  /**
-   * Get car bookings
-   */
-  async getCarBookings(carId = null) {
-    const query = carId ? `?carId=${carId}` : "";
-    return await API.get(`/host/bookings${query}`);
-  },
+    const cars = storage.get("cars", []);
+    const bookings = storage.get("bookings", []);
 
-  /**
-   * Get earnings
-   */
-  async getEarnings(period = "month") {
-    return await API.get(`/host/earnings?period=${period}`);
-  },
+    const hostCars = cars.filter((c) => c.hostId === hostId);
+    const hostCarIds = hostCars.map((c) => c.id);
+    const completedBookings = bookings.filter(
+      (b) =>
+        hostCarIds.includes(b.carId) &&
+        b.status === CONFIG.BOOKING.STATUS.COMPLETED,
+    );
 
-  /**
-   * Get payout history
-   */
-  async getPayouts() {
-    return await API.get("/host/payouts");
-  },
+    const totalEarnings = completedBookings.reduce(
+      (sum, b) => sum + (b.totalAmount || 0),
+      0,
+    );
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
 
-  /**
-   * Request payout
-   */
-  async requestPayout(amount) {
-    return await API.post("/host/payouts/request", { amount });
-  },
+    const monthlyEarnings = completedBookings
+      .filter((b) => {
+        const date = new Date(b.createdAt);
+        return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+      })
+      .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
 
-  /**
-   * Update car availability
-   */
-  async updateAvailability(carId, availability) {
-    return await API.put(`/host/cars/${carId}/availability`, availability);
-  },
+    return {
+      total: totalEarnings,
+      thisMonth: monthlyEarnings,
+      bookingsCount: completedBookings.length,
+      earnings: completedBookings.map((b) => ({
+        id: b.id,
+        amount: b.totalAmount,
+        date: b.createdAt,
+        carId: b.carId,
+      })),
+    };
+  }
 
-  /**
-   * Get reviews for host cars
-   */
-  async getReviews() {
-    return await API.get("/host/reviews");
-  },
-};
+  async getHostCars(hostId) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-export default HostService;
+    const cars = storage.get("cars", []);
+    return cars.filter((c) => c.hostId === hostId);
+  }
+
+  async getHostBookings(hostId) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const cars = storage.get("cars", []);
+    const bookings = storage.get("bookings", []);
+    const users = storage.get("users", []);
+
+    const hostCars = cars.filter((c) => c.hostId === hostId);
+    const hostCarIds = hostCars.map((c) => c.id);
+
+    return bookings
+      .filter((b) => hostCarIds.includes(b.carId))
+      .map((booking) => {
+        const car = cars.find((c) => c.id === booking.carId);
+        const user = users.find((u) => u.id === booking.userId);
+        return { ...booking, car, user };
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+}
+
+export const hostService = new HostService();

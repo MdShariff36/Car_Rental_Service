@@ -1,108 +1,75 @@
-// ============================================================================
 // FILE: assets/js/pages/newsletter.js
-// ============================================================================
 
-/**
- * Newsletter Page
- * Newsletter subscription management
- */
+import { storage } from "../base/storage.js";
+import {
+  validateEmail,
+  showFieldError,
+  showFieldSuccess,
+} from "../base/validators.js";
+import { showNotification } from "../ui/notifications.js";
 
-import API from "../core/api.js";
-import Validators from "../base/validators.js";
-import Notifications from "../ui/notifications.js";
-import Loader from "../ui/loader.js";
-
-const NewsletterPage = {
-  init() {
-    this.setupSubscribeForm();
-    this.setupUnsubscribeForm();
-  },
-
-  setupSubscribeForm() {
-    const subscribeForm = document.getElementById("subscribeForm");
-
-    if (!subscribeForm) return;
-
-    subscribeForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("email")?.value;
-
-      const validation = Validators.email(email);
-      if (!validation.valid) {
-        Notifications.error(validation.message);
-        return;
-      }
-
-      await this.subscribe(email);
-    });
-  },
-
-  setupUnsubscribeForm() {
-    const unsubscribeForm = document.getElementById("unsubscribeForm");
-
-    if (!unsubscribeForm) return;
-
-    unsubscribeForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("unsubscribeEmail")?.value;
-
-      const validation = Validators.email(email);
-      if (!validation.valid) {
-        Notifications.error(validation.message);
-        return;
-      }
-
-      await this.unsubscribe(email);
-    });
-  },
-
-  async subscribe(email) {
-    Loader.show("Subscribing...");
-
-    try {
-      const response = await API.post("/newsletter/subscribe", { email });
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("Successfully subscribed to newsletter!");
-        document.getElementById("subscribeForm")?.reset();
-      } else {
-        Notifications.error("Failed to subscribe. Please try again.");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error subscribing");
-    }
-  },
-
-  async unsubscribe(email) {
-    Loader.show("Unsubscribing...");
-
-    try {
-      const response = await API.post("/newsletter/unsubscribe", { email });
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("Successfully unsubscribed from newsletter");
-        document.getElementById("unsubscribeForm")?.reset();
-      } else {
-        Notifications.error("Failed to unsubscribe. Please try again.");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error unsubscribing");
-    }
-  },
+export const initNewsletter = () => {
+  setupNewsletterForm();
+  displayStats();
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => NewsletterPage.init());
-} else {
-  NewsletterPage.init();
-}
+const setupNewsletterForm = () => {
+  const form = document.querySelector("#newsletter-signup-form");
+  if (!form) return;
 
-export default NewsletterPage;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const emailInput = form.querySelector("#email");
+    const email = emailInput?.value;
+
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      showFieldError("email", emailValidation.message);
+      return;
+    }
+
+    showFieldSuccess("email");
+
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button?.textContent;
+    if (button) button.textContent = "Subscribing...";
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const subscribers = storage.get("newsletter_subscribers", []);
+
+      if (subscribers.includes(email)) {
+        showNotification("You are already subscribed!", "info");
+      } else {
+        subscribers.push(email);
+        storage.set("newsletter_subscribers", subscribers);
+        showNotification("Thank you for subscribing!", "success");
+        form.reset();
+      }
+
+      displayStats();
+    } catch (error) {
+      showNotification("Failed to subscribe. Please try again.", "error");
+    } finally {
+      if (button && originalText) {
+        button.textContent = originalText;
+      }
+    }
+  });
+};
+
+const displayStats = () => {
+  const statsEl = document.querySelector("#newsletter-stats");
+  if (!statsEl) return;
+
+  const subscribers = storage.get("newsletter_subscribers", []);
+
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <h3>${subscribers.length}</h3>
+      <p>Total Subscribers</p>
+    </div>
+  `;
+};

@@ -1,157 +1,147 @@
-// ============================================================================
 // FILE: assets/js/dashboards/user/my-bookings.js
-// ============================================================================
 
-/**
- * My Bookings Page
- * User's booking history and management
- */
+import { requireUser } from "../../../core/auth-guard.js";
+import { initUserSidebar } from "../../../components/sidebar-user.js";
+import { bookingService } from "../../../services/booking.service.js";
+import { storage } from "../../../base/storage.js";
+import { formatCurrency, formatDate } from "../../../base/helpers.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
+import { showNotification } from "../../../ui/notifications.js";
+import { confirmModal } from "../../../components/modal.js";
 
-import BookingService from "../../services/booking.service.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import Helpers from "../../base/helpers.js";
-import SidebarUser from "../../components/sidebar-user.js";
+export const initMyBookings = async () => {
+  if (!requireUser()) return;
 
-const MyBookingsPage = {
-  currentFilter: "all",
-
-  init() {
-    if (!AuthGuard.requireRole("USER")) return;
-
-    SidebarUser.init();
-
-    this.setupFilterTabs();
-    this.loadBookings();
-    this.setupCancelHandlers();
-  },
-
-  setupFilterTabs() {
-    const filterButtons = document.querySelectorAll(".filter-tab");
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        filterButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-
-        this.currentFilter = button.getAttribute("data-filter");
-        this.loadBookings();
-      });
-    });
-  },
-
-  async loadBookings() {
-    const container = document.getElementById("bookingsContainer");
-
-    if (!container) return;
-
-    Loader.show("Loading bookings...");
-
-    try {
-      const status =
-        this.currentFilter === "all" ? null : this.currentFilter.toUpperCase();
-      const response = await BookingService.getUserBookings(status);
-
-      Loader.hide();
-
-      if (response.success && response.data) {
-        if (response.data.length === 0) {
-          container.innerHTML =
-            '<p class="text-center text-muted">No bookings found</p>';
-        } else {
-          container.innerHTML = response.data
-            .map((booking) => this.createBookingRow(booking))
-            .join("");
-        }
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Failed to load bookings");
-      console.error("Error:", error);
-    }
-  },
-
-  createBookingRow(booking) {
-    const statusClass =
-      {
-        PENDING: "badge-warning",
-        CONFIRMED: "badge-success",
-        COMPLETED: "badge-info",
-        CANCELLED: "badge-danger",
-      }[booking.status] || "badge-secondary";
-
-    return `
-      <tr>
-        <td>#${booking.id}</td>
-        <td>
-          <div class="d-flex align-center gap-2">
-            <img src="${booking.car.image}" alt="${booking.car.name}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
-            <div>
-              <strong>${booking.car.name}</strong>
-              <p class="text-muted">${booking.car.type}</p>
-            </div>
-          </div>
-        </td>
-        <td>${Helpers.formatDate(booking.pickupDate)}</td>
-        <td>${Helpers.formatDate(booking.dropDate)}</td>
-        <td>${Helpers.formatCurrency(booking.totalPrice)}</td>
-        <td><span class="badge ${statusClass}">${booking.status}</span></td>
-        <td>
-          <button class="btn btn-sm btn-outline" onclick="window.MyBookingsPage.viewBooking('${booking.id}')">View</button>
-          ${
-            booking.status === "CONFIRMED"
-              ? `
-            <button class="btn btn-sm btn-danger" onclick="window.MyBookingsPage.cancelBooking('${booking.id}')">Cancel</button>
-          `
-              : ""
-          }
-        </td>
-      </tr>
-    `;
-  },
-
-  viewBooking(bookingId) {
-    window.location.href = `booking-details.html?id=${bookingId}`;
-  },
-
-  async cancelBooking(bookingId) {
-    if (!confirm("Are you sure you want to cancel this booking?")) return;
-
-    const reason = prompt(
-      "Please provide a reason for cancellation (optional):",
-    );
-
-    Loader.show("Cancelling booking...");
-
-    try {
-      const response = await BookingService.cancelBooking(bookingId, reason);
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("Booking cancelled successfully");
-        this.loadBookings();
-      } else {
-        Notifications.error(response.error || "Failed to cancel booking");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error cancelling booking");
-      console.error("Error:", error);
-    }
-  },
-
-  setupCancelHandlers() {
-    // Make methods available globally for onclick handlers
-    window.MyBookingsPage = this;
-  },
+  initUserSidebar();
+  await loadBookings();
+  setupFilters();
 };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => MyBookingsPage.init());
-} else {
-  MyBookingsPage.init();
-}
+let allBookings = [];
 
-export default MyBookingsPage;
+const loadBookings = async () => {
+  showLoader();
+
+  try {
+    const user = storage.getUser();
+    allBookings = await bookingService.getUserBookings(user.id);
+    displayBookings(allBookings);
+  } catch (error) {
+    console.error("Failed to load bookings:", error);
+  } finally {
+    hideLoader();
+  }
+};
+
+const displayBookings = (bookings) => {
+  const container = document.querySelector("#bookings-list");
+  if (!container) return;
+
+  if (bookings.length === 0) {
+    container.innerHTML = '<p class="text-center">No bookings found.</p>';
+    return;
+  }
+
+  container.innerHTML = bookings
+    .map(
+      (booking) => `
+    <div class="booking-card">
+      <div class="booking-header">
+        <div class="car-info">
+          <img src="${booking.car?.image}" alt="${booking.car?.name}" onerror="this.src='/assets/images/car-placeholder.jpg'">
+          <div>
+            <h4>${booking.car?.name}</h4>
+            <p>${booking.car?.type} • ${booking.car?.transmission}</p>
+          </div>
+        </div>
+        <span class="badge bg-${getStatusColor(booking.status)}">${booking.status}</span>
+      </div>
+      <div class="booking-details">
+        <div class="detail-item">
+          <span class="label">Booking ID:</span>
+          <span class="value">${booking.id}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Pickup Date:</span>
+          <span class="value">${formatDate(booking.startDate)}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Return Date:</span>
+          <span class="value">${formatDate(booking.endDate)}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Total Days:</span>
+          <span class="value">${booking.totalDays} days</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Total Amount:</span>
+          <span class="value">${formatCurrency(booking.totalAmount)}</span>
+        </div>
+      </div>
+      <div class="booking-actions">
+        ${
+          booking.status === "pending" || booking.status === "confirmed"
+            ? `
+          <button class="btn btn-danger btn-sm" data-cancel-booking="${booking.id}">Cancel Booking</button>
+        `
+            : ""
+        }
+      </div>
+    </div>
+  `,
+    )
+    .join("");
+
+  setupBookingActions();
+};
+
+const setupBookingActions = () => {
+  document.querySelectorAll("[data-cancel-booking]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const bookingId = btn.getAttribute("data-cancel-booking");
+
+      const confirmed = await confirmModal(
+        "Are you sure you want to cancel this booking?",
+      );
+      if (!confirmed) return;
+
+      showLoader();
+
+      try {
+        await bookingService.cancelBooking(bookingId);
+        showNotification("Booking cancelled successfully", "success");
+        await loadBookings();
+      } catch (error) {
+        showNotification("Failed to cancel booking", "error");
+      } finally {
+        hideLoader();
+      }
+    });
+  });
+};
+
+const setupFilters = () => {
+  const filterSelect = document.querySelector("#booking-filter");
+
+  filterSelect?.addEventListener("change", (e) => {
+    const status = e.target.value;
+
+    if (status === "all") {
+      displayBookings(allBookings);
+    } else {
+      const filtered = allBookings.filter((b) => b.status === status);
+      displayBookings(filtered);
+    }
+  });
+};
+
+const getStatusColor = (status) => {
+  const colors = {
+    pending: "warning",
+    confirmed: "info",
+    ongoing: "primary",
+    completed: "success",
+    cancelled: "danger",
+  };
+  return colors[status] || "secondary";
+};

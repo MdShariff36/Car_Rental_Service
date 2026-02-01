@@ -1,228 +1,80 @@
-/**
- * Notifications Utility
- * Toast notification system using existing markup
- *
- * Existing HTML Markup:
- * <div id="notification-container" class="notification-container"></div>
- *
- * Selectors Used:
- * - #notification-container: Container for toast notifications
- *
- * Dynamic Elements Created:
- * - .notification: Individual notification toast
- * - .notification-icon: Icon for notification type
- * - .notification-content: Content wrapper
- * - .notification-title: Notification title
- * - .notification-message: Notification message
- * - .notification-close: Close button
- */
+// FILE: assets/js/ui/notifications.js
 
-class Notifications {
-  constructor() {
-    this.container = null;
-    this.notifications = [];
-    this.defaultDuration = 5000; // 5 seconds
-    this.maxNotifications = 5;
-    this.init();
-  }
+export const showNotification = (message, type = "info", duration = 3000) => {
+  const container = getOrCreateContainer();
 
-  /**
-   * Initialize notifications by finding existing container
-   */
-  init() {
-    this.container = document.getElementById("notification-container");
-    if (!this.container) {
-      console.warn(
-        "Notifications: #notification-container not found in DOM. Notifications will fail safely.",
-      );
-    }
-  }
+  const notification = document.createElement("div");
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+    <div class="notification-content">
+      <span class="notification-icon">${getIcon(type)}</span>
+      <span class="notification-message">${message}</span>
+    </div>
+    <button class="notification-close">&times;</button>
+  `;
 
-  /**
-   * Show a notification
-   * @param {Object} options - Notification options
-   * @param {string} options.type - Type: 'success', 'error', 'warning', 'info'
-   * @param {string} options.title - Notification title
-   * @param {string} options.message - Notification message
-   * @param {number} options.duration - Duration in ms (0 = permanent)
-   * @param {boolean} options.closable - Show close button
-   * @returns {HTMLElement|null} The notification element or null if container not found
-   */
-  show(options = {}) {
-    if (!this.container) {
-      console.warn(
-        "Notifications: Cannot show notification - container not found",
-      );
-      return null;
-    }
+  container.appendChild(notification);
 
-    const {
-      type = "info",
-      title = "",
-      message = "",
-      duration = this.defaultDuration,
-      closable = true,
-    } = options;
+  setTimeout(() => {
+    notification.classList.add("show");
+  }, 10);
 
-    // Create notification element
-    const notification = document.createElement("div");
-    notification.className = `notification notification-${type}`;
-    notification.setAttribute("role", "alert");
-    notification.setAttribute("aria-live", "polite");
+  const closeBtn = notification.querySelector(".notification-close");
+  closeBtn?.addEventListener("click", () => {
+    removeNotification(notification);
+  });
 
-    // Build notification HTML
-    const iconMap = {
-      success: "✓",
-      error: "✕",
-      warning: "⚠",
-      info: "ℹ",
-    };
-
-    notification.innerHTML = `
-      <div class="notification-icon">${iconMap[type] || iconMap.info}</div>
-      <div class="notification-content">
-        ${title ? `<div class="notification-title">${title}</div>` : ""}
-        ${message ? `<div class="notification-message">${message}</div>` : ""}
-      </div>
-      ${closable ? '<button class="notification-close" aria-label="Close notification">&times;</button>' : ""}
-    `;
-
-    // Add to container
-    this.container.appendChild(notification);
-
-    // Track notification
-    this.notifications.push(notification);
-
-    // Limit number of notifications
-    if (this.notifications.length > this.maxNotifications) {
-      const oldest = this.notifications.shift();
-      this.remove(oldest);
-    }
-
-    // Setup close button
-    if (closable) {
-      const closeBtn = notification.querySelector(".notification-close");
-      if (closeBtn) {
-        closeBtn.addEventListener("click", () => this.remove(notification));
-      }
-    }
-
-    // Animate in
+  if (duration > 0) {
     setTimeout(() => {
-      notification.classList.add("notification-show");
-    }, 10);
-
-    // Auto-remove after duration
-    if (duration > 0) {
-      setTimeout(() => {
-        this.remove(notification);
-      }, duration);
-    }
-
-    return notification;
+      removeNotification(notification);
+    }, duration);
   }
 
-  /**
-   * Show success notification
-   * @param {string} message - Success message
-   * @param {string} title - Optional title
-   * @param {number} duration - Duration in ms
-   */
-  success(message, title = "Success", duration = this.defaultDuration) {
-    return this.show({ type: "success", title, message, duration });
+  return notification;
+};
+
+const getOrCreateContainer = () => {
+  let container = document.querySelector("#notification-container");
+
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "notification-container";
+    container.className = "notification-container";
+    document.body.appendChild(container);
   }
 
-  /**
-   * Show error notification
-   * @param {string} message - Error message
-   * @param {string} title - Optional title
-   * @param {number} duration - Duration in ms
-   */
-  error(message, title = "Error", duration = this.defaultDuration) {
-    return this.show({ type: "error", title, message, duration });
-  }
+  return container;
+};
 
-  /**
-   * Show warning notification
-   * @param {string} message - Warning message
-   * @param {string} title - Optional title
-   * @param {number} duration - Duration in ms
-   */
-  warning(message, title = "Warning", duration = this.defaultDuration) {
-    return this.show({ type: "warning", title, message, duration });
-  }
+const removeNotification = (notification) => {
+  notification.classList.remove("show");
+  setTimeout(() => {
+    notification.remove();
+  }, 300);
+};
 
-  /**
-   * Show info notification
-   * @param {string} message - Info message
-   * @param {string} title - Optional title
-   * @param {number} duration - Duration in ms
-   */
-  info(message, title = "Info", duration = this.defaultDuration) {
-    return this.show({ type: "info", title, message, duration });
-  }
+const getIcon = (type) => {
+  const icons = {
+    success: "✓",
+    error: "✕",
+    warning: "⚠",
+    info: "ℹ",
+  };
+  return icons[type] || icons.info;
+};
 
-  /**
-   * Remove a notification
-   * @param {HTMLElement} notification - Notification element to remove
-   */
-  remove(notification) {
-    if (!notification || !notification.parentElement) return;
+export const showSuccess = (message, duration) => {
+  return showNotification(message, "success", duration);
+};
 
-    // Animate out
-    notification.classList.remove("notification-show");
-    notification.classList.add("notification-hide");
+export const showError = (message, duration) => {
+  return showNotification(message, "error", duration);
+};
 
-    // Remove from DOM after animation
-    setTimeout(() => {
-      if (notification.parentElement) {
-        notification.parentElement.removeChild(notification);
-      }
+export const showWarning = (message, duration) => {
+  return showNotification(message, "warning", duration);
+};
 
-      // Remove from tracking array
-      const index = this.notifications.indexOf(notification);
-      if (index > -1) {
-        this.notifications.splice(index, 1);
-      }
-    }, 300); // Match animation duration
-  }
-
-  /**
-   * Remove all notifications
-   */
-  clearAll() {
-    const notificationsCopy = [...this.notifications];
-    notificationsCopy.forEach((notification) => {
-      this.remove(notification);
-    });
-  }
-
-  /**
-   * Set default duration for notifications
-   * @param {number} duration - Duration in milliseconds
-   */
-  setDefaultDuration(duration) {
-    this.defaultDuration = duration;
-  }
-
-  /**
-   * Set maximum number of notifications to display
-   * @param {number} max - Maximum number of notifications
-   */
-  setMaxNotifications(max) {
-    this.maxNotifications = max;
-  }
-}
-
-// Create singleton instance
-const notifications = new Notifications();
-
-// Export for module usage
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = notifications;
-}
-
-// Global access
-if (typeof window !== "undefined") {
-  window.notifications = notifications;
-}
+export const showInfo = (message, duration) => {
+  return showNotification(message, "info", duration);
+};

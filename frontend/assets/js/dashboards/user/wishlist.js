@@ -1,114 +1,108 @@
-// ============================================================================
 // FILE: assets/js/dashboards/user/wishlist.js
-// ============================================================================
 
-/**
- * Wishlist Page
- * User's saved cars
- */
+import { requireUser } from "../../../core/auth-guard.js";
+import { initUserSidebar } from "../../../components/sidebar-user.js";
+import { carService } from "../../../services/car.service.js";
+import { storage } from "../../../base/storage.js";
+import { formatCurrency } from "../../../base/helpers.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
+import { showNotification } from "../../../ui/notifications.js";
 
-import CarService from "../../services/car.service.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import Helpers from "../../base/helpers.js";
-import SidebarUser from "../../components/sidebar-user.js";
+export const initWishlist = async () => {
+  if (!requireUser()) return;
 
-const WishlistPage = {
-  init() {
-    if (!AuthGuard.requireRole("USER")) return;
+  initUserSidebar();
+  await loadWishlist();
+};
 
-    SidebarUser.init();
+const loadWishlist = async () => {
+  showLoader();
 
-    this.loadWishlist();
-  },
+  try {
+    const wishlistIds = storage.getWishlist();
 
-  async loadWishlist() {
-    const container = document.getElementById("wishlistContainer");
-
-    if (!container) return;
-
-    Loader.show("Loading wishlist...");
-
-    try {
-      const response = await CarService.getWishlist();
-
-      Loader.hide();
-
-      if (response.success && response.data) {
-        if (response.data.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <p>Your wishlist is empty</p>
-              <a href="/cars.html" class="btn btn-primary">Browse Cars</a>
-            </div>
-          `;
-        } else {
-          container.innerHTML = response.data
-            .map((car) => this.createWishlistCard(car))
-            .join("");
-        }
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Failed to load wishlist");
-      console.error("Error:", error);
+    if (wishlistIds.length === 0) {
+      displayEmptyWishlist();
+      return;
     }
-  },
 
-  createWishlistCard(car) {
-    return `
+    const allCars = await carService.getAllCars();
+    const wishlistCars = allCars.filter((car) => wishlistIds.includes(car.id));
+
+    displayWishlist(wishlistCars);
+  } catch (error) {
+    console.error("Failed to load wishlist:", error);
+  } finally {
+    hideLoader();
+  }
+};
+
+const displayEmptyWishlist = () => {
+  const container = document.querySelector("#wishlist-container");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="text-center py-5">
+      <i class="icon-heart-outline" style="font-size: 4rem; color: #ccc;"></i>
+      <h3 class="mt-3">Your wishlist is empty</h3>
+      <p>Start adding cars you love!</p>
+      <a href="/cars" class="btn btn-primary">Browse Cars</a>
+    </div>
+  `;
+};
+
+const displayWishlist = (cars) => {
+  const container = document.querySelector("#wishlist-container");
+  if (!container) return;
+
+  container.innerHTML = cars
+    .map(
+      (car) => `
+    <div class="col-md-6 col-lg-4 mb-4">
       <div class="car-card">
         <div class="car-image">
-          <img src="${car.image}" alt="${car.name}">
-          <button class="wishlist-remove" data-car-id="${car.id}" onclick="window.WishlistPage.removeFromWishlist('${car.id}')">
-            ❌
+          <img src="${car.image}" alt="${car.name}" onerror="this.src='/assets/images/car-placeholder.jpg'">
+          <button class="btn-remove-wishlist" data-car-id="${car.id}">
+            <i class="icon-close"></i>
           </button>
         </div>
-        <div class="car-info">
-          <h3>${car.name}</h3>
-          <p>${car.type} • ${car.transmission}</p>
+        <div class="car-details">
+          <h3 class="car-name">${car.name}</h3>
           <div class="car-specs">
-            <span>👤 ${car.seats}</span>
-            <span>⚙️ ${car.transmission}</span>
+            <span><i class="icon-seats"></i> ${car.seats} Seats</span>
+            <span><i class="icon-transmission"></i> ${car.transmission}</span>
+            <span><i class="icon-fuel"></i> ${car.fuel}</span>
+          </div>
+          <div class="car-rating">
+            <span class="stars">${"★".repeat(Math.floor(car.rating))}${"☆".repeat(5 - Math.floor(car.rating))}</span>
+            <span class="reviews">(${car.reviews} reviews)</span>
           </div>
           <div class="car-footer">
             <div class="price">
-              <span class="price-amount">${Helpers.formatCurrency(car.pricePerDay)}</span>
-              <span class="price-period">/day</span>
+              <span class="amount">${formatCurrency(car.pricePerDay)}</span>
+              <span class="period">/day</span>
             </div>
-            <a href="/car-details.html?id=${car.id}" class="btn btn-primary btn-sm">Book Now</a>
+            <a href="/car-details?id=${car.id}" class="btn btn-primary">View Details</a>
           </div>
         </div>
       </div>
-    `;
-  },
+    </div>
+  `,
+    )
+    .join("");
 
-  async removeFromWishlist(carId) {
-    if (!confirm("Remove this car from wishlist?")) return;
-
-    try {
-      const response = await CarService.removeFromWishlist(carId);
-
-      if (response.success) {
-        Notifications.success("Removed from wishlist");
-        this.loadWishlist();
-      } else {
-        Notifications.error("Failed to remove from wishlist");
-      }
-    } catch (error) {
-      Notifications.error("Error removing from wishlist");
-    }
-  },
+  setupRemoveButtons();
 };
 
-// Make available globally
-window.WishlistPage = WishlistPage;
+const setupRemoveButtons = () => {
+  document.querySelectorAll(".btn-remove-wishlist").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const carId = btn.getAttribute("data-car-id");
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => WishlistPage.init());
-} else {
-  WishlistPage.init();
-}
+      storage.removeFromWishlist(carId);
+      showNotification("Removed from wishlist", "success");
 
-export default WishlistPage;
+      await loadWishlist();
+    });
+  });
+};

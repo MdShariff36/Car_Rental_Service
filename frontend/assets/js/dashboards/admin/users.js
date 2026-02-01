@@ -1,127 +1,131 @@
-// ============================================================================
 // FILE: assets/js/dashboards/admin/users.js
-// ============================================================================
 
-/**
- * Admin Users Management
- * Manage all users
- */
+import { requireAdmin } from "../../../core/auth-guard.js";
+import { initAdminSidebar } from "../../../components/sidebar-admin.js";
+import { userService } from "../../../services/user.service.js";
+import { formatDate } from "../../../base/helpers.js";
+import { showLoader, hideLoader } from "../../../ui/loader.js";
+import { showNotification } from "../../../ui/notifications.js";
+import { confirmModal } from "../../../components/modal.js";
 
-import AdminService from "../../services/admin.service.js";
-import Loader from "../../ui/loader.js";
-import Notifications from "../../ui/notifications.js";
-import AuthGuard from "../../core/auth-guard.js";
-import SidebarAdmin from "../../components/sidebar-admin.js";
+export const initAdminUsers = async () => {
+  if (!requireAdmin()) return;
 
-const AdminUsersPage = {
-  init() {
-    if (!AuthGuard.requireRole("ADMIN")) return;
-
-    SidebarAdmin.init();
-
-    this.loadUsers();
-  },
-
-  async loadUsers() {
-    const container = document.getElementById("usersTableBody");
-
-    if (!container) return;
-
-    Loader.show("Loading users...");
-
-    try {
-      const response = await AdminService.getUsers();
-
-      Loader.hide();
-
-      if (response.success && response.data) {
-        container.innerHTML = response.data
-          .map((user) => this.createUserRow(user))
-          .join("");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Failed to load users");
-    }
-  },
-
-  createUserRow(user) {
-    const statusClass = user.active ? "badge-success" : "badge-danger";
-    const statusText = user.active ? "Active" : "Suspended";
-
-    return `
-      <tr>
-        <td>#${user.id}</td>
-        <td>${user.name}</td>
-        <td>${user.email}</td>
-        <td><span class="badge badge-info">${user.role}</span></td>
-        <td><span class="badge ${statusClass}">${statusText}</span></td>
-        <td>
-          <button class="btn btn-sm btn-outline" onclick="window.AdminUsersPage.viewUser('${user.id}')">View</button>
-          ${
-            user.active
-              ? `<button class="btn btn-sm btn-warning" onclick="window.AdminUsersPage.suspendUser('${user.id}')">Suspend</button>`
-              : `<button class="btn btn-sm btn-success" onclick="window.AdminUsersPage.activateUser('${user.id}')">Activate</button>`
-          }
-        </td>
-      </tr>
-    `;
-  },
-
-  viewUser(userId) {
-    window.location.href = `user-details.html?id=${userId}`;
-  },
-
-  async suspendUser(userId) {
-    const reason = prompt("Enter reason for suspension:");
-    if (!reason) return;
-
-    Loader.show("Suspending user...");
-
-    try {
-      const response = await AdminService.suspendUser(userId, reason);
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("User suspended");
-        this.loadUsers();
-      } else {
-        Notifications.error("Failed to suspend user");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error suspending user");
-    }
-  },
-
-  async activateUser(userId) {
-    Loader.show("Activating user...");
-
-    try {
-      const response = await AdminService.activateUser(userId);
-
-      Loader.hide();
-
-      if (response.success) {
-        Notifications.success("User activated");
-        this.loadUsers();
-      } else {
-        Notifications.error("Failed to activate user");
-      }
-    } catch (error) {
-      Loader.hide();
-      Notifications.error("Error activating user");
-    }
-  },
+  initAdminSidebar();
+  await loadUsers();
+  setupSearch();
 };
 
-window.AdminUsersPage = AdminUsersPage;
+let allUsers = [];
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => AdminUsersPage.init());
-} else {
-  AdminUsersPage.init();
-}
+const loadUsers = async () => {
+  showLoader();
 
-export default AdminUsersPage;
+  try {
+    allUsers = await userService.getAllUsers();
+    displayUsers(allUsers);
+  } catch (error) {
+    console.error("Failed to load users:", error);
+  } finally {
+    hideLoader();
+  }
+};
+
+const displayUsers = (users) => {
+  const container = document.querySelector("#users-table");
+  if (!container) return;
+
+  if (users.length === 0) {
+    container.innerHTML = '<p class="text-center">No users found.</p>';
+    return;
+  }
+
+  container.innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${users
+          .map(
+            (user) => `
+          <tr>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.phone || "N/A"}</td>
+            <td><span class="badge bg-${getRoleBadge(user.role)}">${user.role}</span></td>
+            <td>${formatDate(user.createdAt)}</td>
+            <td>
+              <button class="btn btn-sm btn-danger" data-delete-user="${user.id}">Delete</button>
+            </td>
+          </tr>
+        `,
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
+
+  setupUserActions();
+};
+
+const setupUserActions = () => {
+  document.querySelectorAll("[data-delete-user]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const userId = btn.getAttribute("data-delete-user");
+
+      const confirmed = await confirmModal(
+        "Are you sure you want to delete this user?",
+      );
+      if (!confirmed) return;
+
+      showLoader();
+
+      try {
+        await userService.deleteUser(userId);
+        showNotification("User deleted successfully", "success");
+        await loadUsers();
+      } catch (error) {
+        showNotification("Failed to delete user", "error");
+      } finally {
+        hideLoader();
+      }
+    });
+  });
+};
+
+const setupSearch = () => {
+  const searchInput = document.querySelector("#user-search");
+
+  searchInput?.addEventListener("input", async (e) => {
+    const searchTerm = e.target.value;
+
+    if (!searchTerm) {
+      displayUsers(allUsers);
+      return;
+    }
+
+    try {
+      const filtered = await userService.searchUsers(searchTerm);
+      displayUsers(filtered);
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
+  });
+};
+
+const getRoleBadge = (role) => {
+  const badges = {
+    admin: "danger",
+    host: "warning",
+    user: "primary",
+  };
+  return badges[role] || "secondary";
+};

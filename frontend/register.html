@@ -4,157 +4,391 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Account | Auto Prime</title>
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/pages/auth.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/pages/register.css" />
   </head>
-  <body class="auth-page">
-    <!-- Header -->
-    <header class="site-header" id="header"></header>
+  <body>
+    <div class="register-wrapper">
+      <!-- Animated Background -->
+      <div class="background-animation">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+      </div>
 
-    <main class="container auth-main">
-      <div class="auth-container-modern">
-        <div class="auth-card-large">
-          <div class="auth-header">
-            <h2>Create Your Account</h2>
-            <p class="muted">Join thousands of happy travelers</p>
+      <!-- Register Container -->
+      <div class="register-container">
+        <!-- Progress Indicator -->
+        <div class="progress-bar">
+          <div class="progress-step active" data-step="1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Account</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-step="2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Personal</span>
+          </div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-step="3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Verification</span>
+          </div>
+        </div>
+
+        <!-- Form Header -->
+        <div class="form-header">
+          <h1>Create Your Account</h1>
+          <p>
+            Join thousands of happy travelers and start your journey with Auto
+            Prime
+          </p>
+        </div>
+
+        <!-- Registration Form -->
+        <form id="registerForm" class="register-form">
+          <!-- Step 1: Account Information -->
+          <div class="form-step active" data-step="1">
+            <h2 class="step-title">Account Information</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName" class="form-label">First Name *</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  class="form-input"
+                  placeholder="John"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="lastName" class="form-label">Last Name *</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  class="form-input"
+                  placeholder="Doe"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address *</label>
+              <input
+                type="email"
+                id="email"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+              />
+              <span class="input-hint"
+                >We'll send booking confirmations here</span
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">Password *</label>
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  class="form-input"
+                  placeholder="Create a strong password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toggle-password"
+                  data-target="password"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    class="eye-open"
+                  >
+                    <path
+                      d="M1.66667 10C1.66667 10 4.16667 4.16667 10 4.16667C15.8333 4.16667 18.3333 10 18.3333 10C18.3333 10 15.8333 15.8333 10 15.8333C4.16667 15.8333 1.66667 10 1.66667 10Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Password Strength Indicator -->
+              <div class="password-strength">
+                <div class="strength-bars">
+                  <div class="strength-bar"></div>
+                  <div class="strength-bar"></div>
+                  <div class="strength-bar"></div>
+                  <div class="strength-bar"></div>
+                </div>
+                <span class="strength-text">Weak</span>
+              </div>
+
+              <ul class="password-requirements">
+                <li data-req="length">At least 8 characters</li>
+                <li data-req="uppercase">One uppercase letter</li>
+                <li data-req="lowercase">One lowercase letter</li>
+                <li data-req="number">One number</li>
+              </ul>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label"
+                >Confirm Password *</label
+              >
+              <div class="password-wrapper">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  class="form-input"
+                  placeholder="Re-enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toggle-password"
+                  data-target="confirmPassword"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    class="eye-open"
+                  >
+                    <path
+                      d="M1.66667 10C1.66667 10 4.16667 4.16667 10 4.16667C15.8333 4.16667 18.3333 10 18.3333 10C18.3333 10 15.8333 15.8333 10 15.8333C4.16667 15.8333 1.66667 10 1.66667 10Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
 
-          <form id="registerForm" class="auth-form">
-            <!-- Personal Info -->
-            <div class="form-section">
-              <h3>Personal Information</h3>
-              <div class="grid grid-2">
-                <div class="form-group">
-                  <label for="firstName">First Name *</label>
-                  <input type="text" id="firstName" required />
-                </div>
-                <div class="form-group">
-                  <label for="lastName">Last Name *</label>
-                  <input type="text" id="lastName" required />
-                </div>
-              </div>
+          <!-- Step 2: Personal Information -->
+          <div class="form-step" data-step="2">
+            <h2 class="step-title">Personal Information</h2>
 
+            <div class="form-group">
+              <label for="phone" class="form-label">Phone Number *</label>
+              <input
+                type="tel"
+                id="phone"
+                class="form-input"
+                placeholder="+91 98765 43210"
+                required
+              />
+            </div>
+
+            <div class="form-row">
               <div class="form-group">
-                <label for="email">Email Address *</label>
-                <input type="email" id="email" required />
-                <span class="input-hint"
-                  >We'll send booking confirmations here</span
+                <label for="dateOfBirth" class="form-label"
+                  >Date of Birth *</label
                 >
+                <input
+                  type="date"
+                  id="dateOfBirth"
+                  class="form-input"
+                  required
+                />
               </div>
 
               <div class="form-group">
-                <label for="phone">Phone Number *</label>
-                <input type="tel" id="phone" placeholder="+91" required />
-              </div>
-
-              <div class="form-group">
-                <label for="password">Password *</label>
-                <div class="password-input-wrapper">
-                  <input type="password" id="password" required />
-                  <button
-                    type="button"
-                    class="toggle-password"
-                    id="togglePassword"
-                  >
-                    👁️
-                  </button>
-                </div>
-                <!-- Password Strength Indicator -->
-                <div class="password-strength" id="passwordStrength">
-                  <div class="strength-bar">
-                    <div class="strength-fill"></div>
-                  </div>
-                  <span class="strength-text">Weak</span>
-                </div>
-                <ul class="password-requirements">
-                  <li id="req-length">At least 8 characters</li>
-                  <li id="req-upper">One uppercase letter</li>
-                  <li id="req-lower">One lowercase letter</li>
-                  <li id="req-number">One number</li>
-                </ul>
-              </div>
-
-              <div class="form-group">
-                <label for="confirmPassword">Confirm Password *</label>
-                <input type="password" id="confirmPassword" required />
+                <label for="gender" class="form-label">Gender *</label>
+                <select id="gender" class="form-input" required>
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
             </div>
 
-            <!-- License Info -->
-            <div class="form-section">
-              <h3>Driving License</h3>
-              <div class="grid grid-2">
-                <div class="form-group">
-                  <label for="licenseNumber">License Number *</label>
-                  <input
-                    type="text"
-                    id="licenseNumber"
-                    placeholder="DL-XX-XXXX-XXXXXXX"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="licenseExpiry">Expiry Date *</label>
-                  <input type="date" id="licenseExpiry" required />
-                </div>
+            <div class="form-group">
+              <label for="address" class="form-label">Address *</label>
+              <textarea
+                id="address"
+                class="form-input"
+                rows="3"
+                placeholder="Enter your complete address"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city" class="form-label">City *</label>
+                <input
+                  type="text"
+                  id="city"
+                  class="form-input"
+                  placeholder="Chennai"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="pincode" class="form-label">Pincode *</label>
+                <input
+                  type="text"
+                  id="pincode"
+                  class="form-input"
+                  placeholder="600001"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Verification & Account Type -->
+          <div class="form-step" data-step="3">
+            <h2 class="step-title">License & Account Type</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="licenseNumber" class="form-label"
+                  >License Number *</label
+                >
+                <input
+                  type="text"
+                  id="licenseNumber"
+                  class="form-input"
+                  placeholder="DL-XX-XXXX-XXXXXXX"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="licenseExpiry" class="form-label"
+                  >License Expiry *</label
+                >
+                <input
+                  type="date"
+                  id="licenseExpiry"
+                  class="form-input"
+                  required
+                />
               </div>
             </div>
 
-            <!-- Account Type -->
-            <div class="form-section">
-              <h3>Account Type</h3>
+            <div class="form-group">
+              <label class="form-label">Account Type *</label>
               <div class="account-type-selector">
                 <label class="account-type-card">
-                  <input type="radio" name="role" value="USER" checked />
+                  <input type="radio" name="accountType" value="user" checked />
                   <div class="card-content">
-                    <div class="icon">🚗</div>
-                    <h4>Renter</h4>
-                    <p>I want to rent cars</p>
+                    <div class="card-icon">🚗</div>
+                    <h3>Renter</h3>
+                    <p>I want to rent cars for my trips</p>
                   </div>
                 </label>
+
                 <label class="account-type-card">
-                  <input type="radio" name="role" value="HOST" />
+                  <input type="radio" name="accountType" value="host" />
                   <div class="card-content">
-                    <div class="icon">🏠</div>
-                    <h4>Car Owner</h4>
-                    <p>I want to list my cars</p>
+                    <div class="card-icon">🏠</div>
+                    <h3>Car Owner</h3>
+                    <p>I want to list my cars for rental</p>
                   </div>
                 </label>
               </div>
             </div>
 
-            <!-- Terms -->
-            <div class="form-group terms-group">
-              <label class="checkbox-label">
-                <input type="checkbox" id="acceptTerms" required />
-                <span>
-                  I agree to the <a href="terms.html">Terms & Conditions</a> and
-                  <a href="privacy.html">Privacy Policy</a>
-                </span>
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="newsletter" />
-                <span>Send me exclusive offers and updates</span>
-              </label>
+            <div class="form-group">
+              <div class="terms-group">
+                <label class="checkbox-wrapper">
+                  <input type="checkbox" id="acceptTerms" required />
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label">
+                    I agree to the
+                    <a href="terms.html" target="_blank">Terms & Conditions</a>
+                    and
+                    <a href="privacy.html" target="_blank">Privacy Policy</a>
+                  </span>
+                </label>
+
+                <label class="checkbox-wrapper">
+                  <input type="checkbox" id="newsletter" />
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label">
+                    Send me exclusive offers and updates via email
+                  </span>
+                </label>
+              </div>
             </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="form-navigation">
+            <button
+              type="button"
+              class="nav-btn prev-btn"
+              id="prevBtn"
+              style="display: none"
+            >
+              <span class="btn-icon">←</span>
+              <span class="btn-text">Previous</span>
+            </button>
+
+            <button type="button" class="nav-btn next-btn" id="nextBtn">
+              <span class="btn-text">Next Step</span>
+              <span class="btn-icon">→</span>
+            </button>
 
             <button
               type="submit"
-              class="btn btn-primary btn-full btn-lg"
+              class="nav-btn submit-btn"
               id="submitBtn"
+              style="display: none"
             >
-              Create Account
+              <span class="btn-text">Create Account</span>
+              <span class="btn-icon">✓</span>
             </button>
-          </form>
-
-          <div class="auth-footer">
-            <p>Already have an account? <a href="login.html">Login here</a></p>
           </div>
+        </form>
+
+        <!-- Form Footer -->
+        <div class="form-footer">
+          <p>
+            Already have an account?
+            <a href="login.html" class="login-link">Sign in</a>
+          </p>
         </div>
       </div>
-    </main>
+    </div>
 
-    <footer class="site-footer" id="footer"></footer>
-    <script type="module" src="assets/js/auth/register.js"></script>
+    <script src="assets/js/auth/register.js"></script>
   </body>
 </html>

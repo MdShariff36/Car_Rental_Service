@@ -1,87 +1,103 @@
-// ============================================================================
 // FILE: assets/js/services/user.service.js
-// ============================================================================
 
-/**
- * User Service
- * Handles user-specific operations
- */
+import { storage } from "../base/storage.js";
+import { generateId } from "../base/helpers.js";
 
-import API from "../core/api.js";
+class UserService {
+  async getAllUsers() {
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-const UserService = {
-  /**
-   * Get user dashboard stats
-   */
-  async getDashboardStats() {
-    return await API.get("/user/dashboard/stats");
-  },
+    return storage.get("users", []);
+  }
 
-  /**
-   * Get user profile
-   */
-  async getProfile() {
-    return await API.get("/user/profile");
-  },
+  async getUserById(id) {
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
-  /**
-   * Update profile
-   */
-  async updateProfile(profileData) {
-    return await API.put("/user/profile", profileData);
-  },
+    const users = storage.get("users", []);
+    const user = users.find((u) => u.id === id);
 
-  /**
-   * Upload profile picture
-   */
-  async uploadProfilePicture(file) {
-    const formData = new FormData();
-    formData.append("avatar", file);
-    return await API.upload("/user/profile/avatar", formData);
-  },
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-  /**
-   * Get user bookings
-   */
-  async getBookings(status = null) {
-    const query = status ? `?status=${status}` : "";
-    return await API.get(`/user/bookings${query}`);
-  },
+    return user;
+  }
 
-  /**
-   * Get user payments
-   */
-  async getPayments() {
-    return await API.get("/user/payments");
-  },
+  async updateUser(id, userData) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-  /**
-   * Get wishlist
-   */
-  async getWishlist() {
-    return await API.get("/user/wishlist");
-  },
+    const users = storage.get("users", []);
+    const userIndex = users.findIndex((u) => u.id === id);
 
-  /**
-   * Get notifications
-   */
-  async getNotifications() {
-    return await API.get("/user/notifications");
-  },
+    if (userIndex === -1) {
+      throw new Error("User not found");
+    }
 
-  /**
-   * Mark notification as read
-   */
-  async markNotificationRead(notificationId) {
-    return await API.put(`/user/notifications/${notificationId}/read`);
-  },
+    users[userIndex] = { ...users[userIndex], ...userData };
+    storage.set("users", users);
 
-  /**
-   * Delete account
-   */
-  async deleteAccount(password) {
-    return await API.post("/user/delete-account", { password });
-  },
-};
+    const currentUser = storage.getUser();
+    if (currentUser?.id === id) {
+      storage.setUser(users[userIndex]);
+    }
 
-export default UserService;
+    return users[userIndex];
+  }
+
+  async deleteUser(id) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const users = storage.get("users", []);
+    const filteredUsers = users.filter((u) => u.id !== id);
+
+    storage.set("users", filteredUsers);
+    return true;
+  }
+
+  async getUserStats() {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    const users = storage.get("users", []);
+
+    return {
+      total: users.length,
+      users: users.filter((u) => u.role === "user").length,
+      hosts: users.filter((u) => u.role === "host").length,
+      admins: users.filter((u) => u.role === "admin").length,
+    };
+  }
+
+  async searchUsers(searchTerm) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    const users = storage.get("users", []);
+    const term = searchTerm.toLowerCase();
+
+    return users.filter(
+      (user) =>
+        user.name?.toLowerCase().includes(term) ||
+        user.email?.toLowerCase().includes(term) ||
+        user.phone?.toLowerCase().includes(term),
+    );
+  }
+
+  async getCurrentUserProfile() {
+    const user = storage.getUser();
+    if (!user) {
+      throw new Error("Not authenticated");
+    }
+
+    return this.getUserById(user.id);
+  }
+
+  async updateCurrentUserProfile(profileData) {
+    const user = storage.getUser();
+    if (!user) {
+      throw new Error("Not authenticated");
+    }
+
+    return this.updateUser(user.id, profileData);
+  }
+}
+
+export const userService = new UserService();
