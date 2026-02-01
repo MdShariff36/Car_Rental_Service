@@ -1,3 +1,8 @@
+/* ============================================
+   AUTH.CSS - Complete Login Page Styles
+   Auto Prime Rental - Login Page
+   ============================================ */
+
 :root {
   --primary-600: #0066ff;
   --primary-700: #0052cc;
@@ -43,7 +48,9 @@ body {
   position: relative;
 }
 
-/* Animated Background */
+/* ============================================
+   ANIMATED BACKGROUND
+   ============================================ */
 .background-animation {
   position: fixed;
   top: 0;
@@ -102,7 +109,9 @@ body {
   }
 }
 
-/* Login Wrapper */
+/* ============================================
+   LOGIN WRAPPER
+   ============================================ */
 .login-wrapper {
   min-height: 100vh;
   display: flex;
@@ -113,7 +122,9 @@ body {
   z-index: 1;
 }
 
-/* Login Container */
+/* ============================================
+   LOGIN CONTAINER
+   ============================================ */
 .login-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -138,7 +149,9 @@ body {
   }
 }
 
-/* Brand Panel */
+/* ============================================
+   BRAND PANEL
+   ============================================ */
 .brand-panel {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 3rem;
@@ -232,7 +245,9 @@ body {
   flex-shrink: 0;
 }
 
-/* Form Panel */
+/* ============================================
+   FORM PANEL
+   ============================================ */
 .form-panel {
   padding: 3rem;
   background: white;
@@ -261,7 +276,9 @@ body {
   font-size: 0.95rem;
 }
 
-/* Form Styles */
+/* ============================================
+   FORM STYLES
+   ============================================ */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -342,7 +359,174 @@ body {
   color: var(--primary-600);
 }
 
-/* Form Options */
+/* ============================================
+   ROLE SELECTOR (NEW)
+   ============================================ */
+.role-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.role-option {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-gray);
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.role-option::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-600), var(--accent-purple));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.role-option:hover {
+  border-color: var(--primary-600);
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.role-option:hover::before {
+  transform: scaleX(1);
+}
+
+.role-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.role-option:has(input[type="radio"]:checked) {
+  border-color: var(--primary-600);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 102, 255, 0.05),
+    rgba(139, 92, 246, 0.05)
+  );
+  box-shadow:
+    0 0 0 1px var(--primary-600),
+    var(--shadow-md);
+}
+
+.role-option:has(input[type="radio"]:checked)::before {
+  transform: scaleX(1);
+}
+
+.role-option:has(input[type="radio"]:checked)::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+  animation: checkmarkPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.role-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.role-icon {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+  transition: transform 0.3s ease;
+  filter: grayscale(0.3);
+}
+
+.role-option:hover .role-icon,
+.role-option:has(input[type="radio"]:checked) .role-icon {
+  transform: scale(1.1);
+  filter: grayscale(0);
+}
+
+.role-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.role-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.role-desc {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.role-option:has(input[type="radio"]:checked) .role-title {
+  color: var(--primary-600);
+}
+
+.role-option:has(input[type="radio"]:checked) .role-desc {
+  color: var(--primary-700);
+}
+
+@keyframes roleSelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.role-option:has(input[type="radio"]:checked) {
+  animation: roleSelect 0.3s ease;
+}
+
+/* ============================================
+   FORM OPTIONS
+   ============================================ */
 .form-options {
   display: flex;
   align-items: center;
@@ -381,7 +565,9 @@ body {
   text-decoration: underline;
 }
 
-/* Submit Button */
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
 .submit-btn {
   width: 100%;
   padding: 1rem;
@@ -419,63 +605,9 @@ body {
   transform: translateX(4px);
 }
 
-/* Divider */
-.divider {
-  position: relative;
-  text-align: center;
-  margin: 1.5rem 0;
-}
-
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--border-color);
-}
-
-.divider span {
-  position: relative;
-  background: white;
-  padding: 0 1rem;
-  color: var(--text-light);
-  font-size: 0.875rem;
-}
-
-/* Social Login */
-.social-login {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.social-btn {
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: white;
-  color: var(--text-dark);
-  font-size: 0.9rem;
-  font-weight: 600;
-  font-family: "Outfit", sans-serif;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: var(--transition);
-}
-
-.social-btn:hover {
-  border-color: var(--text-medium);
-  background: var(--bg-gray);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Form Footer */
+/* ============================================
+   FORM FOOTER
+   ============================================ */
 .form-footer {
   text-align: center;
   margin-top: 2rem;
@@ -500,7 +632,9 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive Design */
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
 @media (max-width: 968px) {
   .login-container {
     grid-template-columns: 1fr;
@@ -516,6 +650,39 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .role-selector {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .role-option {
+    padding: 0;
+  }
+
+  .role-content {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 1rem;
+    text-align: left;
+  }
+
+  .role-icon {
+    font-size: 2rem;
+    margin-bottom: 0;
+    margin-right: 1rem;
+  }
+
+  .role-text {
+    align-items: flex-start;
+  }
+
+  .role-title,
+  .role-desc {
+    text-align: left;
+  }
+}
+
 @media (max-width: 480px) {
   .login-wrapper {
     padding: 1rem;
@@ -525,11 +692,35 @@ body {
     font-size: 1.75rem;
   }
 
-  .social-login {
-    grid-template-columns: 1fr;
-  }
-
   .form-panel {
     padding: 2rem 1.25rem;
   }
+
+  .role-selector {
+    gap: 0.625rem;
+  }
+
+  .role-icon {
+    font-size: 1.75rem;
+  }
+
+  .role-title {
+    font-size: 0.8125rem;
+  }
+
+  .role-desc {
+    font-size: 0.6875rem;
+  }
+
+  .role-content {
+    padding: 0.875rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+.role-option input[type="radio"]:focus-visible ~ .role-content {
+  outline: 2px solid var(--primary-600);
+  outline-offset: 2px;
 }

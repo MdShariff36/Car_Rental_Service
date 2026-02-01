@@ -1,3 +1,8 @@
+/* ============================================
+   REGISTER.CSS - Complete Registration Page Styles
+   Auto Prime Rental - Register Page
+   ============================================ */
+
 :root {
   --primary-600: #0066ff;
   --primary-700: #0052cc;
@@ -44,7 +49,9 @@ body {
   position: relative;
 }
 
-/* Animated Background (same as login) */
+/* ============================================
+   ANIMATED BACKGROUND
+   ============================================ */
 .background-animation {
   position: fixed;
   top: 0;
@@ -102,7 +109,9 @@ body {
   }
 }
 
-/* Register Wrapper */
+/* ============================================
+   REGISTER WRAPPER
+   ============================================ */
 .register-wrapper {
   min-height: 100vh;
   display: flex;
@@ -113,7 +122,9 @@ body {
   z-index: 1;
 }
 
-/* Register Container */
+/* ============================================
+   REGISTER CONTAINER
+   ============================================ */
 .register-container {
   max-width: 700px;
   width: 100%;
@@ -136,7 +147,9 @@ body {
   }
 }
 
-/* Progress Bar */
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
 .progress-bar {
   display: flex;
   align-items: center;
@@ -210,7 +223,9 @@ body {
   background: var(--success);
 }
 
-/* Form Header */
+/* ============================================
+   FORM HEADER
+   ============================================ */
 .form-header {
   text-align: center;
   margin-bottom: 2.5rem;
@@ -230,7 +245,9 @@ body {
   line-height: 1.6;
 }
 
-/* Form Steps */
+/* ============================================
+   FORM STEPS
+   ============================================ */
 .register-form {
   position: relative;
 }
@@ -263,7 +280,9 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Form Groups */
+/* ============================================
+   FORM GROUPS
+   ============================================ */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -322,7 +341,9 @@ select.form-input {
   margin-top: 0.25rem;
 }
 
-/* Password Wrapper */
+/* ============================================
+   PASSWORD WRAPPER
+   ============================================ */
 .password-wrapper {
   position: relative;
 }
@@ -351,7 +372,9 @@ select.form-input {
   color: var(--primary-600);
 }
 
-/* Password Strength */
+/* ============================================
+   PASSWORD STRENGTH
+   ============================================ */
 .password-strength {
   display: flex;
   align-items: center;
@@ -424,28 +447,54 @@ select.form-input {
   color: var(--success);
 }
 
-/* Account Type Selector */
+/* ============================================
+   ACCOUNT TYPE SELECTOR (ENHANCED WITH 3 ROLES)
+   ============================================ */
 .account-type-selector {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .account-type-card {
   border: 2px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 1.5rem 1rem;
   cursor: pointer;
   transition: var(--transition);
   position: relative;
   background: white;
+  overflow: hidden;
+}
+
+.account-type-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-600),
+    var(--accent-purple),
+    var(--accent-pink)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
 }
 
 .account-type-card:hover {
-  border-color: var(--primary-400);
+  border-color: var(--primary-600);
   background: var(--bg-gray);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.account-type-card:hover::before {
+  transform: scaleX(1);
 }
 
 .account-type-card input[type="radio"] {
@@ -454,39 +503,159 @@ select.form-input {
   pointer-events: none;
 }
 
-.account-type-card input[type="radio"]:checked + .card-content {
-  color: var(--primary-600);
-}
-
 .account-type-card:has(input:checked) {
   border-color: var(--primary-600);
-  background: rgba(0, 102, 255, 0.05);
-  box-shadow: 0 0 0 1px var(--primary-600);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 102, 255, 0.05),
+    rgba(139, 92, 246, 0.05)
+  );
+  box-shadow:
+    0 0 0 1px var(--primary-600),
+    var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.account-type-card:has(input:checked)::before {
+  transform: scaleX(1);
+}
+
+.account-type-card:has(input:checked)::after {
+  content: "✓";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+  animation: checkmarkBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkmarkBounce {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .card-content {
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .card-icon {
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 0.75rem;
+  transition: transform 0.3s ease;
+  filter: grayscale(0.2);
+  display: inline-block;
+}
+
+.account-type-card:hover .card-icon,
+.account-type-card:has(input:checked) .card-icon {
+  transform: scale(1.15) rotate(5deg);
+  filter: grayscale(0);
 }
 
 .card-content h3 {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--text-dark);
+  transition: var(--transition);
+}
+
+.account-type-card:has(input:checked) .card-content h3 {
+  color: var(--primary-600);
 }
 
 .card-content p {
   font-size: 0.875rem;
   color: var(--text-medium);
-  line-height: 1.4;
+  line-height: 1.5;
+  transition: var(--transition);
 }
 
-/* Terms Group */
+.account-type-card:has(input:checked) .card-content p {
+  color: var(--primary-700);
+}
+
+/* Pulse animation for selected card */
+@keyframes cardPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(0, 102, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 102, 255, 0);
+  }
+}
+
+.account-type-card:has(input:checked) {
+  animation: cardPulse 1s ease-out;
+}
+
+/* Gradient background effect */
+.account-type-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 102, 255, 0.03),
+    rgba(139, 92, 246, 0.03),
+    rgba(236, 72, 153, 0.03)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.account-type-card:hover::after {
+  opacity: 1;
+}
+
+/* ============================================
+   LICENSE SECTION (Conditional Display)
+   ============================================ */
+#licenseSection {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  opacity: 1;
+  max-height: 500px;
+}
+
+#licenseSection.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   TERMS GROUP
+   ============================================ */
 .terms-group {
   display: flex;
   flex-direction: column;
@@ -524,7 +693,9 @@ select.form-input {
   text-decoration: underline;
 }
 
-/* Form Navigation */
+/* ============================================
+   FORM NAVIGATION
+   ============================================ */
 .form-navigation {
   display: flex;
   gap: 1rem;
@@ -590,7 +761,9 @@ select.form-input {
   transform: translateX(-4px);
 }
 
-/* Form Footer */
+/* ============================================
+   FORM FOOTER
+   ============================================ */
 .form-footer {
   text-align: center;
   margin-top: 2rem;
@@ -613,7 +786,9 @@ select.form-input {
   text-decoration: underline;
 }
 
-/* Responsive Design */
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
 @media (max-width: 768px) {
   .register-container {
     padding: 2rem 1.5rem;
@@ -639,6 +814,29 @@ select.form-input {
 
   .account-type-selector {
     grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+
+  .account-type-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .account-type-card .card-content {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+  }
+
+  .account-type-card:has(input:checked)::after {
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .form-navigation {
@@ -666,4 +864,33 @@ select.form-input {
   .step-label {
     display: none;
   }
+
+  .account-type-selector {
+    gap: 0.75rem;
+  }
+
+  .account-type-card {
+    padding: 1rem 0.875rem;
+  }
+
+  .card-icon {
+    font-size: 2.25rem;
+  }
+
+  .card-content h3 {
+    font-size: 1rem;
+  }
+
+  .card-content p {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+.account-type-card input[type="radio"]:focus-visible ~ .card-content {
+  outline: 3px solid var(--primary-600);
+  outline-offset: 4px;
+  border-radius: var(--radius-lg);
 }
