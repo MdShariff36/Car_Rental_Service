@@ -1,88 +1,144 @@
-// FILE: assets/js/dashboards/admin/settings.js
+// FILE: assets/js/admin/settings.js
 
-import { requireAdmin } from "../../../core/auth-guard.js";
-import { initAdminSidebar } from "../../../components/sidebar-admin.js";
-import { adminService } from "../../../services/admin.service.js";
-import { showLoader, hideLoader } from "../../../ui/loader.js";
-import { showNotification } from "../../../ui/notifications.js";
-import { clearFormValidation } from "../../../base/validators.js";
+document.addEventListener("DOMContentLoaded", async function () {
+  const settingsForm = document.getElementById("settingsForm");
+  const submitBtn = settingsForm
+    ? settingsForm.querySelector(".submit-btn")
+    : null;
 
-export const initAdminSettings = async () => {
-  if (!requireAdmin()) return;
-
-  initAdminSidebar();
   await loadSettings();
-  setupSettingsForm();
-};
 
-const loadSettings = async () => {
-  showLoader();
-
-  try {
-    const settings = await adminService.getSystemSettings();
-    populateSettings(settings);
-  } catch (error) {
-    console.error("Failed to load settings:", error);
-  } finally {
-    hideLoader();
+  if (settingsForm) {
+    settingsForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      await saveSettings();
+    });
   }
-};
 
-const populateSettings = (settings) => {
-  const form = document.querySelector("#settings-form");
-  if (!form) return;
-
-  const fields = [
-    "siteName",
-    "siteEmail",
-    "sitePhone",
-    "currency",
-    "commissionRate",
-    "taxRate",
-  ];
-
-  fields.forEach((field) => {
-    const input = form.querySelector(`[name="${field}"]`);
-    if (input) {
-      input.value = settings[field] || "";
-    }
-  });
-
-  const maintenanceToggle = form.querySelector('[name="maintenanceMode"]');
-  if (maintenanceToggle) {
-    maintenanceToggle.checked = settings.maintenanceMode || false;
-  }
-};
-
-const setupSettingsForm = () => {
-  const form = document.querySelector("#settings-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    clearFormValidation("settings-form");
-
-    const formData = new FormData(form);
-    const settings = {
-      siteName: formData.get("siteName"),
-      siteEmail: formData.get("siteEmail"),
-      sitePhone: formData.get("sitePhone"),
-      currency: formData.get("currency"),
-      commissionRate: parseFloat(formData.get("commissionRate")),
-      taxRate: parseFloat(formData.get("taxRate")),
-      maintenanceMode: formData.get("maintenanceMode") === "on",
-    };
-
+  async function loadSettings() {
     showLoader();
 
     try {
-      await adminService.updateSystemSettings(settings);
-      showNotification("Settings updated successfully!", "success");
+      const token = AuthService.getToken();
+      const response = await fetch("http://localhost:8080/api/admin/settings", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load settings");
+      }
+
+      const settings = await response.json();
+      populateSettings(settings);
     } catch (error) {
-      showNotification("Failed to update settings", "error");
+      console.error("Load settings error:", error);
+      showNotification("Failed to load settings", "error");
     } finally {
       hideLoader();
     }
-  });
-};
+  }
+
+  function populateSettings(settings) {
+    const commissionRateInput = document.getElementById("commissionRate");
+    if (commissionRateInput && settings.commissionRate !== undefined) {
+      commissionRateInput.value = settings.commissionRate;
+    }
+
+    const taxRateInput = document.getElementById("taxRate");
+    if (taxRateInput && settings.taxRate !== undefined) {
+      taxRateInput.value = settings.taxRate;
+    }
+
+    const cancellationPenaltyInput = document.getElementById(
+      "cancellationPenalty",
+    );
+    if (
+      cancellationPenaltyInput &&
+      settings.cancellationPenalty !== undefined
+    ) {
+      cancellationPenaltyInput.value = settings.cancellationPenalty;
+    }
+
+    const minBookingDaysInput = document.getElementById("minBookingDays");
+    if (minBookingDaysInput && settings.minBookingDays !== undefined) {
+      minBookingDaysInput.value = settings.minBookingDays;
+    }
+  }
+
+  async function saveSettings() {
+    const settings = {
+      commissionRate: parseFloat(
+        document.getElementById("commissionRate").value,
+      ),
+      taxRate: parseFloat(document.getElementById("taxRate").value),
+      cancellationPenalty: parseFloat(
+        document.getElementById("cancellationPenalty").value,
+      ),
+      minBookingDays: parseInt(document.getElementById("minBookingDays").value),
+    };
+
+    setLoadingState(true);
+
+    try {
+      const token = AuthService.getToken();
+      const response = await fetch("http://localhost:8080/api/admin/settings", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(settings),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to save settings");
+      }
+
+      showNotification("Settings saved successfully", "success");
+    } catch (error) {
+      console.error("Save settings error:", error);
+      showNotification(error.message || "Failed to save settings", "error");
+    } finally {
+      setLoadingState(false);
+    }
+  }
+
+  function setLoadingState(loading) {
+    if (submitBtn) {
+      if (loading) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-text">Saving...</span>';
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="btn-text">Save Settings</span>';
+      }
+    }
+  }
+
+  function showLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "flex";
+  }
+
+  function hideLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "none";
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

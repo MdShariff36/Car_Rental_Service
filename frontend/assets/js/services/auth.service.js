@@ -1,95 +1,110 @@
-/**
- * Auth Service - Handles all authentication-related backend operations
- * NO DOM manipulation - only data fetching
- */
+// FILE: assets/js/services/auth.service.js
 
-const AuthService = (() => {
+const AuthService = {
   /**
-   * User login
-   * POST /api/auth/login
+   * Get stored JWT token
    */
-  const login = async (credentials) => {
-    try {
-      const response = await API.post("/auth/login", credentials);
-
-      // Store token and user data
-      if (response.token) {
-        API.setToken(response.token);
-      }
-      if (response.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
-
-      return { success: true, data: response };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-        status: error.status,
-      };
-    }
-  };
+  getToken() {
+    return localStorage.getItem("authToken");
+  },
 
   /**
-   * User registration
-   * POST /api/auth/register
+   * Set JWT token
    */
-  const register = async (userData) => {
-    try {
-      const response = await API.post("/auth/register", userData);
-
-      // Store token and user data if auto-login after registration
-      if (response.token) {
-        API.setToken(response.token);
-      }
-      if (response.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
-
-      return { success: true, data: response };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-        status: error.status,
-      };
-    }
-  };
+  setToken(token) {
+    localStorage.setItem("authToken", token);
+  },
 
   /**
-   * User logout (local only - clear storage)
+   * Remove JWT token
    */
-  const logout = () => {
-    API.clearAuth();
-    return { success: true };
-  };
-
-  /**
-   * Check if user is authenticated
-   */
-  const isAuthenticated = () => {
-    return API.isAuthenticated();
-  };
+  removeToken() {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
+  },
 
   /**
    * Get current user from localStorage
    */
-  const getCurrentUser = () => {
+  getCurrentUser() {
     const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
-  };
+  },
 
-  // Public API
-  return {
-    login,
-    register,
-    logout,
-    isAuthenticated,
-    getCurrentUser,
-  };
-})();
+  /**
+   * Set current user
+   */
+  setCurrentUser(user) {
+    localStorage.setItem("user", JSON.stringify(user));
+    if (user.role) {
+      localStorage.setItem("userRole", user.role);
+    }
+  },
 
-// Export for use in other modules
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = AuthService;
+  /**
+   * Check if user is authenticated
+   */
+  isAuthenticated() {
+    return !!this.getToken();
+  },
+
+  /**
+   * Get user role
+   */
+  getUserRole() {
+    return localStorage.getItem("userRole");
+  },
+
+  /**
+   * Check if user has specific role
+   */
+  hasRole(role) {
+    return this.getUserRole() === role;
+  },
+
+  /**
+   * Logout user
+   */
+  async logout() {
+    try {
+      const token = this.getToken();
+      if (token) {
+        await fetch("http://localhost:8080/api/auth/logout", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      this.removeToken();
+      window.location.href = "/login.html";
+    }
+  },
+
+  /**
+   * Redirect to login
+   */
+  redirectToLogin(returnUrl = null) {
+    const url = returnUrl
+      ? `/login.html?returnUrl=${encodeURIComponent(returnUrl)}`
+      : "/login.html";
+    window.location.href = url;
+  },
+
+  /**
+   * Get return URL from query params
+   */
+  getReturnUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("returnUrl") || "/user/dashboard.html";
+  },
+};
+
+if (typeof window !== "undefined") {
+  window.AuthService = AuthService;
 }

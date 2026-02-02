@@ -1,70 +1,84 @@
-// FILE: assets/js/dashboards/admin/login.js
+// FILE: assets/js/admin/login.js
 
-import { authService } from "../../../services/auth.service.js";
-import { requireGuest } from "../../../core/auth-guard.js";
-import { CONFIG } from "../../../base/config.js";
-import {
-  validateEmail,
-  validateRequired,
-  showFieldError,
-  clearFormValidation,
-} from "../../../base/validators.js";
-import { showLoader, hideLoader } from "../../../ui/loader.js";
-import { showNotification } from "../../../ui/notifications.js";
+document.addEventListener("DOMContentLoaded", function () {
+  const loginForm = document.getElementById("adminLoginForm");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const submitBtn = loginForm.querySelector(".submit-btn");
 
-export const initAdminLogin = () => {
-  if (!requireGuest()) return;
-
-  setupAdminLoginForm();
-};
-
-const setupAdminLoginForm = () => {
-  const form = document.querySelector("#admin-login-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
+  loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    clearFormValidation("admin-login-form");
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-    const formData = new FormData(form);
-    const credentials = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
-
-    let isValid = true;
-
-    const emailValidation = validateEmail(credentials.email);
-    if (!emailValidation.valid) {
-      showFieldError("email", emailValidation.message);
-      isValid = false;
+    if (!email || !password) {
+      showNotification("Please enter email and password", "error");
+      return;
     }
 
-    const passwordValidation = validateRequired(
-      credentials.password,
-      "Password",
-    );
-    if (!passwordValidation.valid) {
-      showFieldError("password", passwordValidation.message);
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    showLoader();
+    setLoadingState(true);
 
     try {
-      await authService.adminLogin(credentials);
-      showNotification("Admin login successful!", "success");
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // Check if user is admin
+      if (data.user.role !== "ADMIN") {
+        throw new Error("Access denied. Admin access only.");
+      }
+
+      // Store auth data
+      AuthService.setToken(data.token);
+      AuthService.setCurrentUser(data.user);
+
+      showNotification("Login successful", "success");
 
       setTimeout(() => {
-        window.location.href = CONFIG.ROUTES.ADMIN_DASHBOARD;
+        window.location.href = "/admin/dashboard.html";
       }, 1000);
     } catch (error) {
-      showNotification(error.message || "Invalid admin credentials", "error");
+      console.error("Admin login error:", error);
+      showNotification(error.message || "Login failed", "error");
     } finally {
-      hideLoader();
+      setLoadingState(false);
     }
   });
-};
+
+  function setLoadingState(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="btn-text">Logging in...</span>';
+      emailInput.disabled = true;
+      passwordInput.disabled = true;
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span class="btn-text">Login</span>';
+      emailInput.disabled = false;
+      passwordInput.disabled = false;
+    }
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

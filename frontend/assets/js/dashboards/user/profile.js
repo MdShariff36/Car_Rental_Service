@@ -1,144 +1,96 @@
-// FILE: assets/js/dashboards/user/profile.js
+// FILE: assets/js/user/profile.js
 
-import { requireUser } from "../../../core/auth-guard.js";
-import { initUserSidebar } from "../../../components/sidebar-user.js";
-import { userService } from "../../../services/user.service.js";
-import { authService } from "../../../services/auth.service.js";
-import { storage } from "../../../base/storage.js";
-import {
-  validateEmail,
-  validateName,
-  validatePhone,
-  validatePassword,
-  showFieldError,
-  showFieldSuccess,
-  clearFormValidation,
-} from "../../../base/validators.js";
-import { showLoader, hideLoader } from "../../../ui/loader.js";
-import { showNotification } from "../../../ui/notifications.js";
+document.addEventListener("DOMContentLoaded", async function () {
+  const profileForm = document.getElementById("profileForm");
+  const firstNameInput = document.getElementById("firstName");
+  const lastNameInput = document.getElementById("lastName");
+  const emailInput = document.getElementById("email");
+  const phoneInput = document.getElementById("phone");
+  const addressInput = document.getElementById("address");
+  const submitBtn = profileForm.querySelector(".submit-btn");
 
-export const initProfile = () => {
-  if (!requireUser()) return;
+  // Load current profile
+  await loadProfile();
 
-  initUserSidebar();
-  loadProfile();
-  setupProfileForm();
-  setupPasswordForm();
-};
-
-const loadProfile = () => {
-  const user = storage.getUser();
-
-  const nameInput = document.querySelector("#name");
-  const emailInput = document.querySelector("#email");
-  const phoneInput = document.querySelector("#phone");
-
-  if (nameInput) nameInput.value = user?.name || "";
-  if (emailInput) emailInput.value = user?.email || "";
-  if (phoneInput) phoneInput.value = user?.phone || "";
-};
-
-const setupProfileForm = () => {
-  const form = document.querySelector("#profile-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
+  profileForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    clearFormValidation("profile-form");
-
-    const formData = new FormData(form);
-    const profileData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
+    const userData = {
+      firstName: firstNameInput.value.trim(),
+      lastName: lastNameInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      address: addressInput.value.trim(),
     };
 
-    let isValid = true;
-
-    const nameValidation = validateName(profileData.name);
-    if (!nameValidation.valid) {
-      showFieldError("name", nameValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("name");
+    // Validation
+    if (!userData.firstName || !userData.lastName) {
+      showNotification("Name fields are required", "error");
+      return;
     }
 
-    const emailValidation = validateEmail(profileData.email);
-    if (!emailValidation.valid) {
-      showFieldError("email", emailValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("email");
-    }
-
-    const phoneValidation = validatePhone(profileData.phone);
-    if (!phoneValidation.valid) {
-      showFieldError("phone", phoneValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("phone");
-    }
-
-    if (!isValid) return;
-
-    showLoader();
+    setLoadingState(true);
 
     try {
-      await authService.updateProfile(profileData);
+      await UserService.updateProfile(userData);
       showNotification("Profile updated successfully", "success");
     } catch (error) {
-      showNotification("Failed to update profile", "error");
+      console.error("Update profile error:", error);
+      showNotification(error.message || "Failed to update profile", "error");
     } finally {
-      hideLoader();
+      setLoadingState(false);
     }
   });
-};
 
-const setupPasswordForm = () => {
-  const form = document.querySelector("#password-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    clearFormValidation("password-form");
-
-    const formData = new FormData(form);
-    const oldPassword = formData.get("oldPassword");
-    const newPassword = formData.get("newPassword");
-    const confirmPassword = formData.get("confirmPassword");
-
-    let isValid = true;
-
-    const newPasswordValidation = validatePassword(newPassword);
-    if (!newPasswordValidation.valid) {
-      showFieldError("newPassword", newPasswordValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("newPassword");
-    }
-
-    if (newPassword !== confirmPassword) {
-      showFieldError("confirmPassword", "Passwords do not match");
-      isValid = false;
-    } else {
-      showFieldSuccess("confirmPassword");
-    }
-
-    if (!isValid) return;
-
+  async function loadProfile() {
     showLoader();
-
     try {
-      await authService.changePassword(oldPassword, newPassword);
-      showNotification("Password changed successfully", "success");
-      form.reset();
-      clearFormValidation("password-form");
+      const user = await UserService.getProfile();
+
+      firstNameInput.value = user.firstName || "";
+      lastNameInput.value = user.lastName || "";
+      emailInput.value = user.email || "";
+      phoneInput.value = user.phone || "";
+      addressInput.value = user.address || "";
+
+      // Email is typically read-only
+      emailInput.disabled = true;
     } catch (error) {
-      showNotification(error.message || "Failed to change password", "error");
+      console.error("Load profile error:", error);
+      showNotification("Failed to load profile", "error");
     } finally {
       hideLoader();
     }
-  });
-};
+  }
+
+  function setLoadingState(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="btn-text">Saving...</span>';
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span class="btn-text">Save Changes</span>';
+    }
+  }
+
+  function showLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "flex";
+  }
+
+  function hideLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "none";
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

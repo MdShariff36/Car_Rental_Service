@@ -1,111 +1,131 @@
 // FILE: assets/js/dashboards/host/dashboard.js
 
-import { requireHost } from "../../../core/auth-guard.js";
-import { initHostSidebar } from "../../../components/sidebar-host.js";
-import { hostService } from "../../../services/host.service.js";
-import { storage } from "../../../base/storage.js";
-import { formatCurrency, formatDate } from "../../../base/helpers.js";
-import { showLoader, hideLoader } from "../../../ui/loader.js";
-
-export const initHostDashboard = async () => {
-  if (!requireHost()) return;
-
-  initHostSidebar();
+document.addEventListener("DOMContentLoaded", async function () {
   await loadDashboardData();
-};
 
-const loadDashboardData = async () => {
-  showLoader();
+  async function loadDashboardData() {
+    showLoader();
 
-  try {
-    const user = storage.getUser();
-    const dashboardData = await hostService.getHostDashboard(user.id);
+    try {
+      const token = AuthService.getToken();
+      const response = await fetch("http://localhost:8080/api/host/dashboard", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    displayStats(dashboardData);
-    displayRecentBookings(dashboardData.recentBookings);
-  } catch (error) {
-    console.error("Failed to load dashboard data:", error);
-  } finally {
-    hideLoader();
-  }
-};
+      if (!response.ok) {
+        throw new Error("Failed to load dashboard data");
+      }
 
-const displayStats = (data) => {
-  const statsContainer = document.querySelector("#dashboard-stats");
-  if (!statsContainer) return;
-
-  statsContainer.innerHTML = `
-    <div class="col-md-3">
-      <div class="stat-card">
-        <h3>${data.totalCars}</h3>
-        <p>Total Cars</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="stat-card">
-        <h3>${data.activeCars}</h3>
-        <p>Active Cars</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="stat-card">
-        <h3>${data.totalBookings}</h3>
-        <p>Total Bookings</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="stat-card">
-        <h3>${formatCurrency(data.totalEarnings)}</h3>
-        <p>Total Earnings</p>
-      </div>
-    </div>
-  `;
-};
-
-const displayRecentBookings = (bookings) => {
-  const container = document.querySelector("#recent-bookings");
-  if (!container) return;
-
-  if (bookings.length === 0) {
-    container.innerHTML = "<p>No recent bookings.</p>";
-    return;
+      const data = await response.json();
+      displayStats(data);
+    } catch (error) {
+      console.error("Dashboard error:", error);
+      showNotification("Failed to load dashboard data", "error");
+    } finally {
+      hideLoader();
+    }
   }
 
-  container.innerHTML = `
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Car</th>
-          <th>Dates</th>
-          <th>Amount</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${bookings
-          .map(
-            (booking) => `
-          <tr>
-            <td>${booking.car?.name || "N/A"}</td>
-            <td>${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}</td>
-            <td>${formatCurrency(booking.totalAmount)}</td>
-            <td><span class="badge bg-${getStatusColor(booking.status)}">${booking.status}</span></td>
-          </tr>
+  function displayStats(data) {
+    // Total cars
+    const totalCarsElement = document.getElementById("totalCars");
+    if (totalCarsElement) {
+      totalCarsElement.textContent = data.totalCars || 0;
+    }
+
+    // Active bookings
+    const activeBookingsElement = document.getElementById("activeBookings");
+    if (activeBookingsElement) {
+      activeBookingsElement.textContent = data.activeBookings || 0;
+    }
+
+    // Total earnings
+    const totalEarningsElement = document.getElementById("totalEarnings");
+    if (totalEarningsElement) {
+      totalEarningsElement.textContent = formatCurrency(
+        data.totalEarnings || 0,
+      );
+    }
+
+    // Monthly earnings
+    const monthlyEarningsElement = document.getElementById("monthlyEarnings");
+    if (monthlyEarningsElement) {
+      monthlyEarningsElement.textContent = formatCurrency(
+        data.monthlyEarnings || 0,
+      );
+    }
+
+    // Recent bookings
+    if (data.recentBookings) {
+      displayRecentBookings(data.recentBookings);
+    }
+  }
+
+  function displayRecentBookings(bookings) {
+    const container = document.getElementById("recentBookings");
+    if (!container) return;
+
+    if (!bookings || bookings.length === 0) {
+      container.innerHTML = '<p class="empty-message">No recent bookings</p>';
+      return;
+    }
+
+    container.innerHTML = bookings
+      .map(
+        (booking) => `
+            <div class="booking-item">
+                <div class="booking-car">${booking.carName}</div>
+                <div class="booking-user">${booking.userName}</div>
+                <div class="booking-dates">${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}</div>
+                <div class="booking-amount">${formatCurrency(booking.amount)}</div>
+                <div class="booking-status">
+                    <span class="badge badge-${booking.status.toLowerCase()}">${booking.status}</span>
+                </div>
+            </div>
         `,
-          )
-          .join("")}
-      </tbody>
-    </table>
-  `;
-};
+      )
+      .join("");
+  }
 
-const getStatusColor = (status) => {
-  const colors = {
-    pending: "warning",
-    confirmed: "info",
-    ongoing: "primary",
-    completed: "success",
-    cancelled: "danger",
-  };
-  return colors[status] || "secondary";
-};
+  function formatCurrency(amount) {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  function showLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "flex";
+  }
+
+  function hideLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "none";
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

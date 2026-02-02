@@ -1,77 +1,80 @@
-/**
- * User Service - Handles user-related backend operations
- * NO DOM manipulation - only data fetching
- */
+// FILE: assets/js/services/user.service.js
 
-const UserService = (() => {
+const UserService = {
   /**
    * Get current user profile
-   * GET /api/users/me
    */
-  const getCurrentUserProfile = async () => {
-    try {
-      const user = await API.get("/users/me");
+  async getProfile() {
+    const token = AuthService.getToken();
+    const response = await fetch("http://localhost:8080/api/users/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-      // Update local storage with fresh user data
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return { success: true, data: user };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-        status: error.status,
-      };
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch profile");
     }
-  };
+
+    return await response.json();
+  },
 
   /**
    * Update user profile
-   * PUT /api/users/me
    */
-  const updateProfile = async (userData) => {
-    try {
-      const user = await API.put("/users/me", userData);
+  async updateProfile(userData) {
+    const token = AuthService.getToken();
+    const response = await fetch("http://localhost:8080/api/users/me", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
 
-      // Update local storage
-      localStorage.setItem("user", JSON.stringify(user));
-
-      return { success: true, data: user };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-        status: error.status,
-      };
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update profile");
     }
-  };
+
+    const updatedUser = await response.json();
+    AuthService.setCurrentUser(updatedUser);
+    return updatedUser;
+  },
 
   /**
    * Change password
-   * PUT /api/users/me/password
    */
-  const changePassword = async (passwordData) => {
-    try {
-      const result = await API.put("/users/me/password", passwordData);
-      return { success: true, data: result };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-        status: error.status,
-      };
+  async changePassword(currentPassword, newPassword) {
+    const token = AuthService.getToken();
+    const response = await fetch(
+      "http://localhost:8080/api/users/me/password",
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to change password");
     }
-  };
 
-  // Public API
-  return {
-    getCurrentUserProfile,
-    updateProfile,
-    changePassword,
-  };
-})();
+    return await response.json();
+  },
+};
 
-// Export for use in other modules
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = UserService;
+if (typeof window !== "undefined") {
+  window.UserService = UserService;
 }

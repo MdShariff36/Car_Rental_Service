@@ -1,75 +1,77 @@
 // FILE: assets/js/pages/newsletter.js
 
-import { storage } from "../base/storage.js";
-import {
-  validateEmail,
-  showFieldError,
-  showFieldSuccess,
-} from "../base/validators.js";
-import { showNotification } from "../ui/notifications.js";
+document.addEventListener("DOMContentLoaded", function () {
+  const newsletterForm = document.getElementById("newsletterForm");
+  const emailInput = document.getElementById("newsletterEmail");
+  const submitBtn = newsletterForm.querySelector(".submit-btn");
 
-export const initNewsletter = () => {
-  setupNewsletterForm();
-  displayStats();
-};
-
-const setupNewsletterForm = () => {
-  const form = document.querySelector("#newsletter-signup-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
+  newsletterForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const emailInput = form.querySelector("#email");
-    const email = emailInput?.value;
+    const email = emailInput.value.trim();
 
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.valid) {
-      showFieldError("email", emailValidation.message);
+    if (!email) {
+      showNotification("Please enter your email address", "error");
       return;
     }
 
-    showFieldSuccess("email");
+    if (!isValidEmail(email)) {
+      showNotification("Please enter a valid email address", "error");
+      return;
+    }
 
-    const button = form.querySelector('button[type="submit"]');
-    const originalText = button?.textContent;
-    if (button) button.textContent = "Subscribing...";
+    setLoadingState(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(
+        "http://localhost:8080/api/newsletter/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        },
+      );
 
-      const subscribers = storage.get("newsletter_subscribers", []);
-
-      if (subscribers.includes(email)) {
-        showNotification("You are already subscribed!", "info");
-      } else {
-        subscribers.push(email);
-        storage.set("newsletter_subscribers", subscribers);
-        showNotification("Thank you for subscribing!", "success");
-        form.reset();
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Subscription failed");
       }
 
-      displayStats();
+      showNotification("Successfully subscribed to newsletter!", "success");
+      newsletterForm.reset();
     } catch (error) {
-      showNotification("Failed to subscribe. Please try again.", "error");
+      console.error("Newsletter subscription error:", error);
+      showNotification(error.message || "Subscription failed", "error");
     } finally {
-      if (button && originalText) {
-        button.textContent = originalText;
-      }
+      setLoadingState(false);
     }
   });
-};
 
-const displayStats = () => {
-  const statsEl = document.querySelector("#newsletter-stats");
-  if (!statsEl) return;
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-  const subscribers = storage.get("newsletter_subscribers", []);
+  function setLoadingState(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="btn-text">Subscribing...</span>';
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span class="btn-text">Subscribe</span>';
+    }
+  }
 
-  statsEl.innerHTML = `
-    <div class="stat-card">
-      <h3>${subscribers.length}</h3>
-      <p>Total Subscribers</p>
-    </div>
-  `;
-};
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

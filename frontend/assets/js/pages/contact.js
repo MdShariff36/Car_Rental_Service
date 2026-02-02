@@ -1,95 +1,94 @@
 // FILE: assets/js/pages/contact.js
 
-import { showNotification } from "../ui/notifications.js";
-import {
-  validateEmail,
-  validateRequired,
-  showFieldError,
-  showFieldSuccess,
-  clearFormValidation,
-} from "../base/validators.js";
+document.addEventListener("DOMContentLoaded", function () {
+  const contactForm = document.getElementById("contactForm");
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const subjectInput = document.getElementById("subject");
+  const messageInput = document.getElementById("message");
+  const submitBtn = contactForm.querySelector(".submit-btn");
 
-export const initContact = () => {
-  setupContactForm();
-  initMap();
-};
-
-const setupContactForm = () => {
-  const form = document.querySelector("#contact-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
+  contactForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    clearFormValidation("contact-form");
-
-    const formData = new FormData(form);
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      subject: formData.get("subject"),
-      message: formData.get("message"),
+    const formData = {
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      subject: subjectInput.value.trim(),
+      message: messageInput.value.trim(),
     };
 
-    let isValid = true;
-
-    const nameValidation = validateRequired(data.name, "Name");
-    if (!nameValidation.valid) {
-      showFieldError("name", nameValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("name");
+    // Validation
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.subject ||
+      !formData.message
+    ) {
+      showNotification("Please fill in all fields", "error");
+      return;
     }
 
-    const emailValidation = validateEmail(data.email);
-    if (!emailValidation.valid) {
-      showFieldError("email", emailValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("email");
+    if (!isValidEmail(formData.email)) {
+      showNotification("Please enter a valid email address", "error");
+      return;
     }
 
-    const messageValidation = validateRequired(data.message, "Message");
-    if (!messageValidation.valid) {
-      showFieldError("message", messageValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("message");
-    }
-
-    if (!isValid) return;
-
-    const button = form.querySelector('button[type="submit"]');
-    const originalText = button?.textContent;
-    if (button) button.textContent = "Sending...";
+    setLoadingState(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(
+        "http://localhost:8080/api/support/contact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        },
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to send message");
+      }
 
       showNotification(
-        "Message sent successfully! We will get back to you soon.",
+        "Message sent successfully. We will get back to you soon!",
         "success",
       );
-      form.reset();
-      clearFormValidation("contact-form");
+      contactForm.reset();
     } catch (error) {
-      showNotification("Failed to send message. Please try again.", "error");
+      console.error("Contact form error:", error);
+      showNotification(error.message || "Failed to send message", "error");
     } finally {
-      if (button && originalText) {
-        button.textContent = originalText;
-      }
+      setLoadingState(false);
     }
   });
-};
 
-const initMap = () => {
-  const mapContainer = document.querySelector("#contact-map");
-  if (!mapContainer) return;
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-  mapContainer.innerHTML = `
-    <div class="map-placeholder">
-      <p>Map Location</p>
-      <small>123 Car Rental Street, City, Country</small>
-    </div>
-  `;
-};
+  function setLoadingState(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="btn-text">Sending...</span>';
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span class="btn-text">Send Message</span>';
+    }
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

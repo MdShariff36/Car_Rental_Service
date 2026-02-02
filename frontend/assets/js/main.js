@@ -1,216 +1,163 @@
-/**
- * Main JavaScript - Global functionality
- * NO PAGE-SPECIFIC BACKEND CALLS
- * Only handles global UI features and navigation
- */
+// FILE: assets/js/main.js
 
-(() => {
+(function () {
   "use strict";
 
-  // Wait for DOM to be ready
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("Main app initialized");
-
-    // Initialize global features
-    initializeNavigation();
-    initializeAuthState();
-    initializeMobileMenu();
-    initializeScrollEffects();
+  // Global initialization
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeApp();
   });
 
-  /**
-   * Initialize navigation
-   */
+  function initializeApp() {
+    // Setup global error handler
+    setupErrorHandler();
+
+    // Initialize navigation
+    initializeNavigation();
+
+    // Initialize logout buttons
+    initializeLogout();
+
+    // Initialize mobile menu
+    initializeMobileMenu();
+
+    // Initialize scroll effects
+    initializeScrollEffects();
+  }
+
+  function setupErrorHandler() {
+    window.addEventListener("unhandledrejection", function (event) {
+      console.error("Unhandled promise rejection:", event.reason);
+      showGlobalNotification("An unexpected error occurred", "error");
+    });
+
+    window.addEventListener("error", function (event) {
+      console.error("Global error:", event.error);
+    });
+  }
+
   function initializeNavigation() {
-    // Highlight active page in navigation
-    const currentPage =
-      window.location.pathname.split("/").pop() || "index.html";
-    const navLinks = document.querySelectorAll(".nav-link");
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll(".nav a, .sidebar a");
 
     navLinks.forEach((link) => {
       const href = link.getAttribute("href");
-      if (
-        href === currentPage ||
-        (currentPage === "" && href === "index.html")
-      ) {
+      if (href && currentPath.includes(href)) {
         link.classList.add("active");
       }
     });
-
-    // Handle logout button
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", handleLogout);
-    }
   }
 
-  /**
-   * Initialize authentication state
-   * NO BACKEND CALL - just checks localStorage
-   */
-  function initializeAuthState() {
-    const isLoggedIn = AuthService.isAuthenticated();
+  function initializeLogout() {
+    const logoutButtons = document.querySelectorAll(
+      '.logout-btn, [data-action="logout"]',
+    );
 
-    // Update navigation based on auth state
-    updateAuthUI(isLoggedIn);
+    logoutButtons.forEach((button) => {
+      button.addEventListener("click", async function (e) {
+        e.preventDefault();
 
-    // Set user info if logged in
-    if (isLoggedIn) {
-      displayUserInfo();
-    }
-  }
-
-  /**
-   * Update UI based on authentication state
-   */
-  function updateAuthUI(isLoggedIn) {
-    // Show/hide elements based on auth state
-    const authElements = document.querySelectorAll("[data-auth-required]");
-    const guestElements = document.querySelectorAll("[data-guest-only]");
-
-    authElements.forEach((el) => {
-      el.style.display = isLoggedIn ? "" : "none";
-    });
-
-    guestElements.forEach((el) => {
-      el.style.display = isLoggedIn ? "none" : "";
+        if (confirm("Are you sure you want to logout?")) {
+          if (typeof AuthService !== "undefined") {
+            await AuthService.logout();
+          } else {
+            localStorage.clear();
+            window.location.href = "/login.html";
+          }
+        }
+      });
     });
   }
 
-  /**
-   * Display user information
-   */
-  function displayUserInfo() {
-    const user = AuthService.getCurrentUser();
-    if (!user) return;
-
-    // Update user name displays
-    const userNameElements = document.querySelectorAll("[data-user-name]");
-    userNameElements.forEach((el) => {
-      el.textContent = user.name || "User";
-    });
-
-    // Update user email displays
-    const userEmailElements = document.querySelectorAll("[data-user-email]");
-    userEmailElements.forEach((el) => {
-      el.textContent = user.email || "";
-    });
-
-    // Update avatar if available
-    const avatarElements = document.querySelectorAll("[data-user-avatar]");
-    avatarElements.forEach((el) => {
-      if (user.avatar) {
-        el.src = user.avatar;
-      } else {
-        // Show initials
-        el.textContent = getInitials(user.name);
-      }
-    });
-  }
-
-  /**
-   * Get user initials
-   */
-  function getInitials(name) {
-    if (!name) return "U";
-    const names = name.split(" ");
-    if (names.length >= 2) {
-      return names[0][0] + names[1][0];
-    }
-    return names[0][0];
-  }
-
-  /**
-   * Handle logout
-   */
-  function handleLogout(e) {
-    e.preventDefault();
-
-    // Confirm logout
-    if (confirm("Are you sure you want to logout?")) {
-      AuthService.logout();
-
-      // Show notification
-      showGlobalNotification("Logged out successfully", "success");
-
-      // Redirect to home page
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 500);
-    }
-  }
-
-  /**
-   * Initialize mobile menu
-   */
   function initializeMobileMenu() {
-    const menuToggle = document.getElementById("mobileMenuToggle");
-    const mobileMenu = document.getElementById("mobileMenu");
+    const mobileToggle = document.querySelector(".mobile-toggle");
+    const nav = document.querySelector(".nav");
 
-    if (menuToggle && mobileMenu) {
-      menuToggle.addEventListener("click", () => {
-        mobileMenu.classList.toggle("active");
-        menuToggle.classList.toggle("active");
+    if (mobileToggle && nav) {
+      mobileToggle.addEventListener("click", function () {
+        nav.classList.toggle("open");
+        mobileToggle.classList.toggle("active");
       });
 
       // Close menu when clicking outside
-      document.addEventListener("click", (e) => {
-        if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-          mobileMenu.classList.remove("active");
-          menuToggle.classList.remove("active");
+      document.addEventListener("click", function (e) {
+        if (!nav.contains(e.target) && !mobileToggle.contains(e.target)) {
+          nav.classList.remove("open");
+          mobileToggle.classList.remove("active");
         }
       });
     }
   }
 
-  /**
-   * Initialize scroll effects
-   */
   function initializeScrollEffects() {
-    const header = document.querySelector(".header");
-    if (!header) return;
+    const header = document.querySelector(".site-header");
 
-    let lastScroll = 0;
+    if (header) {
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+    }
 
-    window.addEventListener("scroll", () => {
-      const currentScroll = window.pageYOffset;
+    // Back to top button
+    const backToTop = document.querySelector(".back-to-top");
 
-      // Add shadow on scroll
-      if (currentScroll > 50) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
+    if (backToTop) {
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 300) {
+          backToTop.style.display = "block";
+        } else {
+          backToTop.style.display = "none";
+        }
+      });
 
-      // Hide header on scroll down, show on scroll up
-      if (currentScroll > lastScroll && currentScroll > 100) {
-        header.classList.add("hidden");
-      } else {
-        header.classList.remove("hidden");
-      }
-
-      lastScroll = currentScroll;
-    });
+      backToTop.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
   }
 
-  /**
-   * Show global notification
-   */
   function showGlobalNotification(message, type = "info") {
     const notification = document.createElement("div");
     notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
     document.body.appendChild(notification);
-
-    setTimeout(() => notification.classList.add("show"), 100);
-
-    setTimeout(() => {
-      notification.classList.remove("show");
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    setTimeout(() => notification.remove(), 5000);
   }
 
-  // Make global functions available
-  window.showGlobalNotification = showGlobalNotification;
+  // Make utility functions globally available
+  window.AppUtils = {
+    showNotification: showGlobalNotification,
+    formatCurrency: function (amount) {
+      return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      }).format(amount);
+    },
+    formatDate: function (dateString) {
+      return new Date(dateString).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    },
+    formatDateTime: function (dateString) {
+      return new Date(dateString).toLocaleString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
+  };
 })();

@@ -1,109 +1,163 @@
 // FILE: assets/js/dashboards/host/add-car.js
 
-import { requireHost } from "../../../core/auth-guard.js";
-import { initHostSidebar } from "../../../components/sidebar-host.js";
-import { carService } from "../../../services/car.service.js";
-import { CONFIG } from "../../../base/config.js";
-import {
-  validateRequired,
-  validateNumber,
-  validateMin,
-  showFieldError,
-  showFieldSuccess,
-  clearFormValidation,
-} from "../../../base/validators.js";
-import { showLoader, hideLoader } from "../../../ui/loader.js";
-import { showNotification } from "../../../ui/notifications.js";
+document.addEventListener("DOMContentLoaded", function () {
+  const carForm = document.getElementById("carForm");
+  const submitBtn = carForm.querySelector(".submit-btn");
 
-export const initAddCar = () => {
-  if (!requireHost()) return;
+  // Get car ID from URL for editing
+  const urlParams = new URLSearchParams(window.location.search);
+  const carId = urlParams.get("id");
 
-  initHostSidebar();
-  setupAddCarForm();
-  setupImagePreview();
-};
+  if (carId) {
+    loadCarData(carId);
+  }
 
-const setupAddCarForm = () => {
-  const form = document.querySelector("#add-car-form");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
+  carForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    clearFormValidation("add-car-form");
-
-    const formData = new FormData(form);
+    const formData = new FormData(carForm);
     const carData = {
       name: formData.get("name"),
+      category: formData.get("category"),
       brand: formData.get("brand"),
-      type: formData.get("type"),
+      model: formData.get("model"),
       year: parseInt(formData.get("year")),
+      pricePerDay: parseFloat(formData.get("pricePerDay")),
       seats: parseInt(formData.get("seats")),
       transmission: formData.get("transmission"),
-      fuel: formData.get("fuel"),
-      pricePerDay: parseFloat(formData.get("pricePerDay")),
-      image: formData.get("image") || "/assets/images/car-placeholder.jpg",
-      features: Array.from(formData.getAll("features")),
+      fuelType: formData.get("fuelType"),
+      luggage: parseInt(formData.get("luggage")),
       description: formData.get("description"),
-      location: formData.get("location"),
+      features: formData.get("features")
+        ? formData
+            .get("features")
+            .split(",")
+            .map((f) => f.trim())
+        : [],
     };
 
-    let isValid = true;
-
-    const nameValidation = validateRequired(carData.name, "Car name");
-    if (!nameValidation.valid) {
-      showFieldError("name", nameValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("name");
+    // Validation
+    if (!carData.name || !carData.category || !carData.pricePerDay) {
+      showNotification("Please fill in all required fields", "error");
+      return;
     }
 
-    const priceValidation = validateMin(
-      carData.pricePerDay,
-      0,
-      "Price per day",
-    );
-    if (!priceValidation.valid) {
-      showFieldError("pricePerDay", priceValidation.message);
-      isValid = false;
-    } else {
-      showFieldSuccess("pricePerDay");
-    }
-
-    if (!isValid) return;
-
-    showLoader();
+    setLoadingState(true);
 
     try {
-      await carService.createCar(carData);
-      showNotification("Car added successfully!", "success");
+      const token = AuthService.getToken();
+      const url = carId
+        ? `http://localhost:8080/api/host/cars/${carId}`
+        : "http://localhost:8080/api/host/cars";
+
+      const method = carId ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(carData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to save car");
+      }
+
+      const message = carId
+        ? "Car updated successfully"
+        : "Car added successfully";
+      showNotification(message, "success");
 
       setTimeout(() => {
-        window.location.href = "/host/manage-cars";
+        window.location.href = "/host/manage-cars.html";
       }, 1500);
     } catch (error) {
-      showNotification("Failed to add car", "error");
+      console.error("Save car error:", error);
+      showNotification(error.message || "Failed to save car", "error");
+    } finally {
+      setLoadingState(false);
+    }
+  });
+
+  async function loadCarData(id) {
+    showLoader();
+    try {
+      const token = AuthService.getToken();
+      const response = await fetch(
+        `http://localhost:8080/api/host/cars/${id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load car data");
+      }
+
+      const car = await response.json();
+      populateForm(car);
+    } catch (error) {
+      console.error("Load car error:", error);
+      showNotification("Failed to load car data", "error");
     } finally {
       hideLoader();
     }
-  });
-};
+  }
 
-const setupImagePreview = () => {
-  const imageInput = document.querySelector("#carImage");
-  const preview = document.querySelector("#image-preview");
+  function populateForm(car) {
+    document.getElementById("name").value = car.name || "";
+    document.getElementById("category").value = car.category || "";
+    document.getElementById("brand").value = car.brand || "";
+    document.getElementById("model").value = car.model || "";
+    document.getElementById("year").value = car.year || "";
+    document.getElementById("pricePerDay").value = car.pricePerDay || "";
+    document.getElementById("seats").value = car.seats || "";
+    document.getElementById("transmission").value = car.transmission || "";
+    document.getElementById("fuelType").value = car.fuelType || "";
+    document.getElementById("luggage").value = car.luggage || "";
+    document.getElementById("description").value = car.description || "";
 
-  imageInput?.addEventListener("change", (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    if (car.features && Array.isArray(car.features)) {
+      document.getElementById("features").value = car.features.join(", ");
+    }
+  }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      if (preview && event.target?.result) {
-        preview.src = event.target.result;
-        preview.style.display = "block";
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-};
+  function setLoadingState(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="btn-text">Saving...</span>';
+    } else {
+      submitBtn.disabled = false;
+      const text = carId ? "Update Car" : "Add Car";
+      submitBtn.innerHTML = `<span class="btn-text">${text}</span>`;
+    }
+  }
+
+  function showLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "flex";
+  }
+
+  function hideLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "none";
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});

@@ -1,124 +1,152 @@
-// FILE: assets/js/dashboards/admin/cars.js
+// FILE: assets/js/admin/cars.js
 
-import { requireAdmin } from "../../../core/auth-guard.js";
-import { initAdminSidebar } from "../../../components/sidebar-admin.js";
-import { carService } from "../../../services/car.service.js";
-import { formatCurrency } from "../../../base/helpers.js";
-import { showLoader, hideLoader } from "../../../ui/loader.js";
-import { showNotification } from "../../../ui/notifications.js";
-import { confirmModal } from "../../../components/modal.js";
+document.addEventListener("DOMContentLoaded", async function () {
+  const carsContainer = document.getElementById("carsContainer");
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilter = document.getElementById("categoryFilter");
 
-export const initAdminCars = async () => {
-  if (!requireAdmin()) return;
-
-  initAdminSidebar();
   await loadCars();
-  setupSearch();
-};
 
-let allCars = [];
-
-const loadCars = async () => {
-  showLoader();
-
-  try {
-    allCars = await carService.getAllCars();
-    displayCars(allCars);
-  } catch (error) {
-    console.error("Failed to load cars:", error);
-  } finally {
-    hideLoader();
-  }
-};
-
-const displayCars = (cars) => {
-  const container = document.querySelector("#cars-table");
-  if (!container) return;
-
-  if (cars.length === 0) {
-    container.innerHTML = '<p class="text-center">No cars found.</p>';
-    return;
-  }
-
-  container.innerHTML = `
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Price/Day</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${cars
-          .map(
-            (car) => `
-          <tr>
-            <td><img src="${car.image}" alt="${car.name}" style="width: 60px; height: 40px; object-fit: cover;" onerror="this.src='/assets/images/car-placeholder.jpg'"></td>
-            <td>${car.name}</td>
-            <td>${car.type}</td>
-            <td>${formatCurrency(car.pricePerDay)}</td>
-            <td>
-              <span class="badge bg-${car.available ? "success" : "danger"}">
-                ${car.available ? "Available" : "Unavailable"}
-              </span>
-            </td>
-            <td>
-              <a href="/admin/edit-car?id=${car.id}" class="btn btn-sm btn-primary">Edit</a>
-              <button class="btn btn-sm btn-danger" data-delete-car="${car.id}">Delete</button>
-            </td>
-          </tr>
-        `,
-          )
-          .join("")}
-      </tbody>
-    </table>
-  `;
-
-  setupCarActions();
-};
-
-const setupCarActions = () => {
-  document.querySelectorAll("[data-delete-car]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const carId = btn.getAttribute("data-delete-car");
-
-      const confirmed = await confirmModal(
-        "Are you sure you want to delete this car?",
-      );
-      if (!confirmed) return;
-
-      showLoader();
-
-      try {
-        await carService.deleteCar(carId);
-        showNotification("Car deleted successfully", "success");
-        await loadCars();
-      } catch (error) {
-        showNotification("Failed to delete car", "error");
-      } finally {
-        hideLoader();
-      }
+  if (searchInput) {
+    let searchTimeout;
+    searchInput.addEventListener("input", function () {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => loadCars(), 500);
     });
-  });
-};
+  }
 
-const setupSearch = () => {
-  const searchInput = document.querySelector("#car-search");
+  if (categoryFilter) {
+    categoryFilter.addEventListener("change", () => loadCars());
+  }
 
-  searchInput?.addEventListener("input", (e) => {
-    const searchTerm = e.target.value.toLowerCase();
+  async function loadCars() {
+    showLoader();
 
-    const filtered = allCars.filter(
-      (car) =>
-        car.name.toLowerCase().includes(searchTerm) ||
-        car.brand.toLowerCase().includes(searchTerm) ||
-        car.type.toLowerCase().includes(searchTerm),
-    );
+    try {
+      const token = AuthService.getToken();
+      const params = new URLSearchParams();
 
-    displayCars(filtered);
-  });
-};
+      if (searchInput && searchInput.value) {
+        params.append("search", searchInput.value);
+      }
+      if (categoryFilter && categoryFilter.value) {
+        params.append("category", categoryFilter.value);
+      }
+
+      const url = `http://localhost:8080/api/admin/cars?${params.toString()}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load cars");
+      }
+
+      const cars = await response.json();
+      displayCars(cars);
+    } catch (error) {
+      console.error("Load cars error:", error);
+      showNotification("Failed to load cars", "error");
+    } finally {
+      hideLoader();
+    }
+  }
+
+  function displayCars(cars) {
+    if (!carsContainer) return;
+
+    if (!cars || cars.length === 0) {
+      carsContainer.innerHTML = '<tr><td colspan="7">No cars found</td></tr>';
+      return;
+    }
+
+    carsContainer.innerHTML = cars
+      .map(
+        (car) => `
+            <tr>
+                <td>${car.id}</td>
+                <td>${car.name}</td>
+                <td>${car.category}</td>
+                <td>${car.hostName}</td>
+                <td>₹${car.pricePerDay}</td>
+                <td><span class="badge badge-${car.status.toLowerCase()}">${car.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-danger delete-car" data-id="${car.id}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        `,
+      )
+      .join("");
+
+    attachEventListeners();
+  }
+
+  function attachEventListeners() {
+    document.querySelectorAll(".delete-car").forEach((btn) => {
+      btn.addEventListener("click", async function () {
+        const carId = this.dataset.id;
+        if (confirm("Are you sure you want to delete this car?")) {
+          await deleteCar(carId);
+        }
+      });
+    });
+  }
+
+  async function deleteCar(carId) {
+    showLoader();
+
+    try {
+      const token = AuthService.getToken();
+      const response = await fetch(
+        `http://localhost:8080/api/admin/cars/${carId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete car");
+      }
+
+      showNotification("Car deleted successfully", "success");
+      await loadCars();
+    } catch (error) {
+      console.error("Delete car error:", error);
+      showNotification("Failed to delete car", "error");
+    } finally {
+      hideLoader();
+    }
+  }
+
+  function showLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "flex";
+  }
+
+  function hideLoader() {
+    const loader = document.getElementById("pageLoader");
+    if (loader) loader.style.display = "none";
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 5000);
+  }
+});
