@@ -1,103 +1,77 @@
-// FILE: assets/js/services/user.service.js
+/**
+ * User Service - Handles user-related backend operations
+ * NO DOM manipulation - only data fetching
+ */
 
-import { storage } from "../base/storage.js";
-import { generateId } from "../base/helpers.js";
+const UserService = (() => {
+  /**
+   * Get current user profile
+   * GET /api/users/me
+   */
+  const getCurrentUserProfile = async () => {
+    try {
+      const user = await API.get("/users/me");
 
-class UserService {
-  async getAllUsers() {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+      // Update local storage with fresh user data
+      localStorage.setItem("user", JSON.stringify(user));
 
-    return storage.get("users", []);
-  }
-
-  async getUserById(id) {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    const users = storage.get("users", []);
-    const user = users.find((u) => u.id === id);
-
-    if (!user) {
-      throw new Error("User not found");
+      return { success: true, data: user };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        status: error.status,
+      };
     }
+  };
 
-    return user;
-  }
+  /**
+   * Update user profile
+   * PUT /api/users/me
+   */
+  const updateProfile = async (userData) => {
+    try {
+      const user = await API.put("/users/me", userData);
 
-  async updateUser(id, userData) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+      // Update local storage
+      localStorage.setItem("user", JSON.stringify(user));
 
-    const users = storage.get("users", []);
-    const userIndex = users.findIndex((u) => u.id === id);
-
-    if (userIndex === -1) {
-      throw new Error("User not found");
+      return { success: true, data: user };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        status: error.status,
+      };
     }
+  };
 
-    users[userIndex] = { ...users[userIndex], ...userData };
-    storage.set("users", users);
-
-    const currentUser = storage.getUser();
-    if (currentUser?.id === id) {
-      storage.setUser(users[userIndex]);
+  /**
+   * Change password
+   * PUT /api/users/me/password
+   */
+  const changePassword = async (passwordData) => {
+    try {
+      const result = await API.put("/users/me/password", passwordData);
+      return { success: true, data: result };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        status: error.status,
+      };
     }
+  };
 
-    return users[userIndex];
-  }
+  // Public API
+  return {
+    getCurrentUserProfile,
+    updateProfile,
+    changePassword,
+  };
+})();
 
-  async deleteUser(id) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const users = storage.get("users", []);
-    const filteredUsers = users.filter((u) => u.id !== id);
-
-    storage.set("users", filteredUsers);
-    return true;
-  }
-
-  async getUserStats() {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    const users = storage.get("users", []);
-
-    return {
-      total: users.length,
-      users: users.filter((u) => u.role === "user").length,
-      hosts: users.filter((u) => u.role === "host").length,
-      admins: users.filter((u) => u.role === "admin").length,
-    };
-  }
-
-  async searchUsers(searchTerm) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const users = storage.get("users", []);
-    const term = searchTerm.toLowerCase();
-
-    return users.filter(
-      (user) =>
-        user.name?.toLowerCase().includes(term) ||
-        user.email?.toLowerCase().includes(term) ||
-        user.phone?.toLowerCase().includes(term),
-    );
-  }
-
-  async getCurrentUserProfile() {
-    const user = storage.getUser();
-    if (!user) {
-      throw new Error("Not authenticated");
-    }
-
-    return this.getUserById(user.id);
-  }
-
-  async updateCurrentUserProfile(profileData) {
-    const user = storage.getUser();
-    if (!user) {
-      throw new Error("Not authenticated");
-    }
-
-    return this.updateUser(user.id, profileData);
-  }
+// Export for use in other modules
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = UserService;
 }
-
-export const userService = new UserService();

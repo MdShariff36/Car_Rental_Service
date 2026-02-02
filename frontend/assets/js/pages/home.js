@@ -1,164 +1,325 @@
-// FILE: assets/js/pages/home.js
+// Fixed home.js with improved search functionality
 
-import { carService } from "../services/car.service.js";
-import { formatCurrency } from "../base/helpers.js";
-import { storage } from "../base/storage.js";
-import { showLoader, hideLoader } from "../ui/loader.js";
-
-export const initHome = async () => {
-  await loadFeaturedCars();
-  setupSearchForm();
-  setupNewsletterForm();
+// Wait for DOM to be ready
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize all home page features
+  initSearchButton();
+  initDateValidation();
+  initCounters();
   initTestimonialSlider();
-};
+  initNewsletterForm();
+  loadPopularCars();
+});
 
-const loadFeaturedCars = async () => {
-  const container = document.querySelector("#featured-cars");
-  if (!container) return;
+/**
+ * Initialize the search cars button functionality
+ * NOW WORKS WITHOUT REQUIRING ALL FIELDS
+ */
+function initSearchButton() {
+  const searchBtn = document.getElementById("searchCarsBtn");
 
-  showLoader();
+  if (!searchBtn) {
+    console.warn("Search button not found");
+    return;
+  }
 
-  try {
-    const cars = await carService.getFeaturedCars(6);
+  searchBtn.addEventListener("click", function (e) {
+    e.preventDefault();
 
-    if (cars.length === 0) {
-      container.innerHTML =
-        '<p class="text-center">No cars available at the moment.</p>';
+    // Get search parameters from the form (all optional now)
+    const pickupCity =
+      document.getElementById("pickupCity")?.value?.trim() || "";
+    const dropCity = document.getElementById("dropCity")?.value?.trim() || "";
+    const pickupDate = document.getElementById("pickupDate")?.value || "";
+    const pickupTime = document.getElementById("pickupTime")?.value || "";
+    const dropDate = document.getElementById("dropDate")?.value || "";
+    const dropTime = document.getElementById("dropTime")?.value || "";
+
+    // Validation: Only check if dates are provided, they should be valid
+    if (pickupDate && dropDate && pickupDate > dropDate) {
+      showNotification("Drop-off date must be after pickup date", "error");
       return;
     }
 
-    container.innerHTML = cars
-      .map(
-        (car) => `
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="car-card">
-          <div class="car-image">
-            <img src="${car.image}" alt="${car.name}" onerror="this.src='/assets/images/car-placeholder.jpg'">
-            <span class="badge bg-primary">${car.type}</span>
-          </div>
-          <div class="car-details">
-            <h3 class="car-name">${car.name}</h3>
-            <div class="car-specs">
-              <span><i class="icon-seats"></i> ${car.seats} Seats</span>
-              <span><i class="icon-transmission"></i> ${car.transmission}</span>
-              <span><i class="icon-fuel"></i> ${car.fuel}</span>
-            </div>
-            <div class="car-rating">
-              <span class="stars">${"★".repeat(Math.floor(car.rating))}${"☆".repeat(5 - Math.floor(car.rating))}</span>
-              <span class="reviews">(${car.reviews} reviews)</span>
-            </div>
-            <div class="car-footer">
-              <div class="price">
-                <span class="amount">${formatCurrency(car.pricePerDay)}</span>
-                <span class="period">/day</span>
-              </div>
-              <a href="/car-details?id=${car.id}" class="btn btn-primary">View Details</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    `,
-      )
-      .join("");
-  } catch (error) {
-    container.innerHTML =
-      '<p class="text-center text-danger">Failed to load cars. Please try again.</p>';
-  } finally {
-    hideLoader();
-  }
-};
+    // Build query string with parameters (only add if they have values)
+    const params = new URLSearchParams();
 
-const setupSearchForm = () => {
-  const form = document.querySelector("#home-search-form");
-  if (!form) return;
+    if (pickupCity) params.append("pickupCity", pickupCity);
+    if (dropCity) params.append("dropCity", dropCity);
+    if (pickupDate) params.append("pickupDate", pickupDate);
+    if (pickupTime) params.append("pickupTime", pickupTime);
+    if (dropDate) params.append("dropDate", dropDate);
+    if (dropTime) params.append("dropTime", dropTime);
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+    // Navigate to cars page with search parameters
+    // THIS WILL WORK EVEN IF NO PARAMETERS ARE PROVIDED
+    const queryString = params.toString();
+    const url = queryString ? `cars.html?${queryString}` : "cars.html";
 
-    const formData = new FormData(form);
-    const searchParams = new URLSearchParams();
-
-    if (formData.get("location"))
-      searchParams.set("location", formData.get("location"));
-    if (formData.get("pickupDate"))
-      searchParams.set("pickupDate", formData.get("pickupDate"));
-    if (formData.get("returnDate"))
-      searchParams.set("returnDate", formData.get("returnDate"));
-    if (formData.get("carType"))
-      searchParams.set("type", formData.get("carType"));
-
-    window.location.href = `/cars?${searchParams.toString()}`;
+    console.log("Navigating to:", url); // Debug log
+    window.location.href = url;
   });
-};
+}
 
-const setupNewsletterForm = () => {
-  const form = document.querySelector("#newsletter-form");
-  if (!form) return;
+/**
+ * Initialize date validation
+ */
+function initDateValidation() {
+  const pickupDateInput = document.getElementById("pickupDate");
+  const dropDateInput = document.getElementById("dropDate");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  if (!pickupDateInput || !dropDateInput) return;
 
-    const emailInput = form.querySelector('input[type="email"]');
-    const button = form.querySelector('button[type="submit"]');
-    const email = emailInput?.value;
+  // Set minimum date to today
+  const today = new Date().toISOString().split("T")[0];
+  pickupDateInput.setAttribute("min", today);
+  dropDateInput.setAttribute("min", today);
 
-    if (!email) return;
+  // Update drop date minimum when pickup date changes
+  pickupDateInput.addEventListener("change", function () {
+    dropDateInput.setAttribute("min", this.value);
 
-    const originalText = button?.textContent;
-    if (button) button.textContent = "Subscribing...";
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const subscribers = storage.get("newsletter_subscribers", []);
-      if (!subscribers.includes(email)) {
-        subscribers.push(email);
-        storage.set("newsletter_subscribers", subscribers);
-      }
-
-      alert("Thank you for subscribing to our newsletter!");
-      form.reset();
-    } catch (error) {
-      alert("Failed to subscribe. Please try again.");
-    } finally {
-      if (button && originalText) {
-        button.textContent = originalText;
-      }
+    // If drop date is before pickup date, reset it
+    if (dropDateInput.value && dropDateInput.value < this.value) {
+      dropDateInput.value = this.value;
     }
   });
-};
+}
 
-const initTestimonialSlider = () => {
-  const slider = document.querySelector(".testimonial-slider");
-  if (!slider) return;
+/**
+ * Initialize counter animations
+ */
+function initCounters() {
+  const counters = document.querySelectorAll(".counter");
 
-  const slides = slider.querySelectorAll(".testimonial-slide");
-  const prevBtn = document.querySelector("[data-testimonial-prev]");
-  const nextBtn = document.querySelector("[data-testimonial-next]");
+  counters.forEach((counter) => {
+    const target = counter.getAttribute("data-target");
+    const isRating = target.includes("/");
 
-  let currentSlide = 0;
+    if (isRating) {
+      counter.textContent = target;
+      return;
+    }
 
-  const showSlide = (index) => {
-    slides.forEach((slide, i) => {
-      slide.classList.toggle("active", i === index);
+    const targetNum = parseInt(target);
+    const duration = 2000;
+    const increment = targetNum / (duration / 16);
+    let current = 0;
+
+    const updateCounter = () => {
+      current += increment;
+      if (current < targetNum) {
+        counter.textContent = Math.floor(current).toLocaleString();
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.textContent = targetNum.toLocaleString();
+      }
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          updateCounter();
+          observer.unobserve(entry.target);
+        }
+      });
     });
-  };
 
-  prevBtn?.addEventListener("click", () => {
-    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-    showSlide(currentSlide);
+    observer.observe(counter);
   });
+}
 
-  nextBtn?.addEventListener("click", () => {
-    currentSlide = (currentSlide + 1) % slides.length;
-    showSlide(currentSlide);
-  });
+/**
+ * Initialize testimonial slider
+ */
+function initTestimonialSlider() {
+  const prevBtn = document.getElementById("prevTestimonial");
+  const nextBtn = document.getElementById("nextTestimonial");
+  const testimonials = document.querySelectorAll(".testimonial-card");
 
-  if (slides.length > 0) {
-    showSlide(0);
-    setInterval(() => {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
-    }, 5000);
+  if (!testimonials || testimonials.length === 0) return;
+
+  let currentIndex = 0;
+  const totalTestimonials = testimonials.length;
+
+  function updateSlider() {
+    testimonials.forEach((card, index) => {
+      card.classList.remove("active");
+      if (index === currentIndex) {
+        card.classList.add("active");
+      }
+    });
   }
-};
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      currentIndex = (currentIndex - 1 + totalTestimonials) % totalTestimonials;
+      updateSlider();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      currentIndex = (currentIndex + 1) % totalTestimonials;
+      updateSlider();
+    });
+  }
+
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % totalTestimonials;
+    updateSlider();
+  }, 5000);
+
+  updateSlider();
+}
+
+/**
+ * Newsletter form
+ */
+function initNewsletterForm() {
+  const form = document.getElementById("newsletterForm");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const emailInput = document.getElementById("newsletterEmail");
+    const email = emailInput?.value;
+
+    if (!email || !isValidEmail(email)) {
+      showNotification("Please enter a valid email address", "error");
+      return;
+    }
+
+    showNotification("Thank you for subscribing!", "success");
+    form.reset();
+  });
+}
+
+/**
+ * Load popular cars
+ */
+async function loadPopularCars() {
+  const grid = document.getElementById("popularCarsGrid");
+  const loader = document.getElementById("carsSkeletonLoader");
+
+  if (!grid) return;
+
+  if (loader) loader.style.display = "grid";
+  if (grid) grid.style.display = "none";
+
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const popularCars = [
+      {
+        id: 1,
+        name: "Hyundai Creta",
+        type: "SUV",
+        image: "assets/images/car-images/Hyundai Creta/Hyundai Creta.jfif",
+        pricePerDay: 2500,
+        transmission: "Automatic",
+        fuel: "Diesel",
+        seats: 5,
+      },
+      {
+        id: 2,
+        name: "Maruti Swift",
+        type: "Hatchback",
+        image: "assets/images/cars/swift.jpg",
+        pricePerDay: 1200,
+        transmission: "Manual",
+        fuel: "Petrol",
+        seats: 5,
+      },
+      {
+        id: 3,
+        name: "Honda City",
+        type: "Sedan",
+        image: "assets/images/cars/city.jpg",
+        pricePerDay: 1800,
+        transmission: "Automatic",
+        fuel: "Petrol",
+        seats: 5,
+      },
+    ];
+
+    grid.innerHTML = popularCars
+      .map(
+        (car) => `
+            <div class="car-card">
+                <div class="car-card-image">
+                    <img src="${car.image}" alt="${car.name}" onerror="this.src='assets/images/car-placeholder.jpg'">
+                </div>
+                <div class="car-card-content">
+                    <div class="car-card-header">
+                        <h3>${car.name}</h3>
+                        <span class="car-type">${car.type}</span>
+                    </div>
+                    <div class="car-specs">
+                        <span>⚙️ ${car.transmission}</span>
+                        <span>⛽ ${car.fuel}</span>
+                        <span>👥 ${car.seats} Seats</span>
+                    </div>
+                    <div class="car-card-footer">
+                        <div class="price">
+                            <span class="amount">₹${car.pricePerDay.toLocaleString()}</span>
+                            <span class="period">/day</span>
+                        </div>
+                        <a href="car-details.html?id=${car.id}" class="btn btn-primary btn-sm">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `,
+      )
+      .join("");
+
+    if (loader) loader.style.display = "none";
+    if (grid) grid.style.display = "grid";
+  } catch (error) {
+    console.error("Failed to load cars:", error);
+    if (grid) {
+      grid.innerHTML = '<p class="error-message">Failed to load cars.</p>';
+      grid.style.display = "block";
+    }
+    if (loader) loader.style.display = "none";
+  }
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function showNotification(message, type = "info") {
+  const container =
+    document.getElementById("notification-container") ||
+    createNotificationContainer();
+
+  const notification = document.createElement("div");
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-icon">${type === "success" ? "✓" : type === "error" ? "✕" : "ℹ"}</span>
+            <span class="notification-message">${message}</span>
+        </div>
+    `;
+
+  container.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.animation = "slideOut 0.3s";
+    setTimeout(() => notification.remove(), 300);
+  }, 4000);
+}
+
+function createNotificationContainer() {
+  const container = document.createElement("div");
+  container.id = "notification-container";
+  container.className = "notification-container";
+  document.body.appendChild(container);
+  return container;
+}

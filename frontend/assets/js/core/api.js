@@ -1,88 +1,123 @@
-// FILE: assets/js/core/api.js
+/**
+ * Core API Module - Centralized HTTP client for backend communication
+ * Base URL: http://localhost:8080/api
+ */
 
-import { CONFIG } from "../base/config.js";
-import { storage } from "../base/storage.js";
-import { sleep } from "../base/helpers.js";
+const API = (() => {
+  const BASE_URL = "http://localhost:8080/api";
 
-class API {
-  constructor() {
-    this.baseURL = CONFIG.API.BASE_URL;
-    this.timeout = CONFIG.API.TIMEOUT;
-  }
+  /**
+   * Get auth token from localStorage
+   */
+  const getToken = () => {
+    return localStorage.getItem("authToken");
+  };
 
-  async _fakeRequest(endpoint, options = {}) {
-    await sleep(500 + Math.random() * 500);
+  /**
+   * Set auth token in localStorage
+   */
+  const setToken = (token) => {
+    if (token) {
+      localStorage.setItem("authToken", token);
+    } else {
+      localStorage.removeItem("authToken");
+    }
+  };
 
-    const token = storage.getToken();
-    if (options.requireAuth && !token) {
-      throw new Error("Unauthorized");
+  /**
+   * Core request handler with error handling
+   */
+  const request = async (endpoint, options = {}) => {
+    const url = `${BASE_URL}${endpoint}`;
+
+    const config = {
+      method: options.method || "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    };
+
+    // Add auth token if available
+    const token = getToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
 
-    return {
-      success: true,
-      data: options.mockData || {},
-      message: options.message || "Success",
-    };
-  }
+    // Add body for POST/PUT requests
+    if (options.body) {
+      config.body = JSON.stringify(options.body);
+    }
 
-  async request(endpoint, options = {}) {
     try {
-      const {
-        method = "GET",
-        data = null,
-        headers = {},
-        requireAuth = true,
-        mockData = null,
-        message = "Success",
-      } = options;
+      const response = await fetch(url, config);
 
-      const token = storage.getToken();
-      if (requireAuth && !token) {
-        throw new Error("Unauthorized");
+      // Handle non-JSON responses
+      const contentType = response.headers.get("content-type");
+      let data;
+
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        data = await response.text();
       }
 
-      return await this._fakeRequest(endpoint, {
-        method,
-        data,
-        headers,
-        requireAuth,
-        mockData,
-        message,
-      });
+      // Handle error responses
+      if (!response.ok) {
+        throw {
+          status: response.status,
+          message: data.message || data || "Request failed",
+          data: data,
+        };
+      }
+
+      return data;
     } catch (error) {
-      console.error("API Request Error:", error);
+      // Network errors or JSON parse errors
+      if (!error.status) {
+        throw {
+          status: 0,
+          message: "Network error. Please check your connection.",
+          data: null,
+        };
+      }
       throw error;
     }
-  }
+  };
 
-  async get(endpoint, options = {}) {
-    return this.request(endpoint, { ...options, method: "GET" });
-  }
+  /**
+   * Public methods
+   */
+  return {
+    // HTTP methods
+    get: (endpoint, options = {}) =>
+      request(endpoint, { ...options, method: "GET" }),
 
-  async post(endpoint, data, options = {}) {
-    return this.request(endpoint, { ...options, method: "POST", data });
-  }
+    post: (endpoint, body, options = {}) =>
+      request(endpoint, { ...options, method: "POST", body }),
 
-  async put(endpoint, data, options = {}) {
-    return this.request(endpoint, { ...options, method: "PUT", data });
-  }
+    put: (endpoint, body, options = {}) =>
+      request(endpoint, { ...options, method: "PUT", body }),
 
-  async patch(endpoint, data, options = {}) {
-    return this.request(endpoint, { ...options, method: "PATCH", data });
-  }
+    delete: (endpoint, options = {}) =>
+      request(endpoint, { ...options, method: "DELETE" }),
 
-  async delete(endpoint, options = {}) {
-    return this.request(endpoint, { ...options, method: "DELETE" });
-  }
+    // Auth helpers
+    getToken,
+    setToken,
 
-  upload(endpoint, formData, options = {}) {
-    return this.request(endpoint, {
-      ...options,
-      method: "POST",
-      data: formData,
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-  }
+    // Check if user is authenticated
+    isAuthenticated: () => !!getToken(),
+
+    // Clear authentication
+    clearAuth: () => {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+    },
+  };
+})();
+
+// Export for use in other modules
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = API;
 }
-
-export const api = new API();

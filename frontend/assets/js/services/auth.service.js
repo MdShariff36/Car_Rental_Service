@@ -1,145 +1,95 @@
-// FILE: assets/js/services/auth.service.js
+/**
+ * Auth Service - Handles all authentication-related backend operations
+ * NO DOM manipulation - only data fetching
+ */
 
-import { api } from "../core/api.js";
-import { storage } from "../base/storage.js";
-import { generateId } from "../base/helpers.js";
-import { CONFIG } from "../base/config.js";
+const AuthService = (() => {
+  /**
+   * User login
+   * POST /api/auth/login
+   */
+  const login = async (credentials) => {
+    try {
+      const response = await API.post("/auth/login", credentials);
 
-class AuthService {
-  async login(credentials) {
-    const users = storage.get("users", []);
+      // Store token and user data
+      if (response.token) {
+        API.setToken(response.token);
+      }
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
 
-    const user = users.find(
-      (u) =>
-        u.email === credentials.email && u.password === credentials.password,
-    );
-
-    if (!user) {
-      throw new Error("Invalid email or password");
-    }
-
-    const token = generateId();
-    const userData = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      phone: user.phone,
-    };
-
-    storage.setToken(token);
-    storage.setUser(userData);
-
-    return { token, user: userData };
-  }
-
-  async register(userData) {
-    const users = storage.get("users", []);
-
-    const existingUser = users.find((u) => u.email === userData.email);
-    if (existingUser) {
-      throw new Error("Email already registered");
-    }
-
-    const newUser = {
-      id: generateId(),
-      ...userData,
-      role: userData.role || CONFIG.AUTH.ROLES.USER,
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(newUser);
-    storage.set("users", users);
-
-    return newUser;
-  }
-
-  async adminLogin(credentials) {
-    const adminEmail = "admin@carrental.com";
-    const adminPassword = "Admin@123";
-
-    if (
-      credentials.email === adminEmail &&
-      credentials.password === adminPassword
-    ) {
-      const token = generateId();
-      const userData = {
-        id: "admin-1",
-        name: "Admin",
-        email: adminEmail,
-        role: CONFIG.AUTH.ROLES.ADMIN,
+      return { success: true, data: response };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        status: error.status,
       };
-
-      storage.setToken(token);
-      storage.setUser(userData);
-
-      return { token, user: userData };
     }
+  };
 
-    throw new Error("Invalid admin credentials");
-  }
+  /**
+   * User registration
+   * POST /api/auth/register
+   */
+  const register = async (userData) => {
+    try {
+      const response = await API.post("/auth/register", userData);
 
-  logout() {
-    storage.removeToken();
-    storage.removeUser();
-    storage.removeCart();
-  }
+      // Store token and user data if auto-login after registration
+      if (response.token) {
+        API.setToken(response.token);
+      }
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
 
-  getCurrentUser() {
-    return storage.getUser();
-  }
-
-  isAuthenticated() {
-    return !!(storage.getToken() && storage.getUser());
-  }
-
-  async updateProfile(profileData) {
-    const user = storage.getUser();
-    if (!user) throw new Error("Not authenticated");
-
-    const users = storage.get("users", []);
-    const userIndex = users.findIndex((u) => u.id === user.id);
-
-    if (userIndex !== -1) {
-      users[userIndex] = { ...users[userIndex], ...profileData };
-      storage.set("users", users);
-
-      const updatedUser = { ...user, ...profileData };
-      storage.setUser(updatedUser);
-
-      return updatedUser;
+      return { success: true, data: response };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        status: error.status,
+      };
     }
+  };
 
-    throw new Error("User not found");
-  }
+  /**
+   * User logout (local only - clear storage)
+   */
+  const logout = () => {
+    API.clearAuth();
+    return { success: true };
+  };
 
-  async changePassword(oldPassword, newPassword) {
-    const user = storage.getUser();
-    if (!user) throw new Error("Not authenticated");
+  /**
+   * Check if user is authenticated
+   */
+  const isAuthenticated = () => {
+    return API.isAuthenticated();
+  };
 
-    const users = storage.get("users", []);
-    const userIndex = users.findIndex((u) => u.id === user.id);
+  /**
+   * Get current user from localStorage
+   */
+  const getCurrentUser = () => {
+    const userStr = localStorage.getItem("user");
+    return userStr ? JSON.parse(userStr) : null;
+  };
 
-    if (userIndex !== -1 && users[userIndex].password === oldPassword) {
-      users[userIndex].password = newPassword;
-      storage.set("users", users);
-      return true;
-    }
+  // Public API
+  return {
+    login,
+    register,
+    logout,
+    isAuthenticated,
+    getCurrentUser,
+  };
+})();
 
-    throw new Error("Invalid old password");
-  }
-
-  async resetPassword(email) {
-    const users = storage.get("users", []);
-    const user = users.find((u) => u.email === email);
-
-    if (!user) {
-      throw new Error("Email not found");
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return { message: "Password reset link sent to your email" };
-  }
+// Export for use in other modules
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = AuthService;
 }
-
-export const authService = new AuthService();

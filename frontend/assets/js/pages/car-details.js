@@ -1,224 +1,196 @@
-// FILE: assets/js/pages/car-details.js
+/**
+ * Car Details Page (car-details.html)
+ * REQUIRES BACKEND: GET /api/cars/{id}
+ * Displays detailed information for a specific car
+ */
 
-import { carService } from "../services/car.service.js";
-import {
-  formatCurrency,
-  getQueryParams,
-  calculateDaysBetween,
-} from "../base/helpers.js";
-import { storage } from "../base/storage.js";
-import { isAuthenticated } from "../core/auth-guard.js";
-import { showLoader, hideLoader } from "../ui/loader.js";
-import { showNotification } from "../ui/notifications.js";
+(() => {
+  "use strict";
 
-export const initCarDetails = async () => {
-  const params = getQueryParams();
-  const carId = params.id;
+  let currentCar = null;
 
-  if (!carId) {
-    showNotification("Invalid car ID", "error");
-    window.location.href = "/cars";
-    return;
-  }
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Car details page loaded - fetching car data from backend...");
 
-  await loadCarDetails(carId);
-  setupBookingForm(carId);
-  setupWishlistButton(carId);
-  initImageGallery();
-};
+    // Get car ID from URL
+    const carId = getCarIdFromURL();
 
-const loadCarDetails = async (carId) => {
-  showLoader();
-
-  try {
-    const car = await carService.getCarById(carId);
-    displayCarDetails(car);
-  } catch (error) {
-    showNotification("Failed to load car details", "error");
-    window.location.href = "/cars";
-  } finally {
-    hideLoader();
-  }
-};
-
-const displayCarDetails = (car) => {
-  const nameEl = document.querySelector("#car-name");
-  const imageEl = document.querySelector("#car-main-image");
-  const priceEl = document.querySelector("#car-price");
-  const ratingEl = document.querySelector("#car-rating");
-  const specsEl = document.querySelector("#car-specs");
-  const featuresEl = document.querySelector("#car-features");
-  const descEl = document.querySelector("#car-description");
-
-  if (nameEl) nameEl.textContent = car.name;
-  if (imageEl) imageEl.src = car.image;
-  if (priceEl)
-    priceEl.innerHTML = `${formatCurrency(car.pricePerDay)} <span>/day</span>`;
-
-  if (ratingEl) {
-    ratingEl.innerHTML = `
-      <span class="stars">${"★".repeat(Math.floor(car.rating))}${"☆".repeat(5 - Math.floor(car.rating))}</span>
-      <span class="reviews">(${car.reviews} reviews)</span>
-    `;
-  }
-
-  if (specsEl) {
-    specsEl.innerHTML = `
-      <div class="spec-item">
-        <span class="label">Type:</span>
-        <span class="value">${car.type}</span>
-      </div>
-      <div class="spec-item">
-        <span class="label">Seats:</span>
-        <span class="value">${car.seats}</span>
-      </div>
-      <div class="spec-item">
-        <span class="label">Transmission:</span>
-        <span class="value">${car.transmission}</span>
-      </div>
-      <div class="spec-item">
-        <span class="label">Fuel:</span>
-        <span class="value">${car.fuel}</span>
-      </div>
-      <div class="spec-item">
-        <span class="label">Year:</span>
-        <span class="value">${car.year}</span>
-      </div>
-    `;
-  }
-
-  if (featuresEl && car.features) {
-    featuresEl.innerHTML = car.features
-      .map(
-        (f) => `
-      <span class="feature-badge">${f}</span>
-    `,
-      )
-      .join("");
-  }
-
-  if (descEl) descEl.textContent = car.description;
-};
-
-const setupBookingForm = (carId) => {
-  const form = document.querySelector("#booking-form");
-  if (!form) return;
-
-  const startDateInput = form.querySelector("#startDate");
-  const endDateInput = form.querySelector("#endDate");
-  const totalDaysEl = document.querySelector("#total-days");
-  const totalAmountEl = document.querySelector("#total-amount");
-
-  const today = new Date().toISOString().split("T")[0];
-  if (startDateInput) startDateInput.min = today;
-  if (endDateInput) endDateInput.min = today;
-
-  const updateTotal = async () => {
-    const startDate = startDateInput?.value;
-    const endDate = endDateInput?.value;
-
-    if (!startDate || !endDate) return;
-
-    try {
-      const car = await carService.getCarById(carId);
-      const days = calculateDaysBetween(startDate, endDate);
-      const total = days * car.pricePerDay;
-
-      if (totalDaysEl) totalDaysEl.textContent = days;
-      if (totalAmountEl) totalAmountEl.textContent = formatCurrency(total);
-    } catch (error) {
-      console.error("Failed to calculate total:", error);
-    }
-  };
-
-  startDateInput?.addEventListener("change", () => {
-    if (endDateInput) endDateInput.min = startDateInput.value;
-    updateTotal();
-  });
-
-  endDateInput?.addEventListener("change", updateTotal);
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!isAuthenticated()) {
-      showNotification("Please login to book a car", "warning");
-      window.location.href = "/login";
+    if (!carId) {
+      showError("Invalid car ID");
       return;
     }
 
-    const formData = new FormData(form);
-    const startDate = formData.get("startDate");
-    const endDate = formData.get("endDate");
-
-    if (!startDate || !endDate) {
-      showNotification("Please select booking dates", "error");
-      return;
-    }
-
-    try {
-      const car = await carService.getCarById(carId);
-      const days = calculateDaysBetween(startDate, endDate);
-      const total = days * car.pricePerDay;
-
-      const bookingData = {
-        carId,
-        car,
-        startDate,
-        endDate,
-        totalDays: days,
-        pricePerDay: car.pricePerDay,
-        totalAmount: total,
-        pickupLocation: formData.get("pickupLocation"),
-        dropoffLocation: formData.get("dropoffLocation"),
-      };
-
-      storage.set("pending_booking", bookingData);
-      window.location.href = "/booking";
-    } catch (error) {
-      showNotification("Failed to process booking", "error");
-    }
+    // Load car details from backend
+    await loadCarDetails(carId);
   });
-};
 
-const setupWishlistButton = (carId) => {
-  const btn = document.querySelector("#wishlist-btn");
-  if (!btn) return;
-
-  const wishlist = storage.getWishlist();
-  if (wishlist.includes(carId)) {
-    btn.classList.add("active");
-    btn.innerHTML = '<i class="icon-heart-filled"></i> Remove from Wishlist';
+  /**
+   * Get car ID from URL parameters
+   */
+  function getCarIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("id");
   }
 
-  btn.addEventListener("click", () => {
-    if (btn.classList.contains("active")) {
-      storage.removeFromWishlist(carId);
-      btn.classList.remove("active");
-      btn.innerHTML = '<i class="icon-heart"></i> Add to Wishlist';
-      showNotification("Removed from wishlist", "success");
-    } else {
-      storage.addToWishlist(carId);
-      btn.classList.add("active");
-      btn.innerHTML = '<i class="icon-heart-filled"></i> Remove from Wishlist';
-      showNotification("Added to wishlist", "success");
-    }
-  });
-};
+  /**
+   * Load car details from backend
+   * BACKEND CALL: GET /api/cars/{id}
+   */
+  async function loadCarDetails(carId) {
+    const container = document.getElementById("carDetailsContainer");
+    const loadingElement = document.getElementById("loadingSpinner");
+    const errorElement = document.getElementById("errorMessage");
 
-const initImageGallery = () => {
-  const thumbnails = document.querySelectorAll(".gallery-thumbnail");
-  const mainImage = document.querySelector("#car-main-image");
+    // Show loading state
+    if (loadingElement) loadingElement.style.display = "block";
+    if (errorElement) errorElement.style.display = "none";
 
-  thumbnails.forEach((thumb) => {
-    thumb.addEventListener("click", () => {
-      const src = thumb.getAttribute("data-image");
-      if (mainImage && src) {
-        mainImage.src = src;
+    try {
+      // BACKEND REQUEST: Get car by ID
+      const result = await CarService.getCarById(carId);
+
+      if (result.success) {
+        currentCar = result.data;
+        console.log("Loaded car details from backend:", currentCar);
+
+        // Render car details
+        renderCarDetails(currentCar);
+      } else {
+        throw new Error(result.error);
       }
+    } catch (error) {
+      console.error("Failed to load car details:", error);
+      showError(
+        "Failed to load car details. The car may not exist or there was a connection error.",
+      );
+    } finally {
+      // Hide loading state
+      if (loadingElement) loadingElement.style.display = "none";
+    }
+  }
 
-      thumbnails.forEach((t) => t.classList.remove("active"));
-      thumb.classList.add("active");
-    });
-  });
-};
+  /**
+   * Render car details to the DOM
+   */
+  function renderCarDetails(car) {
+    const container = document.getElementById("carDetailsContainer");
+    if (!container) return;
+
+    // Update page title
+    document.title = `${car.name} - Car Rental`;
+
+    // Render the car details
+    container.innerHTML = `
+      <div class="car-details-wrapper">
+        <div class="car-gallery">
+          <div class="main-image">
+            <img src="${car.imageUrl || "assets/images/car-placeholder.jpg"}" alt="${car.name}">
+          </div>
+          ${car.gallery ? renderGallery(car.gallery) : ""}
+        </div>
+        
+        <div class="car-info">
+          <div class="car-header">
+            <h1 class="car-title">${car.name}</h1>
+            <div class="car-meta">
+              <span class="car-type">${car.type || "Sedan"}</span>
+              ${car.featured ? '<span class="badge-featured">Featured</span>' : ""}
+            </div>
+          </div>
+
+          <div class="car-price-section">
+            <div class="price">
+              <span class="amount">$${car.pricePerDay || 0}</span>
+              <span class="unit">/day</span>
+            </div>
+            ${car.rating ? `<div class="rating"><span class="stars">${"★".repeat(car.rating)}${"☆".repeat(5 - car.rating)}</span></div>` : ""}
+          </div>
+
+          <div class="car-specifications">
+            <h3>Specifications</h3>
+            <ul class="specs-list">
+              <li><strong>Seats:</strong> ${car.seats || 5}</li>
+              <li><strong>Transmission:</strong> ${car.transmission || "Automatic"}</li>
+              <li><strong>Fuel Type:</strong> ${car.fuelType || "Petrol"}</li>
+              ${car.engineSize ? `<li><strong>Engine:</strong> ${car.engineSize}</li>` : ""}
+              ${car.mileage ? `<li><strong>Mileage:</strong> ${car.mileage} km/l</li>` : ""}
+              ${car.year ? `<li><strong>Year:</strong> ${car.year}</li>` : ""}
+            </ul>
+          </div>
+
+          ${
+            car.description
+              ? `
+            <div class="car-description">
+              <h3>Description</h3>
+              <p>${car.description}</p>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            car.features && car.features.length > 0
+              ? `
+            <div class="car-features">
+              <h3>Features</h3>
+              <ul class="features-list">
+                ${car.features.map((feature) => `<li><i class="icon-check"></i> ${feature}</li>`).join("")}
+              </ul>
+            </div>
+          `
+              : ""
+          }
+
+          <div class="action-buttons">
+            <a href="booking.html?carId=${car.id}" class="btn btn-primary btn-book">Book Now</a>
+            <a href="cars.html" class="btn btn-secondary">Back to Cars</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render image gallery
+   */
+  function renderGallery(images) {
+    if (!images || images.length === 0) return "";
+
+    return `
+      <div class="thumbnail-gallery">
+        ${images
+          .map(
+            (img) => `
+          <img src="${img}" alt="Car image" class="thumbnail">
+        `,
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
+  /**
+   * Show error message
+   */
+  function showError(message) {
+    const errorElement = document.getElementById("errorMessage");
+    const container = document.getElementById("carDetailsContainer");
+
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.style.display = "block";
+    }
+
+    if (container) {
+      container.innerHTML = `
+        <div class="error-state">
+          <h2>Car Not Found</h2>
+          <p>${message}</p>
+          <a href="cars.html" class="btn btn-primary">View All Cars</a>
+        </div>
+      `;
+    }
+  }
+})();

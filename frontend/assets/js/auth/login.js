@@ -1,216 +1,168 @@
-// Login Form JavaScript
+/**
+ * Login Page (login.html)
+ * REQUIRES BACKEND: POST /api/auth/login
+ * Handles user authentication
+ */
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Get elements
-  const loginForm = document.getElementById("loginForm");
-  const passwordInput = document.getElementById("password");
-  const togglePasswordBtn = document.getElementById("togglePassword");
-  const emailInput = document.getElementById("email");
+(() => {
+  "use strict";
 
-  // Toggle password visibility
-  if (togglePasswordBtn) {
-    togglePasswordBtn.addEventListener("click", function () {
-      const type =
-        passwordInput.getAttribute("type") === "password" ? "text" : "password";
-      passwordInput.setAttribute("type", type);
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Login page loaded");
 
-      // Toggle eye icons
-      const eyeOpen = this.querySelector(".eye-open");
-      const eyeClosed = this.querySelector(".eye-closed");
-
-      if (type === "password") {
-        eyeOpen.style.display = "block";
-        eyeClosed.style.display = "none";
-      } else {
-        eyeOpen.style.display = "none";
-        eyeClosed.style.display = "block";
-      }
-    });
-  }
-
-  // Form validation and submission
-  if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      // Basic validation
-      if (!email || !password) {
-        showNotification("Please fill in all fields", "error");
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        showNotification("Please enter a valid email address", "error");
-        emailInput.focus();
-        return;
-      }
-
-      // Show loading state
-      const submitBtn = loginForm.querySelector(".submit-btn");
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span class="btn-text">Signing in...</span>';
-      submitBtn.disabled = true;
-
-      // Simulate API call (replace with actual API call)
-      setTimeout(() => {
-        // Success
-        showNotification("Login successful! Redirecting...", "success");
-
-        // Redirect after a short delay
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1500);
-      }, 1500);
-    });
-  }
-
-  // Input focus animations
-  const inputs = document.querySelectorAll(".form-input");
-  inputs.forEach((input) => {
-    input.addEventListener("focus", function () {
-      this.parentElement.classList.add("focused");
-    });
-
-    input.addEventListener("blur", function () {
-      this.parentElement.classList.remove("focused");
-    });
-  });
-
-  // Email validation helper
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  // Notification helper
-  function showNotification(message, type = "info") {
-    // Create notification element
-    const notification = document.createElement("div");
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-            <div class="notification-content">
-                <span class="notification-icon">${type === "success" ? "✓" : type === "error" ? "✕" : "ℹ"}</span>
-                <span class="notification-message">${message}</span>
-            </div>
-        `;
-
-    // Add styles if not already added
-    if (!document.querySelector("#notification-styles")) {
-      const style = document.createElement("style");
-      style.id = "notification-styles";
-      style.textContent = `
-                .notification {
-                    position: fixed;
-                    top: 2rem;
-                    right: 2rem;
-                    background: white;
-                    padding: 1rem 1.5rem;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                    z-index: 10000;
-                    animation: slideInRight 0.3s ease-out;
-                }
-
-                .notification-success {
-                    border-left: 4px solid #10B981;
-                }
-
-                .notification-error {
-                    border-left: 4px solid #EF4444;
-                }
-
-                .notification-info {
-                    border-left: 4px solid #0066FF;
-                }
-
-                .notification-content {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                }
-
-                .notification-icon {
-                    width: 24px;
-                    height: 24px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 50%;
-                    font-weight: bold;
-                    font-size: 14px;
-                }
-
-                .notification-success .notification-icon {
-                    background: #D1FAE5;
-                    color: #10B981;
-                }
-
-                .notification-error .notification-icon {
-                    background: #FEE2E2;
-                    color: #EF4444;
-                }
-
-                .notification-info .notification-icon {
-                    background: #DBEAFE;
-                    color: #0066FF;
-                }
-
-                .notification-message {
-                    color: #0F172A;
-                    font-weight: 500;
-                }
-
-                @keyframes slideInRight {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-
-                @keyframes slideOutRight {
-                    from {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                    to {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                }
-            `;
-      document.head.appendChild(style);
+    // Check if already logged in
+    if (AuthService.isAuthenticated()) {
+      redirectAfterLogin();
+      return;
     }
 
-    // Add to document
-    document.body.appendChild(notification);
+    // Initialize login form
+    initializeLoginForm();
+  });
 
-    // Remove after 4 seconds
-    setTimeout(() => {
-      notification.style.animation = "slideOutRight 0.3s ease-out";
-      setTimeout(() => {
-        notification.remove();
-      }, 300);
-    }, 4000);
+  /**
+   * Initialize login form
+   */
+  function initializeLoginForm() {
+    const loginForm = document.getElementById("loginForm");
+    if (!loginForm) return;
+
+    loginForm.addEventListener("submit", handleLoginSubmit);
+
+    // Toggle password visibility
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    if (togglePassword && passwordInput) {
+      togglePassword.addEventListener("click", () => {
+        const type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+        togglePassword.classList.toggle("show");
+      });
+    }
   }
 
-  // Social login buttons (placeholder functionality)
-  const socialBtns = document.querySelectorAll(".social-btn");
-  socialBtns.forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const provider = this.classList.contains("google-btn")
-        ? "Google"
-        : "Apple";
-      showNotification(`${provider} login coming soon!`, "info");
-    });
-  });
-});
+  /**
+   * Handle login form submission
+   * BACKEND CALL: POST /api/auth/login
+   */
+  async function handleLoginSubmit(e) {
+    e.preventDefault();
+
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+
+    // Get form data
+    const formData = new FormData(e.target);
+    const credentials = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+
+    // Basic validation
+    if (!credentials.email || !credentials.password) {
+      showNotification("Please enter both email and password", "error");
+      return;
+    }
+
+    // Show loading state
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="spinner"></span> Signing in...';
+
+    // Clear previous errors
+    clearErrors();
+
+    try {
+      // BACKEND REQUEST: Login
+      const result = await AuthService.login(credentials);
+
+      if (result.success) {
+        console.log("Login successful");
+
+        // Show success message
+        showNotification("Login successful! Redirecting...", "success");
+
+        // Redirect after short delay
+        setTimeout(() => {
+          redirectAfterLogin();
+        }, 1000);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      // Show error message
+      const errorMessage = error.message || "Invalid email or password";
+      showNotification(errorMessage, "error");
+
+      // Show field-specific errors
+      if (error.status === 401) {
+        showFieldError("password", "Invalid credentials");
+      }
+
+      // Restore button
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalButtonText;
+    }
+  }
+
+  /**
+   * Redirect after successful login
+   */
+  function redirectAfterLogin() {
+    // Check for redirect parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectURL = urlParams.get("redirect");
+
+    if (redirectURL) {
+      window.location.href = decodeURIComponent(redirectURL);
+    } else {
+      window.location.href = "index.html";
+    }
+  }
+
+  /**
+   * Show notification message
+   */
+  function showNotification(message, type = "info") {
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => notification.classList.add("show"), 100);
+
+    setTimeout(() => {
+      notification.classList.remove("show");
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
+  }
+
+  /**
+   * Show field-specific error
+   */
+  function showFieldError(fieldName, message) {
+    const field = document.getElementById(fieldName);
+    if (!field) return;
+
+    const errorElement = document.createElement("span");
+    errorElement.className = "field-error";
+    errorElement.textContent = message;
+
+    field.parentElement.appendChild(errorElement);
+    field.classList.add("error");
+  }
+
+  /**
+   * Clear all error messages
+   */
+  function clearErrors() {
+    document.querySelectorAll(".field-error").forEach((el) => el.remove());
+    document
+      .querySelectorAll(".error")
+      .forEach((el) => el.classList.remove("error"));
+  }
+})();

@@ -1,113 +1,236 @@
-//javascript
-// FILE: assets/js/pages/booking.js
+/**
+ * Booking Page (booking.html)
+ * REQUIRES BACKEND: POST /api/bookings
+ * Handles car rental booking submissions
+ */
 
-import { bookingService } from "../services/booking.service.js";
-import { formatCurrency, formatDate } from "../base/helpers.js";
-import { storage } from "../base/storage.js";
-import { requireAuth } from "../core/auth-guard.js";
-import { showLoader, hideLoader } from "../ui/loader.js";
-import { showNotification } from "../ui/notifications.js";
+(() => {
+  "use strict";
 
-export const initBooking = () => {
-  if (!requireAuth()) return;
+  let selectedCar = null;
 
-  const bookingData = storage.get("pending_booking");
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Booking page loaded");
 
-  if (!bookingData) {
-    showNotification("No booking data found", "error");
-    window.location.href = "/cars";
-    return;
+    // Check authentication
+    if (!AuthService.isAuthenticated()) {
+      redirectToLogin();
+      return;
+    }
+
+    // Get car ID from URL if provided
+    const carId = getCarIdFromURL();
+    if (carId) {
+      await loadCarForBooking(carId);
+    }
+
+    // Initialize booking form
+    initializeBookingForm();
+  });
+
+  /**
+   * Redirect to login page
+   */
+  function redirectToLogin() {
+    const currentURL = encodeURIComponent(window.location.href);
+    window.location.href = `login.html?redirect=${currentURL}`;
   }
 
-  displayBookingSummary(bookingData);
-  setupBookingForm(bookingData);
-};
+  /**
+   * Get car ID from URL parameters
+   */
+  function getCarIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("carId");
+  }
 
-const displayBookingSummary = (bookingData) => {
-  const summaryEl = document.querySelector("#booking-summary");
-  if (!summaryEl) return;
+  /**
+   * Load car details for booking
+   * BACKEND CALL: GET /api/cars/{id}
+   */
+  async function loadCarForBooking(carId) {
+    try {
+      const result = await CarService.getCarById(carId);
 
-  const car = bookingData.car;
+      if (result.success) {
+        selectedCar = result.data;
+        displayCarInBooking(selectedCar);
+      } else {
+        console.error("Failed to load car:", result.error);
+      }
+    } catch (error) {
+      console.error("Error loading car for booking:", error);
+    }
+  }
 
-  summaryEl.innerHTML = `
-    <div class="car-info">
-      <img src="${car.image}" alt="${car.name}" onerror="this.src='/assets/images/car-placeholder.jpg'">
-      <div>
-        <h4>${car.name}</h4>
-        <p>${car.type} • ${car.transmission} • ${car.fuel}</p>
+  /**
+   * Display selected car in booking form
+   */
+  function displayCarInBooking(car) {
+    const carInfoElement = document.getElementById("selectedCarInfo");
+    if (!carInfoElement) return;
+
+    carInfoElement.innerHTML = `
+      <div class="selected-car">
+        <img src="${car.imageUrl || "assets/images/car-placeholder.jpg"}" alt="${car.name}">
+        <div class="car-details">
+          <h3>${car.name}</h3>
+          <p class="car-type">${car.type || "Sedan"}</p>
+          <p class="car-price">$${car.pricePerDay}/day</p>
+        </div>
       </div>
-    </div>
-    <div class="booking-details">
-      <div class="detail-row">
-        <span>Pickup Date:</span>
-        <strong>${formatDate(bookingData.startDate)}</strong>
-      </div>
-      <div class="detail-row">
-        <span>Return Date:</span>
-        <strong>${formatDate(bookingData.endDate)}</strong>
-      </div>
-      <div class="detail-row">
-        <span>Total Days:</span>
-        <strong>${bookingData.totalDays} days</strong>
-      </div>
-      <div class="detail-row">
-        <span>Price per day:</span>
-        <strong>${formatCurrency(bookingData.pricePerDay)}</strong>
-      </div>
-      <div class="detail-row total">
-        <span>Total Amount:</span>
-        <strong>${formatCurrency(bookingData.totalAmount)}</strong>
-      </div>
-    </div>
-  `;
-};
+    `;
 
-const setupBookingForm = (bookingData) => {
-  const form = document.querySelector("#booking-details-form");
-  if (!form) return;
+    // Set hidden input
+    const carIdInput = document.getElementById("carId");
+    if (carIdInput) {
+      carIdInput.value = car.id;
+    }
+  }
 
-  const user = storage.getUser();
+  /**
+   * Initialize booking form
+   */
+  function initializeBookingForm() {
+    const bookingForm = document.getElementById("bookingForm");
+    if (!bookingForm) return;
 
-  const nameInput = form.querySelector("#fullName");
-  const emailInput = form.querySelector("#email");
-  const phoneInput = form.querySelector("#phone");
+    // Set minimum dates
+    setMinimumDates();
 
-  if (nameInput) nameInput.value = user?.name || "";
-  if (emailInput) emailInput.value = user?.email || "";
-  if (phoneInput) phoneInput.value = user?.phone || "";
+    // Handle form submission
+    bookingForm.addEventListener("submit", handleBookingSubmit);
 
-  form.addEventListener("submit", async (e) => {
+    // Calculate total on date change
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+
+    if (startDateInput && endDateInput) {
+      startDateInput.addEventListener("change", calculateTotal);
+      endDateInput.addEventListener("change", calculateTotal);
+    }
+  }
+
+  /**
+   * Set minimum dates for date inputs
+   */
+  function setMinimumDates() {
+    const today = new Date().toISOString().split("T")[0];
+
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+
+    if (startDateInput) {
+      startDateInput.min = today;
+    }
+
+    if (endDateInput) {
+      endDateInput.min = today;
+    }
+  }
+
+  /**
+   * Calculate total booking cost
+   */
+  function calculateTotal() {
+    const startDate = document.getElementById("startDate")?.value;
+    const endDate = document.getElementById("endDate")?.value;
+    const totalElement = document.getElementById("totalCost");
+
+    if (!startDate || !endDate || !selectedCar) return;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+    if (days > 0) {
+      const total = days * (selectedCar.pricePerDay || 0);
+      if (totalElement) {
+        totalElement.textContent = `$${total.toFixed(2)}`;
+      }
+    }
+  }
+
+  /**
+   * Handle booking form submission
+   * BACKEND CALL: POST /api/bookings
+   */
+  async function handleBookingSubmit(e) {
     e.preventDefault();
 
-    const formData = new FormData(form);
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
 
-    showLoader();
+    // Get form data
+    const formData = new FormData(e.target);
+    const bookingData = {
+      carId: formData.get("carId"),
+      startDate: formData.get("startDate"),
+      endDate: formData.get("endDate"),
+      pickupLocation: formData.get("pickupLocation"),
+      dropoffLocation: formData.get("dropoffLocation"),
+      additionalNotes: formData.get("additionalNotes"),
+    };
+
+    // Validate dates
+    if (new Date(bookingData.startDate) >= new Date(bookingData.endDate)) {
+      showNotification("End date must be after start date", "error");
+      return;
+    }
+
+    // Show loading state
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="spinner"></span> Processing...';
 
     try {
-      const booking = await bookingService.createBooking({
-        carId: bookingData.carId,
-        startDate: bookingData.startDate,
-        endDate: bookingData.endDate,
-        totalDays: bookingData.totalDays,
-        pricePerDay: bookingData.pricePerDay,
-        totalAmount: bookingData.totalAmount,
-        pickupLocation: formData.get("pickupLocation"),
-        dropoffLocation: formData.get("dropoffLocation"),
-        additionalNotes: formData.get("notes"),
-      });
+      // BACKEND REQUEST: Create booking
+      const result = await BookingService.createBooking(bookingData);
 
-      storage.remove("pending_booking");
-      storage.set("pending_payment", {
-        bookingId: booking.id,
-        amount: bookingData.totalAmount,
-      });
+      if (result.success) {
+        console.log("Booking created successfully:", result.data);
 
-      showNotification("Booking created successfully!", "success");
-      window.location.href = "/booking-confirm";
+        // Show success message
+        showNotification("Booking created successfully!", "success");
+
+        // Redirect to confirmation page or bookings page
+        setTimeout(() => {
+          window.location.href = `booking-confirmation.html?bookingId=${result.data.id}`;
+        }, 1500);
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error) {
-      showNotification("Failed to create booking", "error");
-    } finally {
-      hideLoader();
+      console.error("Booking failed:", error);
+      showNotification(
+        error.message || "Failed to create booking. Please try again.",
+        "error",
+      );
+
+      // Restore button
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalButtonText;
     }
-  });
-};
+  }
+
+  /**
+   * Show notification message
+   */
+  function showNotification(message, type = "info") {
+    // Create notification element
+    const notification = document.createElement("div");
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // Show notification
+    setTimeout(() => notification.classList.add("show"), 100);
+
+    // Hide and remove after 3 seconds
+    setTimeout(() => {
+      notification.classList.remove("show");
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
+  }
+})();

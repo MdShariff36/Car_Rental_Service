@@ -1,221 +1,181 @@
-// FILE: assets/js/pages/cars.js
+/**
+ * Cars Listing Page (cars.html)
+ * REQUIRES BACKEND: GET /api/cars
+ * Displays all available cars from backend
+ */
 
-import { carService } from "../services/car.service.js";
-import {
-  formatCurrency,
-  getQueryParams,
-  setQueryParams,
-} from "../base/helpers.js";
-import { storage } from "../base/storage.js";
-import { showLoader, hideLoader } from "../ui/loader.js";
+(() => {
+  "use strict";
 
-export const initCars = async () => {
-  await loadCars();
-  setupFilters();
-  setupSearch();
-  setupSort();
-};
+  let allCars = [];
+  let filteredCars = [];
 
-let allCars = [];
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Cars page loaded - fetching cars from backend...");
 
-/* ===================== LOAD CARS ===================== */
-const loadCars = async () => {
-  const container = document.querySelector("#cars-container");
-  if (!container) return;
+    // Load cars from backend
+    await loadCars();
 
-  showLoader();
+    // Initialize filters
+    initializeFilters();
+  });
 
-  try {
-    const params = getQueryParams();
-    allCars = await carService.getAllCars(params);
+  /**
+   * Load cars from backend
+   * BACKEND CALL: GET /api/cars
+   */
+  async function loadCars() {
+    const container = document.getElementById("carsContainer");
+    const loadingElement = document.getElementById("loadingSpinner");
+    const errorElement = document.getElementById("errorMessage");
 
-    displayCars(allCars);
-    updateFiltersFromURL();
-  } catch (error) {
-    container.innerHTML =
-      '<p class="text-center text-danger">Failed to load cars. Please try again.</p>';
-  } finally {
-    hideLoader();
-  }
-};
+    // Show loading state
+    if (loadingElement) loadingElement.style.display = "block";
+    if (container) container.innerHTML = "";
+    if (errorElement) errorElement.style.display = "none";
 
-/* ===================== DISPLAY CARS ===================== */
-const displayCars = (cars) => {
-  const container = document.querySelector("#cars-container");
-  if (!container) return;
+    try {
+      // BACKEND REQUEST: Get all cars
+      const result = await CarService.getAllCars();
 
-  if (!cars || cars.length === 0) {
-    container.innerHTML =
-      '<p class="text-center">No cars found matching your criteria.</p>';
-    return;
-  }
+      if (result.success) {
+        allCars = result.data;
+        filteredCars = [...allCars];
 
-  const wishlist = storage.getWishlist();
+        console.log(`Loaded ${allCars.length} cars from backend`);
 
-  container.innerHTML = cars
-    .map(
-      (car) => `
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="car-card">
-          <div class="car-image">
-            <img src="${car.image}" alt="${car.name}"
-              onerror="this.src='/assets/images/car-placeholder.jpg'">
-            <span class="badge bg-primary">${car.type}</span>
-            <button class="btn-wishlist ${
-              wishlist.includes(car.id) ? "active" : ""
-            }" data-car-id="${car.id}">
-              <i class="icon-heart"></i>
-            </button>
+        // Render cars
+        renderCars(filteredCars);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error("Failed to load cars:", error);
+
+      // Show error message
+      if (errorElement) {
+        errorElement.textContent =
+          "Failed to load cars. Please try again later.";
+        errorElement.style.display = "block";
+      }
+
+      // Show fallback UI or empty state
+      if (container) {
+        container.innerHTML = `
+          <div class="error-state">
+            <p>Unable to load cars at this time.</p>
+            <button onclick="location.reload()" class="btn-retry">Retry</button>
           </div>
+        `;
+      }
+    } finally {
+      // Hide loading state
+      if (loadingElement) loadingElement.style.display = "none";
+    }
+  }
 
-          <div class="car-details">
-            <h3 class="car-name">${car.name}</h3>
+  /**
+   * Render cars to the DOM
+   */
+  function renderCars(cars) {
+    const container = document.getElementById("carsContainer");
+    if (!container) return;
 
-            <div class="car-specs">
-              <span><i class="icon-seats"></i> ${car.seats} Seats</span>
-              <span><i class="icon-transmission"></i> ${car.transmission}</span>
-              <span><i class="icon-fuel"></i> ${car.fuel}</span>
+    if (cars.length === 0) {
+      container.innerHTML =
+        '<div class="no-results"><p>No cars found matching your criteria.</p></div>';
+      return;
+    }
+
+    container.innerHTML = cars
+      .map(
+        (car) => `
+      <div class="car-card" data-car-id="${car.id}">
+        <div class="car-image">
+          <img src="${car.imageUrl || "assets/images/car-placeholder.jpg"}" alt="${car.name}">
+          ${car.featured ? '<span class="badge-featured">Featured</span>' : ""}
+        </div>
+        <div class="car-details">
+          <h3 class="car-name">${car.name}</h3>
+          <p class="car-type">${car.type || "Sedan"}</p>
+          <div class="car-specs">
+            <span class="spec"><i class="icon-seats"></i> ${car.seats || 5} Seats</span>
+            <span class="spec"><i class="icon-transmission"></i> ${car.transmission || "Automatic"}</span>
+            <span class="spec"><i class="icon-fuel"></i> ${car.fuelType || "Petrol"}</span>
+          </div>
+          <div class="car-footer">
+            <div class="car-price">
+              <span class="price-amount">$${car.pricePerDay || 0}</span>
+              <span class="price-unit">/day</span>
             </div>
-
-            <div class="car-rating">
-              <span class="stars">
-                ${"★".repeat(Math.floor(car.rating))}
-                ${"☆".repeat(5 - Math.floor(car.rating))}
-              </span>
-              <span class="reviews">(${car.reviews} reviews)</span>
-            </div>
-
-            <div class="car-footer">
-              <div class="price">
-                <span class="amount">${formatCurrency(car.pricePerDay)}</span>
-                <span class="period">/day</span>
-              </div>
-              <a href="/car-details?id=${car.id}" class="btn btn-primary">
-                View Details
-              </a>
-            </div>
+            <a href="car-details.html?id=${car.id}" class="btn-view-details">View Details</a>
           </div>
         </div>
       </div>
     `,
-    )
-    .join("");
-
-  setupWishlistButtons();
-};
-
-/* ===================== WISHLIST ===================== */
-const setupWishlistButtons = () => {
-  document.querySelectorAll(".btn-wishlist").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      const carId = btn.dataset.carId;
-
-      if (btn.classList.contains("active")) {
-        storage.removeFromWishlist(carId);
-        btn.classList.remove("active");
-      } else {
-        storage.addToWishlist(carId);
-        btn.classList.add("active");
-      }
-    });
-  });
-};
-
-/* ===================== FILTERS ===================== */
-const setupFilters = () => {
-  const filterForm = document.querySelector("#filter-form");
-  if (!filterForm) return;
-
-  filterForm.addEventListener("change", async () => {
-    const formData = new FormData(filterForm);
-    const filters = {};
-
-    if (formData.get("type")) filters.type = formData.get("type");
-    if (formData.get("transmission"))
-      filters.transmission = formData.get("transmission");
-    if (formData.get("fuel")) filters.fuel = formData.get("fuel");
-    if (formData.get("minPrice"))
-      filters.minPrice = Number(formData.get("minPrice"));
-    if (formData.get("maxPrice"))
-      filters.maxPrice = Number(formData.get("maxPrice"));
-
-    setQueryParams(filters);
-
-    showLoader();
-    const cars = await carService.getAllCars(filters);
-    displayCars(cars);
-    hideLoader();
-  });
-
-  document.querySelector("#clear-filters")?.addEventListener("click", () => {
-    filterForm.reset();
-    setQueryParams({});
-    window.location.reload();
-  });
-};
-
-/* ===================== SEARCH ===================== */
-const setupSearch = () => {
-  const searchInput = document.querySelector("#car-search");
-  if (!searchInput) return;
-
-  searchInput.addEventListener("input", (e) => {
-    const term = e.target.value.toLowerCase();
-
-    const filtered = allCars.filter(
-      (car) =>
-        car.name.toLowerCase().includes(term) ||
-        car.brand.toLowerCase().includes(term) ||
-        car.type.toLowerCase().includes(term),
-    );
-
-    displayCars(filtered);
-  });
-};
-
-/* ===================== SORT ===================== */
-const setupSort = () => {
-  const sortSelect = document.querySelector("#sort-cars");
-  if (!sortSelect) return;
-
-  sortSelect.addEventListener("change", (e) => {
-    const sorted = [...allCars];
-    const value = e.target.value;
-
-    if (value === "price-low")
-      sorted.sort((a, b) => a.pricePerDay - b.pricePerDay);
-    if (value === "price-high")
-      sorted.sort((a, b) => b.pricePerDay - a.pricePerDay);
-    if (value === "rating") sorted.sort((a, b) => b.rating - a.rating);
-    if (value === "name") sorted.sort((a, b) => a.name.localeCompare(b.name));
-
-    displayCars(sorted);
-  });
-};
-
-/* ===================== URL → FILTER SYNC ===================== */
-const updateFiltersFromURL = () => {
-  const params = getQueryParams();
-  const filterForm = document.querySelector("#filter-form");
-  if (!filterForm) return;
-
-  if (params.type) {
-    filterForm
-      .querySelector(`input[name="type"][value="${params.type}"]`)
-      ?.click();
-  }
-  if (params.transmission) {
-    filterForm
-      .querySelector(
-        `input[name="transmission"][value="${params.transmission}"]`,
       )
-      ?.click();
+      .join("");
+
+    // Update results count
+    const countElement = document.getElementById("resultsCount");
+    if (countElement) {
+      countElement.textContent = `${cars.length} car${cars.length !== 1 ? "s" : ""} found`;
+    }
   }
-  if (params.fuel) {
-    filterForm
-      .querySelector(`input[name="fuel"][value="${params.fuel}"]`)
-      ?.click();
+
+  /**
+   * Initialize filter functionality
+   */
+  function initializeFilters() {
+    const filterForm = document.getElementById("filterForm");
+    if (!filterForm) return;
+
+    filterForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      applyFilters();
+    });
+
+    // Real-time filtering on input change
+    const filterInputs = filterForm.querySelectorAll("input, select");
+    filterInputs.forEach((input) => {
+      input.addEventListener("change", applyFilters);
+    });
   }
-};
+
+  /**
+   * Apply filters to cars
+   */
+  function applyFilters() {
+    const typeFilter = document.getElementById("filterType")?.value;
+    const minPrice =
+      parseFloat(document.getElementById("filterMinPrice")?.value) || 0;
+    const maxPrice =
+      parseFloat(document.getElementById("filterMaxPrice")?.value) || Infinity;
+    const transmission = document.getElementById("filterTransmission")?.value;
+
+    filteredCars = allCars.filter((car) => {
+      let matches = true;
+
+      if (typeFilter && typeFilter !== "all") {
+        matches = matches && car.type === typeFilter;
+      }
+
+      if (car.pricePerDay) {
+        matches =
+          matches && car.pricePerDay >= minPrice && car.pricePerDay <= maxPrice;
+      }
+
+      if (transmission && transmission !== "all") {
+        matches = matches && car.transmission === transmission;
+      }
+
+      return matches;
+    });
+
+    renderCars(filteredCars);
+  }
+
+  // Make reload function available globally for retry button
+  window.reloadCars = loadCars;
+})();
