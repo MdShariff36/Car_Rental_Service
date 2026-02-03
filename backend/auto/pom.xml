@@ -8,18 +8,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.1</version>
         <relativePath/>
     </parent>
     
     <groupId>com.autoprime</groupId>
-    <artifactId>car-rental-backend</artifactId>
+    <artifactId>rental-backend</artifactId>
     <version>1.0.0</version>
-    <name>Auto Prime Car Rental Backend</name>
-    <description>Spring Boot backend for Auto Prime Car Rental System</description>
+    <name>Auto Prime Rental Backend</name>
+    <description>Spring Boot backend for Auto Prime Car Rental Service</description>
     
     <properties>
         <java.version>17</java.version>
+        <jwt.version>0.12.3</jwt.version>
     </properties>
     
     <dependencies>
@@ -41,6 +42,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         
+        <!-- Spring Boot Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        
         <!-- MySQL Driver -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -52,22 +59,22 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
+            <version>${jwt.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
+            <version>${jwt.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
+            <version>${jwt.version}</version>
             <scope>runtime</scope>
         </dependency>
         
-        <!-- Lombok (Optional - for reducing boilerplate) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -86,6 +93,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Spring Security Test -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
