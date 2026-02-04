@@ -1,6 +1,10 @@
+// ═══════════════════════════════════════════════════════════════
+// USER MODEL
+// Database model for user accounts (customers, hosts, admins)
+// ═══════════════════════════════════════════════════════════════
+
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
-const bcrypt = require("bcryptjs");
 
 const User = sequelize.define(
   "User",
@@ -11,35 +15,58 @@ const User = sequelize.define(
       autoIncrement: true,
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(100),
       allowNull: false,
+      validate: {
+        notEmpty: { msg: "Name is required" },
+        len: { args: [2, 100], msg: "Name must be 2-100 characters" },
+      },
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: false,
-      unique: true,
+      unique: {
+        msg: "Email address already registered",
+      },
       validate: {
-        isEmail: true,
+        isEmail: { msg: "Invalid email format" },
+        notEmpty: { msg: "Email is required" },
       },
     },
     password: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: false,
+      validate: {
+        notEmpty: { msg: "Password is required" },
+      },
     },
     phone: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(20),
       allowNull: true,
+      validate: {
+        is: { args: /^[0-9+\-() ]*$/, msg: "Invalid phone number format" },
+      },
     },
     avatar: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
+      defaultValue: null,
     },
     role: {
       type: DataTypes.ENUM("USER", "HOST", "ADMIN"),
       defaultValue: "USER",
+      allowNull: false,
+    },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    verificationToken: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
     },
     resetToken: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
     resetTokenExpiry: {
@@ -48,24 +75,15 @@ const User = sequelize.define(
     },
   },
   {
+    tableName: "users",
     timestamps: true,
-    hooks: {
-      beforeCreate: async (user) => {
-        if (user.password) {
-          user.password = await bcrypt.hash(user.password, 10);
-        }
-      },
-      beforeUpdate: async (user) => {
-        if (user.changed("password")) {
-          user.password = await bcrypt.hash(user.password, 10);
-        }
-      },
-    },
+    indexes: [
+      { fields: ["email"], unique: true },
+      { fields: ["role"] },
+      { fields: ["verificationToken"] },
+      { fields: ["resetToken"] },
+    ],
   },
 );
-
-User.prototype.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
 
 module.exports = User;

@@ -1,15 +1,20 @@
 const ContactMessage = require("../models/ContactMessage");
-const { successResponse, errorResponse } = require("../utils/response");
+const {
+  successResponse,
+  errorResponse,
+  createdResponse,
+} = require("../utils/response");
 
-const submitContactForm = async (req, res) => {
+// POST /api/contact - Submit contact form
+const submitContact = async (req, res) => {
   try {
     const { name, email, phone, subject, message } = req.body;
 
-    if (!name || !email || !message) {
-      return errorResponse(res, "Name, email, and message are required", 400);
+    if (!name || !email || !subject || !message) {
+      return errorResponse(res, "All required fields must be filled", 400);
     }
 
-    const contactMessage = await ContactMessage.create({
+    const contact = await ContactMessage.create({
       name,
       email,
       phone,
@@ -17,18 +22,15 @@ const submitContactForm = async (req, res) => {
       message,
     });
 
-    return successResponse(
+    return createdResponse(
       res,
-      contactMessage,
-      "Contact message submitted successfully",
-      201,
+      "Message sent successfully. We will get back to you soon.",
+      contact,
     );
   } catch (error) {
-    console.error("Submit contact form error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Contact form error:", error);
+    return errorResponse(res, "Failed to send message", 500);
   }
 };
 
-module.exports = {
-  submitContactForm,
-};
+module.exports = { submitContact };

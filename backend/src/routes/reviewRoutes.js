@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const reviewController = require("../controllers/reviewController");
-const authMiddleware = require("../middleware/authMiddleware");
+const {
+  getCarReviews,
+  createReview,
+  deleteReview,
+} = require("../controllers/reviewController");
+const { authenticate, optionalAuth } = require("../middleware/authMiddleware");
 
-router.get("/car/:carId", reviewController.getCarReviews);
-router.post("/", authMiddleware, reviewController.createReview);
+router.get("/car/:carId", optionalAuth, getCarReviews);
+router.post("/", authenticate, createReview);
+router.delete("/:id", authenticate, deleteReview);
 
 module.exports = router;

@@ -1,7 +1,12 @@
 const Newsletter = require("../models/Newsletter");
-const { successResponse, errorResponse } = require("../utils/response");
+const {
+  successResponse,
+  errorResponse,
+  createdResponse,
+} = require("../utils/response");
 
-const subscribeNewsletter = async (req, res) => {
+// POST /api/newsletter/subscribe - Subscribe to newsletter
+const subscribe = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -9,30 +14,24 @@ const subscribeNewsletter = async (req, res) => {
       return errorResponse(res, "Email is required", 400);
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return errorResponse(res, "Invalid email format", 400);
+    const existing = await Newsletter.findOne({ where: { email } });
+    if (existing) {
+      if (existing.isActive) {
+        return errorResponse(res, "Email already subscribed", 400);
+      } else {
+        existing.isActive = true;
+        await existing.save();
+        return successResponse(res, "Resubscribed successfully");
+      }
     }
 
-    const existingSubscription = await Newsletter.findOne({ where: { email } });
-    if (existingSubscription) {
-      return errorResponse(res, "Email is already subscribed", 400);
-    }
+    await Newsletter.create({ email });
 
-    const subscription = await Newsletter.create({ email });
-
-    return successResponse(
-      res,
-      subscription,
-      "Successfully subscribed to newsletter",
-      201,
-    );
+    return createdResponse(res, "Subscribed successfully");
   } catch (error) {
-    console.error("Subscribe newsletter error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Newsletter subscription error:", error);
+    return errorResponse(res, "Subscription failed", 500);
   }
 };
 
-module.exports = {
-  subscribeNewsletter,
-};
+module.exports = { subscribe };

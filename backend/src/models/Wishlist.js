@@ -1,3 +1,8 @@
+// ═══════════════════════════════════════════════════════════════
+// WISHLIST MODEL
+// Database model for user saved/favorite cars
+// ═══════════════════════════════════════════════════════════════
+
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 
@@ -13,7 +18,7 @@ const Wishlist = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users",
+        model: "users",
         key: "id",
       },
     },
@@ -21,7 +26,7 @@ const Wishlist = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Cars",
+        model: "cars",
         key: "id",
       },
     },
@@ -31,12 +36,12 @@ const Wishlist = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    tableName: "wishlists",
+    timestamps: true,
     indexes: [
-      {
-        unique: true,
-        fields: ["userId", "carId"],
-      },
+      { fields: ["userId"] },
+      { fields: ["carId"] },
+      { fields: ["userId", "carId"], unique: true },
     ],
   },
 );

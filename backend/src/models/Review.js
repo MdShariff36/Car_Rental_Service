@@ -1,3 +1,8 @@
+// ═══════════════════════════════════════════════════════════════
+// REVIEW MODEL
+// Database model for car reviews and ratings
+// ═══════════════════════════════════════════════════════════════
+
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 
@@ -11,17 +16,17 @@ const Review = sequelize.define(
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
-        model: "Users",
+        model: "users",
         key: "id",
       },
     },
     carId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
-        model: "Cars",
+        model: "cars",
         key: "id",
       },
     },
@@ -29,18 +34,29 @@ const Review = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        min: 1,
-        max: 5,
+        min: { args: 1, msg: "Rating must be at least 1" },
+        max: { args: 5, msg: "Rating cannot exceed 5" },
       },
     },
     comment: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      comment: "Whether the reviewer has actually rented this car",
+    },
   },
   {
+    tableName: "reviews",
     timestamps: true,
-    updatedAt: false,
+    indexes: [
+      { fields: ["userId"] },
+      { fields: ["carId"] },
+      { fields: ["rating"] },
+      { fields: ["createdAt"] },
+    ],
   },
 );
 

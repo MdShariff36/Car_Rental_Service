@@ -1,132 +1,81 @@
 const User = require("../models/User");
 const Booking = require("../models/Booking");
-const Car = require("../models/Car");
 const Payment = require("../models/Payment");
 const { successResponse, errorResponse } = require("../utils/response");
 const bcrypt = require("bcryptjs");
 
+// GET /api/user/dashboard - Get user dashboard
 const getUserDashboard = async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    const bookings = await Booking.findAll({
-      where: { userId },
-      include: [
-        {
-          model: Car,
-          as: "car",
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-      limit: 5,
+    const bookings = await Booking.count({ where: { userId: req.userId } });
+    const activeBookings = await Booking.count({
+      where: { userId: req.userId, status: "CONFIRMED" },
+    });
+    const totalSpent = await Payment.sum("amount", {
+      where: { userId: req.userId, status: "COMPLETED" },
     });
 
-    const totalBookings = await Booking.count({ where: { userId } });
-
-    const payments = await Payment.findAll({
-      where: { userId, status: "completed" },
+    return successResponse(res, "Dashboard data fetched", {
+      totalBookings: bookings,
+      activeBookings,
+      totalSpent: totalSpent || 0,
     });
-
-    const totalSpent = payments.reduce(
-      (sum, payment) => sum + payment.amount,
-      0,
-    );
-
-    return successResponse(
-      res,
-      {
-        recentBookings: bookings,
-        totalBookings,
-        totalSpent: totalSpent.toFixed(2),
-      },
-      "Dashboard data retrieved successfully",
-    );
   } catch (error) {
-    console.error("Get user dashboard error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Dashboard error:", error);
+    return errorResponse(res, "Failed to fetch dashboard", 500);
   }
 };
 
+// GET /api/user/profile - Get user profile
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ["password", "resetToken", "resetTokenExpiry"] },
+    const user = await User.findByPk(req.userId, {
+      attributes: { exclude: ["password"] },
     });
 
-    if (!user) {
-      return errorResponse(res, "User not found", 404);
-    }
-
-    return successResponse(res, user, "Profile retrieved successfully");
+    return successResponse(res, "Profile fetched successfully", user);
   } catch (error) {
-    console.error("Get user profile error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Get profile error:", error);
+    return errorResponse(res, "Failed to fetch profile", 500);
   }
 };
 
+// PUT /api/user/profile - Update user profile
 const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { name, phone, avatar } = req.body;
+    const user = await User.findByPk(req.userId);
+    const { name, phone, avatar, currentPassword, newPassword } = req.body;
 
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return errorResponse(res, "User not found", 404);
+    if (newPassword) {
+      if (!currentPassword) {
+        return errorResponse(res, "Current password required", 400);
+      }
+
+      const isValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isValid) {
+        return errorResponse(res, "Current password is incorrect", 400);
+      }
+
+      user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    const updateData = {};
-    if (name) updateData.name = name;
-    if (phone !== undefined) updateData.phone = phone;
-    if (avatar !== undefined) updateData.avatar = avatar;
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (avatar) user.avatar = avatar;
 
-    await user.update(updateData);
+    await user.save();
 
-    const updatedUser = await User.findByPk(userId, {
-      attributes: { exclude: ["password", "resetToken", "resetTokenExpiry"] },
+    return successResponse(res, "Profile updated successfully", {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      avatar: user.avatar,
     });
-
-    return successResponse(res, updatedUser, "Profile updated successfully");
   } catch (error) {
-    console.error("Update user profile error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Update profile error:", error);
+    return errorResponse(res, "Failed to update profile", 500);
   }
 };
 
-const updateUserPassword = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { oldPassword, newPassword } = req.body;
-
-    if (!oldPassword || !newPassword) {
-      return errorResponse(
-        res,
-        "Old password and new password are required",
-        400,
-      );
-    }
-
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return errorResponse(res, "User not found", 404);
-    }
-
-    const isPasswordValid = await user.comparePassword(oldPassword);
-    if (!isPasswordValid) {
-      return errorResponse(res, "Current password is incorrect", 401);
-    }
-
-    await user.update({ password: newPassword });
-
-    return successResponse(res, null, "Password updated successfully");
-  } catch (error) {
-    console.error("Update user password error:", error);
-    return errorResponse(res, error.message, 500);
-  }
-};
-
-module.exports = {
-  getUserDashboard,
-  getUserProfile,
-  updateUserProfile,
-  updateUserPassword,
-};
+module.exports = { getUserDashboard, getUserProfile, updateUserProfile };

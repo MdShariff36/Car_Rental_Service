@@ -1,6 +1,10 @@
+// ═══════════════════════════════════════════════════════════════
+// PAYMENT MODEL
+// Database model for payment transactions
+// ═══════════════════════════════════════════════════════════════
+
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
-const { v4: uuidv4 } = require("uuid");
 
 const Payment = sequelize.define(
   "Payment",
@@ -12,51 +16,85 @@ const Payment = sequelize.define(
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
-        model: "Users",
+        model: "users",
         key: "id",
       },
     },
     bookingId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
-        model: "Bookings",
+        model: "bookings",
         key: "id",
       },
     },
     amount: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+      validate: {
+        min: { args: 0.01, msg: "Amount must be greater than 0" },
+      },
     },
     method: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: DataTypes.ENUM(
+        "CREDIT_CARD",
+        "DEBIT_CARD",
+        "PAYPAL",
+        "BANK_TRANSFER",
+        "CASH",
+      ),
+      allowNull: false,
+      defaultValue: "CREDIT_CARD",
     },
     status: {
-      type: DataTypes.ENUM("pending", "completed", "failed", "refunded"),
-      defaultValue: "pending",
+      type: DataTypes.ENUM("PENDING", "COMPLETED", "FAILED", "REFUNDED"),
+      defaultValue: "PENDING",
+      allowNull: false,
     },
     transactionId: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true,
       unique: true,
     },
     cardLast4: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(4),
+      allowNull: true,
+      validate: {
+        len: {
+          args: [4, 4],
+          msg: "Card last 4 digits must be exactly 4 characters",
+        },
+      },
+    },
+    cardBrand: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    refundAmount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0.0,
+    },
+    refundedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    metadata: {
+      type: DataTypes.JSON,
       allowNull: true,
     },
   },
   {
+    tableName: "payments",
     timestamps: true,
-    hooks: {
-      beforeCreate: async (payment) => {
-        if (!payment.transactionId) {
-          payment.transactionId = `TXN-${uuidv4()}`;
-        }
-      },
-    },
+    indexes: [
+      { fields: ["userId"] },
+      { fields: ["bookingId"] },
+      { fields: ["status"] },
+      { fields: ["transactionId"], unique: true },
+    ],
   },
 );
 

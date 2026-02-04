@@ -1,3 +1,8 @@
+// ═══════════════════════════════════════════════════════════════
+// NEWSLETTER MODEL
+// Database model for newsletter email subscribers
+// ═══════════════════════════════════════════════════════════════
+
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 
@@ -10,20 +15,29 @@ const Newsletter = sequelize.define(
       autoIncrement: true,
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: false,
-      unique: true,
+      unique: {
+        msg: "Email already subscribed to newsletter",
+      },
       validate: {
-        isEmail: true,
+        isEmail: { msg: "Invalid email format" },
+        notEmpty: { msg: "Email is required" },
       },
     },
     subscribedAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   },
   {
-    timestamps: false,
+    tableName: "newsletters",
+    timestamps: true,
+    indexes: [{ fields: ["email"], unique: true }, { fields: ["isActive"] }],
   },
 );
 

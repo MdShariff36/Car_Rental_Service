@@ -1,141 +1,167 @@
+// ═══════════════════════════════════════════════════════════════
+// AUTHENTICATION CONTROLLER
+// Handles user registration, login, verification, password reset
+// ═══════════════════════════════════════════════════════════════
+
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-const { successResponse, errorResponse } = require("../utils/response");
-const { generateToken } = require("../utils/tokenHelper");
 const {
+  successResponse,
+  errorResponse,
+  createdResponse,
+} = require("../utils/response");
+const {
+  generateToken,
+  generateVerificationToken,
+  generatePasswordResetToken,
+} = require("../utils/tokenHelper");
+const {
+  sendVerificationEmail,
   sendPasswordResetEmail,
   sendWelcomeEmail,
 } = require("../utils/emailHelper");
-const crypto = require("crypto");
 
+/**
+ * Register new user
+ * POST /api/auth/register
+ */
 const register = async (req, res) => {
   try {
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone, role } = req.body;
 
+    // Validate required fields
     if (!name || !email || !password) {
       return errorResponse(res, "Name, email, and password are required", 400);
     }
 
+    // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return errorResponse(res, "Email already registered", 409);
     }
 
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Generate verification token
+    const verificationToken = generateVerificationToken();
+
+    // Create user
     const user = await User.create({
       name,
       email,
-      password,
+      password: hashedPassword,
       phone,
+      role: role || "USER",
+      verificationToken,
     });
 
-    const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    // Send verification email
+    await sendVerificationEmail(user, verificationToken);
 
-    await sendWelcomeEmail(email, name);
+    // Generate JWT token
+    const token = generateToken(user);
 
-    return successResponse(
+    return createdResponse(
       res,
+      "Registration successful. Please check your email to verify your account.",
       {
         token,
         user: {
           id: user.id,
           name: user.name,
           email: user.email,
-          phone: user.phone,
           role: user.role,
-          avatar: user.avatar,
+          isVerified: user.isVerified,
         },
       },
-      "User registered successfully",
-      201,
     );
   } catch (error) {
-    console.error("Register error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Registration error:", error);
+    return errorResponse(res, "Registration failed", 500);
   }
 };
 
+/**
+ * Login user
+ * POST /api/auth/login
+ */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input
     if (!email || !password) {
       return errorResponse(res, "Email and password are required", 400);
     }
 
+    // Find user
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return errorResponse(res, "Invalid email or password", 401);
     }
 
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
       return errorResponse(res, "Invalid email or password", 401);
     }
 
-    const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    });
+    // Generate JWT token
+    const token = generateToken(user);
 
-    return successResponse(
-      res,
-      {
-        token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          avatar: user.avatar,
-        },
+    return successResponse(res, "Login successful", {
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        role: user.role,
+        isVerified: user.isVerified,
       },
-      "Login successful",
-    );
+    });
   } catch (error) {
     console.error("Login error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Login failed", 500);
   }
 };
 
-const verify = async (req, res) => {
+/**
+ * Verify email
+ * GET /api/auth/verify/:token
+ */
+const verifyEmail = async (req, res) => {
   try {
-    const user = req.user;
+    const { token } = req.params;
 
-    return successResponse(
-      res,
-      {
-        valid: true,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          avatar: user.avatar,
-        },
-      },
-      "Token is valid",
-    );
+    // Find user with verification token
+    const user = await User.findOne({ where: { verificationToken: token } });
+
+    if (!user) {
+      return errorResponse(res, "Invalid or expired verification token", 400);
+    }
+
+    // Update user verification status
+    user.isVerified = true;
+    user.verificationToken = null;
+    await user.save();
+
+    // Send welcome email
+    await sendWelcomeEmail(user);
+
+    return successResponse(res, "Email verified successfully");
   } catch (error) {
-    console.error("Verify error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Email verification error:", error);
+    return errorResponse(res, "Email verification failed", 500);
   }
 };
 
-const logout = async (req, res) => {
-  try {
-    return successResponse(res, null, "Logged out successfully");
-  } catch (error) {
-    console.error("Logout error:", error);
-    return errorResponse(res, error.message, 500);
-  }
-};
-
+/**
+ * Request password reset
+ * POST /api/auth/forgot-password
+ */
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -144,40 +170,53 @@ const forgotPassword = async (req, res) => {
       return errorResponse(res, "Email is required", 400);
     }
 
+    // Find user
     const user = await User.findOne({ where: { email } });
+
     if (!user) {
+      // Don't reveal if email exists or not
       return successResponse(
         res,
-        null,
-        "If the email exists, a reset link has been sent",
+        "If the email exists, a password reset link has been sent",
       );
     }
 
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpiry = new Date(Date.now() + 3600000);
+    // Generate reset token
+    const { token, expiry } = generatePasswordResetToken();
 
-    await user.update({
-      resetToken,
-      resetTokenExpiry,
-    });
+    // Save reset token
+    user.resetToken = token;
+    user.resetTokenExpiry = expiry;
+    await user.save();
 
-    await sendPasswordResetEmail(email, resetToken);
+    // Send reset email
+    await sendPasswordResetEmail(user, token);
 
-    return successResponse(res, null, "Password reset email sent");
+    return successResponse(res, "Password reset link sent to your email");
   } catch (error) {
     console.error("Forgot password error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Failed to process request", 500);
   }
 };
 
+/**
+ * Reset password
+ * POST /api/auth/reset-password/:token
+ */
 const resetPassword = async (req, res) => {
   try {
-    const { token, newPassword } = req.body;
+    const { token } = req.params;
+    const { password } = req.body;
 
-    if (!token || !newPassword) {
-      return errorResponse(res, "Token and new password are required", 400);
+    if (!password) {
+      return errorResponse(res, "New password is required", 400);
     }
 
+    if (password.length < 6) {
+      return errorResponse(res, "Password must be at least 6 characters", 400);
+    }
+
+    // Find user with valid reset token
     const user = await User.findOne({
       where: {
         resetToken: token,
@@ -188,28 +227,45 @@ const resetPassword = async (req, res) => {
       return errorResponse(res, "Invalid or expired reset token", 400);
     }
 
-    if (new Date() > user.resetTokenExpiry) {
+    // Check if token is expired
+    if (user.resetTokenExpiry < new Date()) {
       return errorResponse(res, "Reset token has expired", 400);
     }
 
-    await user.update({
-      password: newPassword,
-      resetToken: null,
-      resetTokenExpiry: null,
-    });
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    return successResponse(res, null, "Password reset successful");
+    // Update password and clear reset token
+    user.password = hashedPassword;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+    await user.save();
+
+    return successResponse(res, "Password reset successful");
   } catch (error) {
     console.error("Reset password error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Failed to reset password", 500);
+  }
+};
+
+/**
+ * Logout user (client-side token removal)
+ * POST /api/auth/logout
+ */
+const logout = async (req, res) => {
+  try {
+    return successResponse(res, "Logout successful");
+  } catch (error) {
+    console.error("Logout error:", error);
+    return errorResponse(res, "Logout failed", 500);
   }
 };
 
 module.exports = {
   register,
   login,
-  verify,
-  logout,
+  verifyEmail,
   forgotPassword,
   resetPassword,
+  logout,
 };

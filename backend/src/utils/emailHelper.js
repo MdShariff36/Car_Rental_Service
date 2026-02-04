@@ -1,9 +1,26 @@
+// ═══════════════════════════════════════════════════════════════
+// EMAIL HELPER UTILITIES
+// Email sending utilities using Nodemailer
+// ═══════════════════════════════════════════════════════════════
+
 const nodemailer = require("nodemailer");
 const config = require("../config/env");
 
+/**
+ * Create email transporter
+ */
 const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: "gmail",
+  if (!config.email.user || !config.email.password) {
+    console.warn(
+      "⚠️  Email credentials not configured. Email features will not work.",
+    );
+    return null;
+  }
+
+  return nodemailer.createTransporter({
+    host: config.email.host,
+    port: config.email.port,
+    secure: config.email.secure,
     auth: {
       user: config.email.user,
       pass: config.email.password,
@@ -11,101 +28,173 @@ const createTransporter = () => {
   });
 };
 
-const sendPasswordResetEmail = async (email, resetToken) => {
+/**
+ * Send email
+ * @param {Object} options - Email options
+ */
+const sendEmail = async (options) => {
   const transporter = createTransporter();
-  const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
-  const mailOptions = {
-    from: config.email.from,
-    to: email,
-    subject: "Password Reset Request - Auto Prime",
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Password Reset Request</h2>
-        <p>You requested to reset your password for your Auto Prime account.</p>
-        <p>Click the button below to reset your password:</p>
-        <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; margin: 20px 0;">Reset Password</a>
-        <p>Or copy and paste this link into your browser:</p>
-        <p style="color: #666; word-break: break-all;">${resetUrl}</p>
-        <p><strong>This link will expire in 1 hour.</strong></p>
-        <p>If you didn't request this, please ignore this email.</p>
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-        <p style="color: #999; font-size: 12px;">Auto Prime - Your Trusted Car Rental Service</p>
-      </div>
-    `,
-  };
+  if (!transporter) {
+    console.warn("⚠️  Email not sent - transporter not configured");
+    return { success: false, message: "Email service not configured" };
+  }
 
   try {
-    await transporter.sendMail(mailOptions);
-    return true;
+    const mailOptions = {
+      from: config.email.from,
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+      text: options.text,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent:", info.messageId);
+    return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error("Email sending failed:", error);
-    return false;
+    console.error("❌ Email sending failed:", error.message);
+    return { success: false, message: error.message };
   }
 };
 
-const sendWelcomeEmail = async (email, name) => {
-  const transporter = createTransporter();
+/**
+ * Send verification email
+ */
+const sendVerificationEmail = async (user, token) => {
+  const verificationUrl = `http://localhost:3000/verify-email/${token}`;
 
-  const mailOptions = {
-    from: config.email.from,
-    to: email,
-    subject: "Welcome to Auto Prime!",
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Welcome to Auto Prime, ${name}! 🚗</h2>
-        <p>Thank you for registering with Auto Prime, your trusted car rental service.</p>
-        <p>You can now browse our wide selection of vehicles and make bookings easily.</p>
-        <a href="http://localhost:3000/cars" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; margin: 20px 0;">Browse Cars</a>
-        <p>If you have any questions, feel free to contact our support team.</p>
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-        <p style="color: #999; font-size: 12px;">Auto Prime - Your Trusted Car Rental Service</p>
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #333;">Welcome to Auto Prime!</h2>
+      <p>Hi ${user.name},</p>
+      <p>Thank you for registering with Auto Prime. Please verify your email address by clicking the button below:</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${verificationUrl}" 
+           style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Verify Email
+        </a>
       </div>
-    `,
-  };
+      <p>Or copy and paste this link into your browser:</p>
+      <p style="word-break: break-all; color: #666;">${verificationUrl}</p>
+      <p>This link will expire in 24 hours.</p>
+      <p>If you didn't create an account, please ignore this email.</p>
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="color: #999; font-size: 12px;">Auto Prime Car Rental Service</p>
+    </div>
+  `;
 
-  try {
-    await transporter.sendMail(mailOptions);
-  } catch (error) {
-    console.error("Welcome email failed:", error);
-  }
+  return sendEmail({
+    to: user.email,
+    subject: "Verify Your Email - Auto Prime",
+    html,
+  });
 };
 
-const sendBookingConfirmationEmail = async (email, bookingDetails) => {
-  const transporter = createTransporter();
+/**
+ * Send password reset email
+ */
+const sendPasswordResetEmail = async (user, token) => {
+  const resetUrl = `http://localhost:3000/reset-password/${token}`;
 
-  const mailOptions = {
-    from: config.email.from,
-    to: email,
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #333;">Password Reset Request</h2>
+      <p>Hi ${user.name},</p>
+      <p>You requested to reset your password. Click the button below to create a new password:</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${resetUrl}" 
+           style="background-color: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Reset Password
+        </a>
+      </div>
+      <p>Or copy and paste this link into your browser:</p>
+      <p style="word-break: break-all; color: #666;">${resetUrl}</p>
+      <p>This link will expire in 1 hour.</p>
+      <p>If you didn't request a password reset, please ignore this email and your password will remain unchanged.</p>
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="color: #999; font-size: 12px;">Auto Prime Car Rental Service</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: user.email,
+    subject: "Password Reset - Auto Prime",
+    html,
+  });
+};
+
+/**
+ * Send booking confirmation email
+ */
+const sendBookingConfirmation = async (user, booking, car) => {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #28a745;">Booking Confirmed!</h2>
+      <p>Hi ${user.name},</p>
+      <p>Your car rental booking has been confirmed.</p>
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Booking Details</h3>
+        <p><strong>Car:</strong> ${car.name}</p>
+        <p><strong>Pickup Date:</strong> ${new Date(booking.pickupDate).toLocaleDateString()}</p>
+        <p><strong>Dropoff Date:</strong> ${new Date(booking.dropoffDate).toLocaleDateString()}</p>
+        <p><strong>Location:</strong> ${booking.pickupLocation}</p>
+        <p><strong>Total Amount:</strong> $${booking.totalAmount}</p>
+        <p><strong>Booking ID:</strong> #${booking.id}</p>
+      </div>
+      <p>Thank you for choosing Auto Prime!</p>
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="color: #999; font-size: 12px;">Auto Prime Car Rental Service</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: user.email,
     subject: "Booking Confirmation - Auto Prime",
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Booking Confirmed! 🎉</h2>
-        <p>Your car rental booking has been confirmed.</p>
-        <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3>Booking Details:</h3>
-          <p><strong>Car:</strong> ${bookingDetails.carName}</p>
-          <p><strong>Pickup Date:</strong> ${bookingDetails.pickupDate}</p>
-          <p><strong>Dropoff Date:</strong> ${bookingDetails.dropoffDate}</p>
-          <p><strong>Location:</strong> ${bookingDetails.pickupLocation}</p>
-          <p><strong>Total Amount:</strong> ₹${bookingDetails.totalAmount}</p>
-        </div>
-        <p>Thank you for choosing Auto Prime!</p>
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-        <p style="color: #999; font-size: 12px;">Auto Prime - Your Trusted Car Rental Service</p>
-      </div>
-    `,
-  };
+    html,
+  });
+};
 
-  try {
-    await transporter.sendMail(mailOptions);
-  } catch (error) {
-    console.error("Booking confirmation email failed:", error);
-  }
+/**
+ * Send welcome email
+ */
+const sendWelcomeEmail = async (user) => {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #007bff;">Welcome to Auto Prime!</h2>
+      <p>Hi ${user.name},</p>
+      <p>Welcome to Auto Prime Car Rental Service! We're excited to have you on board.</p>
+      <p>With Auto Prime, you can:</p>
+      <ul>
+        <li>Browse our wide selection of vehicles</li>
+        <li>Book cars instantly</li>
+        <li>Manage your reservations</li>
+        <li>Track your rental history</li>
+      </ul>
+      <p>Start exploring our available cars and book your next adventure today!</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="http://localhost:3000/cars" 
+           style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Browse Cars
+        </a>
+      </div>
+      <p>If you have any questions, feel free to contact our support team.</p>
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+      <p style="color: #999; font-size: 12px;">Auto Prime Car Rental Service</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: user.email,
+    subject: "Welcome to Auto Prime!",
+    html,
+  });
 };
 
 module.exports = {
+  sendEmail,
+  sendVerificationEmail,
   sendPasswordResetEmail,
+  sendBookingConfirmation,
   sendWelcomeEmail,
-  sendBookingConfirmationEmail,
 };

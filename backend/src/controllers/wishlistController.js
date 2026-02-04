@@ -1,108 +1,68 @@
 const Wishlist = require("../models/Wishlist");
-const Car = require("../models/Car");
-const User = require("../models/User");
-const { successResponse, errorResponse } = require("../utils/response");
+const {
+  successResponse,
+  errorResponse,
+  createdResponse,
+} = require("../utils/response");
 
-const getWishlist = async (req, res) => {
+// GET /api/wishlist - Get user wishlist
+const getUserWishlist = async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    const wishlistItems = await Wishlist.findAll({
-      where: { userId },
-      include: [
-        {
-          model: Car,
-          as: "car",
-          include: [
-            {
-              model: User,
-              as: "host",
-              attributes: ["id", "name"],
-            },
-          ],
-        },
-      ],
-      order: [["addedAt", "DESC"]],
+    const wishlist = await Wishlist.findAll({
+      where: { userId: req.userId },
+      include: [{ model: require("../models/Car"), as: "car" }],
+      order: [["createdAt", "DESC"]],
     });
 
-    return successResponse(
-      res,
-      wishlistItems,
-      "Wishlist retrieved successfully",
-    );
+    return successResponse(res, "Wishlist fetched successfully", wishlist);
   } catch (error) {
     console.error("Get wishlist error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Failed to fetch wishlist", 500);
   }
 };
 
+// POST /api/wishlist - Add to wishlist
 const addToWishlist = async (req, res) => {
   try {
     const { carId } = req.body;
-    const userId = req.user.id;
 
-    if (!carId) {
-      return errorResponse(res, "Car ID is required", 400);
-    }
-
-    const car = await Car.findByPk(carId);
-    if (!car) {
-      return errorResponse(res, "Car not found", 404);
-    }
-
-    const existingItem = await Wishlist.findOne({
-      where: { userId, carId },
+    const existing = await Wishlist.findOne({
+      where: { userId: req.userId, carId },
     });
 
-    if (existingItem) {
-      return errorResponse(res, "Car is already in wishlist", 400);
+    if (existing) {
+      return errorResponse(res, "Car already in wishlist", 400);
     }
 
-    const wishlistItem = await Wishlist.create({
-      userId,
+    const wishlist = await Wishlist.create({
+      userId: req.userId,
       carId,
     });
 
-    const itemWithCar = await Wishlist.findByPk(wishlistItem.id, {
-      include: [
-        {
-          model: Car,
-          as: "car",
-        },
-      ],
-    });
-
-    return successResponse(res, itemWithCar, "Car added to wishlist", 201);
+    return createdResponse(res, "Added to wishlist", wishlist);
   } catch (error) {
     console.error("Add to wishlist error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Failed to add to wishlist", 500);
   }
 };
 
+// DELETE /api/wishlist/:carId - Remove from wishlist
 const removeFromWishlist = async (req, res) => {
   try {
-    const { carId } = req.params;
-    const userId = req.user.id;
-
-    const wishlistItem = await Wishlist.findOne({
-      where: { userId, carId },
+    const wishlist = await Wishlist.findOne({
+      where: { userId: req.userId, carId: req.params.carId },
     });
 
-    if (!wishlistItem) {
-      return errorResponse(res, "Car not found in wishlist", 404);
+    if (!wishlist) {
+      return errorResponse(res, "Item not in wishlist", 404);
     }
 
-    await wishlistItem.destroy();
-
-    return successResponse(res, null, "Car removed from wishlist");
+    await wishlist.destroy();
+    return successResponse(res, "Removed from wishlist");
   } catch (error) {
     console.error("Remove from wishlist error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Failed to remove from wishlist", 500);
   }
 };
 
-module.exports = {
-  getWishlist,
-  addToWishlist,
-  removeFromWishlist,
-};
+module.exports = { getUserWishlist, addToWishlist, removeFromWishlist };

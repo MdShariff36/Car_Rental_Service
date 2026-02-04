@@ -1,23 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const paymentController = require("../controllers/paymentController");
-const authMiddleware = require("../middleware/authMiddleware");
-const roleMiddleware = require("../middleware/roleMiddleware");
+const {
+  createPayment,
+  getUserPayments,
+} = require("../controllers/paymentController");
+const { authenticate } = require("../middleware/authMiddleware");
 const { paymentLimiter } = require("../middleware/rateLimiter");
 
-router.post(
-  "/",
-  authMiddleware,
-  paymentLimiter,
-  paymentController.createPayment,
-);
-router.get("/user", authMiddleware, paymentController.getUserPayments);
-router.get("/:id", authMiddleware, paymentController.getPaymentById);
-router.post(
-  "/:id/refund",
-  authMiddleware,
-  roleMiddleware("ADMIN"),
-  paymentController.refundPayment,
-);
+router.post("/", authenticate, paymentLimiter, createPayment);
+router.get("/", authenticate, getUserPayments);
 
 module.exports = router;

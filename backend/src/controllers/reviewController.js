@@ -1,106 +1,81 @@
 const Review = require("../models/Review");
 const Car = require("../models/Car");
-const User = require("../models/User");
-const { successResponse, errorResponse } = require("../utils/response");
+const {
+  successResponse,
+  errorResponse,
+  createdResponse,
+} = require("../utils/response");
 
+// GET /api/reviews/car/:carId - Get car reviews
 const getCarReviews = async (req, res) => {
   try {
-    const { carId } = req.params;
-
-    const car = await Car.findByPk(carId);
-    if (!car) {
-      return errorResponse(res, "Car not found", 404);
-    }
-
     const reviews = await Review.findAll({
-      where: { carId },
+      where: { carId: req.params.carId },
       include: [
         {
-          model: User,
+          model: require("../models/User"),
           as: "user",
-          attributes: ["id", "name", "avatar"],
+          attributes: ["name", "avatar"],
         },
       ],
       order: [["createdAt", "DESC"]],
     });
 
-    const averageRating =
-      reviews.length > 0
-        ? reviews.reduce((sum, review) => sum + review.rating, 0) /
-          reviews.length
-        : 0;
-
-    return successResponse(
-      res,
-      {
-        reviews,
-        averageRating: averageRating.toFixed(1),
-        totalReviews: reviews.length,
-      },
-      "Reviews retrieved successfully",
-    );
+    return successResponse(res, "Reviews fetched successfully", reviews);
   } catch (error) {
-    console.error("Get car reviews error:", error);
-    return errorResponse(res, error.message, 500);
+    console.error("Get reviews error:", error);
+    return errorResponse(res, "Failed to fetch reviews", 500);
   }
 };
 
+// POST /api/reviews - Create review
 const createReview = async (req, res) => {
   try {
     const { carId, rating, comment } = req.body;
-    const userId = req.user.id;
-
-    if (!carId || !rating) {
-      return errorResponse(res, "Car ID and rating are required", 400);
-    }
-
-    if (rating < 1 || rating > 5) {
-      return errorResponse(res, "Rating must be between 1 and 5", 400);
-    }
-
-    const car = await Car.findByPk(carId);
-    if (!car) {
-      return errorResponse(res, "Car not found", 404);
-    }
-
-    const existingReview = await Review.findOne({
-      where: { userId, carId },
-    });
-
-    if (existingReview) {
-      return errorResponse(res, "You have already reviewed this car", 400);
-    }
 
     const review = await Review.create({
-      userId,
+      userId: req.userId,
       carId,
       rating,
       comment,
     });
 
-    const reviewWithUser = await Review.findByPk(review.id, {
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "name", "avatar"],
-        },
-      ],
-    });
+    // Update car rating
+    const car = await Car.findByPk(carId);
+    const reviews = await Review.findAll({ where: { carId } });
+    const avgRating =
+      reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 
-    return successResponse(
-      res,
-      reviewWithUser,
-      "Review created successfully",
-      201,
-    );
+    car.rating = avgRating.toFixed(2);
+    car.totalReviews = reviews.length;
+    await car.save();
+
+    return createdResponse(res, "Review created successfully", review);
   } catch (error) {
     console.error("Create review error:", error);
-    return errorResponse(res, error.message, 500);
+    return errorResponse(res, "Failed to create review", 500);
   }
 };
 
-module.exports = {
-  getCarReviews,
-  createReview,
+// DELETE /api/reviews/:id - Delete review
+const deleteReview = async (req, res) => {
+  try {
+    const review = await Review.findByPk(req.params.id);
+
+    if (!review) {
+      return errorResponse(res, "Review not found", 404);
+    }
+
+    if (review.userId !== req.userId && req.userRole !== "ADMIN") {
+      return errorResponse(res, "Not authorized", 403);
+    }
+
+    await review.destroy();
+    return successResponse(res, "Review deleted successfully");
+  } catch (error) {
+    console.error("Delete review error:", error);
+    return errorResponse(res, "Failed to delete review", 500);
+  }
 };
+
+module.exports = { getCarReviews, createReview, deleteReview };
